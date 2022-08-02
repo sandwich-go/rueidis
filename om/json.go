@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/rueian/rueidis"
+	"github.com/sandwich-go/rueidis"
 )
 
 // NewJSONRepository creates an JSONRepository.

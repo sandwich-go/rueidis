@@ -32,7 +32,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/rueian/rueidis"
+	"github.com/sandwich-go/rueidis"
 )
 
 type Cmd struct {

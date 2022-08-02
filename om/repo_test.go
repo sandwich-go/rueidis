@@ -3,7 +3,7 @@ package om
 import (
 	"testing"
 
-	"github.com/rueian/rueidis"
+	"github.com/sandwich-go/rueidis"
 )
 
 func setup(t *testing.T) rueidis.Client {
