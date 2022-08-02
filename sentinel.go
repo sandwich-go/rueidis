@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/rueian/rueidis/internal/cmds"
+	"github.com/sandwich-go/rueidis/internal/cmds"
 )
 
 func newSentinelClient(opt *ClientOption, connFn connFn) (client *sentinelClient, err error) {

@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rueian/rueidis/internal/cmds"
+	"github.com/sandwich-go/rueidis/internal/cmds"
 )
 
 // MGetCache is a helper that consults the client-side caches with multiple keys by grouping keys within same slot into MGETs

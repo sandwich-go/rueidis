@@ -1,8 +1,8 @@
 # rueidis
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/rueian/rueidis.svg)](https://pkg.go.dev/github.com/rueian/rueidis)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sandwich-go/rueidis.svg)](https://pkg.go.dev/github.com/sandwich-go/rueidis)
 [![circleci](https://circleci.com/gh/rueian/rueidis.svg?style=shield)](https://app.circleci.com/pipelines/github/rueian/rueidis)
-[![Go Report Card](https://goreportcard.com/badge/github.com/rueian/rueidis)](https://goreportcard.com/report/github.com/rueian/rueidis)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sandwich-go/rueidis)](https://goreportcard.com/report/github.com/sandwich-go/rueidis)
 [![codecov](https://codecov.io/gh/rueian/rueidis/branch/master/graph/badge.svg?token=wGTB8GdY06)](https://codecov.io/gh/rueian/rueidis)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/rueian/rueidis.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/rueian/rueidis/alerts/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0d93d524c2b8497aacbe/maintainability)](https://codeclimate.com/github/rueian/rueidis/maintainability)
@@ -30,7 +30,7 @@ package main
 
 import (
 	"context"
-	"github.com/rueian/rueidis"
+	"github.com/sandwich-go/rueidis"
 )
 
 func main() {
@@ -60,11 +60,11 @@ Rueidis has higher throughput than go-redis v8.11.4 across 1, 8, and 64 parallel
 It is even able to achieve ~14x throughput over go-redis in a local benchmark. (see `parallelism(64)-key(16)-value(64)-10`)
 
 #### Single Client
-![client_test_set](https://github.com/rueian/rueidis-benchmark/blob/master/client_test_set_6.png)
+![client_test_set](https://github.com/sandwich-go/rueidis-benchmark/blob/master/client_test_set_6.png)
 #### Cluster Client
-![cluster_test_set](https://github.com/rueian/rueidis-benchmark/blob/master/cluster_test_set_5.png)
+![cluster_test_set](https://github.com/sandwich-go/rueidis-benchmark/blob/master/cluster_test_set_5.png)
 
-Benchmark source code: https://github.com/rueian/rueidis-benchmark
+Benchmark source code: https://github.com/sandwich-go/rueidis-benchmark
 
 ## Client Side Caching
 
@@ -96,9 +96,9 @@ If the OpenTelemetry is enabled by the `rueidisotel.WithClient(client)`, then th
 
 ### Benchmark
 
-![client_test_get](https://github.com/rueian/rueidis-benchmark/blob/master/client_test_get_6.png)
+![client_test_get](https://github.com/sandwich-go/rueidis-benchmark/blob/master/client_test_get_6.png)
 
-Benchmark source code: https://github.com/rueian/rueidis-benchmark
+Benchmark source code: https://github.com/sandwich-go/rueidis-benchmark
 
 ### Supported Commands by Client Side Caching
 
@@ -436,8 +436,8 @@ package main
 import (
 	"context"
 	"time"
-	"github.com/rueian/rueidis"
-	"github.com/rueian/rueidis/rueidiscompat"
+	"github.com/sandwich-go/rueidis"
+	"github.com/sandwich-go/rueidis/rueidiscompat"
 )
 
 func main() {
@@ -465,8 +465,8 @@ import (
     "fmt"
     "time"
 
-    "github.com/rueian/rueidis"
-    "github.com/rueian/rueidis/om"
+    "github.com/sandwich-go/rueidis"
+    "github.com/sandwich-go/rueidis/om"
 )
 
 type Example struct {
@@ -547,8 +547,8 @@ Use `rueidisotel.WithClient` to create a client with OpenTelemetry Tracing enabl
 package main
 
 import (
-    "github.com/rueian/rueidis"
-    "github.com/rueian/rueidis/rueidisotel"
+    "github.com/sandwich-go/rueidis"
+    "github.com/sandwich-go/rueidis/rueidisotel"
 )
 
 func main() {

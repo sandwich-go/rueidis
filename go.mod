@@ -1,4 +1,4 @@
-module github.com/rueian/rueidis
+module github.com/sandwich-go/rueidis
 
 go 1.18
 

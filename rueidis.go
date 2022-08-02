@@ -9,7 +9,7 @@ import (
 	"net"
 	"time"
 
-	"github.com/rueian/rueidis/internal/cmds"
+	"github.com/sandwich-go/rueidis/internal/cmds"
 )
 
 const (
