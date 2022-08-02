@@ -13,12 +13,12 @@ require (
 require (
 	github.com/onsi/ginkgo/v2 v2.1.4
 	github.com/onsi/gomega v1.19.0
+	github.com/rueian/rueidis v0.0.67
 	go.opentelemetry.io/otel/sdk/metric v0.30.0
 	go.uber.org/goleak v1.1.12
 )
 
 require (
-	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	golang.org/x/net v0.0.0-20220630215102-69896b714898 // indirect
