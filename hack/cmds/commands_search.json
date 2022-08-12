@@ -1106,7 +1106,7 @@
         ]
       },
       {
-        "comment": "https://github.com/rueian/rueidis/issues/57",
+        "comment": "https://github.com/sandwich-go/rueidis/issues/57",
         "name": "op",
         "type": "block",
         "optional": true,
