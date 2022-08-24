@@ -130,8 +130,10 @@ func setup(t *testing.T, option ClientOption) (*pipe, *redisMock, func(), func()
 					{typ: '+', string: "6.0.0"},
 				},
 			})
-		mock.Expect("CLIENT", "TRACKING", "ON", "OPTIN").
-			ReplyString("OK")
+		if !option.DisableCache {
+			mock.Expect("CLIENT", "TRACKING", "ON", "OPTIN").
+				ReplyString("OK")
+		}
 	}()
 	p, err := newPipe(n1, &option)
 	if err != nil {
@@ -1364,6 +1366,43 @@ func TestClientSideCachingRedis6InvalidationBugErr(t *testing.T) {
 	}
 }
 
+func TestDisableClientSideCaching(t *testing.T) {
+	p, mock, cancel, _ := setup(t, ClientOption{DisableCache: true})
+	defer cancel()
+	p.background()
+
+	go func() {
+		mock.Expect().Reply(RedisMessage{
+			typ: '>',
+			values: []RedisMessage{
+				{typ: '+', string: "invalidate"},
+				{typ: '*', values: []RedisMessage{{typ: '+', string: "a"}}},
+			},
+		})
+		mock.Expect("GET", "a").ReplyString("1").
+			Expect("GET", "b").
+			Expect("GET", "c").
+			ReplyString("2").
+			ReplyString("3")
+
+	}()
+
+	v, _ := p.DoCache(context.Background(), cmds.Cacheable(cmds.NewCompleted([]string{"GET", "a"})), 10*time.Second).ToMessage()
+	if v.string != "1" {
+		t.Errorf("unexpected cached result, expected %v, got %v", "1", v.string)
+	}
+
+	vs := p.DoMultiCache(context.Background(),
+		CT(cmds.Cacheable(cmds.NewCompleted([]string{"GET", "b"})), 10*time.Second),
+		CT(cmds.Cacheable(cmds.NewCompleted([]string{"GET", "c"})), 10*time.Second))
+	if vs[0].val.string != "2" {
+		t.Errorf("unexpected cached result, expected %v, got %v", "1", v.string)
+	}
+	if vs[1].val.string != "3" {
+		t.Errorf("unexpected cached result, expected %v, got %v", "1", v.string)
+	}
+}
+
 func TestMultiHalfErr(t *testing.T) {
 	p, mock, _, closeConn := setup(t, ClientOption{})
 
@@ -2548,6 +2587,99 @@ func TestPingOnConnError(t *testing.T) {
 	if err := p.Error(); err != io.EOF && !strings.HasPrefix(err.Error(), "io:") {
 		t.Fatalf("unexpect err %v", err)
 	}
+}
+
+//gocyclo:ignore
+func TestBlockingCommandNoDeadline(t *testing.T) {
+	// blocking command should not apply timeout
+	timeout := 100 * time.Millisecond
+	t.Run("sync do", func(t *testing.T) {
+		p, mock, cancel, _ := setup(t, ClientOption{ConnWriteTimeout: timeout})
+		defer cancel()
+		go func() {
+			time.Sleep(2 * timeout)
+			mock.Expect("BLOCK").ReplyString("OK")
+		}()
+		if val, err := p.Do(context.Background(), cmds.NewBlockingCompleted([]string{"BLOCK"})).ToString(); err != nil || val != "OK" {
+			t.Fatalf("unexpect resp %v %v", err, val)
+		}
+	})
+	t.Run("sync do multi", func(t *testing.T) {
+		p, mock, cancel, _ := setup(t, ClientOption{ConnWriteTimeout: timeout})
+		defer cancel()
+		go func() {
+			time.Sleep(3 * timeout)
+			mock.Expect("READ").ReplyString("READ").
+				Expect("BLOCK").ReplyString("OK")
+		}()
+		if val, err := p.DoMulti(context.Background(),
+			cmds.NewReadOnlyCompleted([]string{"READ"}),
+			cmds.NewBlockingCompleted([]string{"BLOCK"}))[1].ToString(); err != nil || val != "OK" {
+			t.Fatalf("unexpect resp %v %v", err, val)
+		}
+	})
+	t.Run("pipeline do - no ping", func(t *testing.T) {
+		p, mock, cancel, _ := setup(t, ClientOption{ConnWriteTimeout: timeout, Dialer: net.Dialer{KeepAlive: timeout}})
+		defer cancel()
+		p.background()
+		go func() {
+			time.Sleep(3 * timeout)
+			mock.Expect("BLOCK").ReplyString("OK")
+		}()
+		if val, err := p.Do(context.Background(), cmds.NewBlockingCompleted([]string{"BLOCK"})).ToString(); err != nil || val != "OK" {
+			t.Fatalf("unexpect resp %v %v", err, val)
+		}
+	})
+	t.Run("pipeline do - ignore ping timeout", func(t *testing.T) {
+		p, mock, cancel, _ := setup(t, ClientOption{ConnWriteTimeout: timeout, Dialer: net.Dialer{KeepAlive: timeout}})
+		defer cancel()
+		p.background()
+		wait := make(chan struct{})
+		go func() {
+			mock.Expect("PING")
+			close(wait)
+			time.Sleep(2 * timeout)
+			mock.Expect("BLOCK").ReplyString("OK").ReplyString("OK")
+		}()
+		<-wait
+		if val, err := p.Do(context.Background(), cmds.NewBlockingCompleted([]string{"BLOCK"})).ToString(); err != nil || val != "OK" {
+			t.Fatalf("unexpect resp %v %v", err, val)
+		}
+	})
+	t.Run("pipeline do multi - no ping", func(t *testing.T) {
+		p, mock, cancel, _ := setup(t, ClientOption{ConnWriteTimeout: timeout, Dialer: net.Dialer{KeepAlive: timeout}})
+		defer cancel()
+		p.background()
+		go func() {
+			time.Sleep(3 * timeout)
+			mock.Expect("READ").ReplyString("READ").
+				Expect("BLOCK").ReplyString("OK")
+		}()
+		if val, err := p.DoMulti(context.Background(),
+			cmds.NewReadOnlyCompleted([]string{"READ"}),
+			cmds.NewBlockingCompleted([]string{"BLOCK"}))[1].ToString(); err != nil || val != "OK" {
+			t.Fatalf("unexpect resp %v %v", err, val)
+		}
+	})
+	t.Run("pipeline do multi - ignore ping timeout", func(t *testing.T) {
+		p, mock, cancel, _ := setup(t, ClientOption{ConnWriteTimeout: timeout, Dialer: net.Dialer{KeepAlive: timeout}})
+		defer cancel()
+		p.background()
+		wait := make(chan struct{})
+		go func() {
+			mock.Expect("PING")
+			close(wait)
+			time.Sleep(2 * timeout)
+			mock.Expect("READ").Expect("BLOCK").ReplyString("OK").ReplyString("READ").ReplyString("OK")
+
+		}()
+		<-wait
+		if val, err := p.DoMulti(context.Background(),
+			cmds.NewReadOnlyCompleted([]string{"READ"}),
+			cmds.NewBlockingCompleted([]string{"BLOCK"}))[1].ToString(); err != nil || val != "OK" {
+			t.Fatalf("unexpect resp %v %v", err, val)
+		}
+	})
 }
 
 func TestDeadPipe(t *testing.T) {

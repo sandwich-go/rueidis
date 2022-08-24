@@ -34,9 +34,12 @@ import (
 )
 
 func main() {
-	c, _ := rueidis.NewClient(rueidis.ClientOption{
+	c, err := rueidis.NewClient(rueidis.ClientOption{
 		InitAddress: []string{"127.0.0.1:6379"},
 	})
+	if err != nil {
+		panic(err)
+	}
 	defer c.Close()
 
 	ctx := context.Background()
@@ -68,7 +71,7 @@ Benchmark source code: https://github.com/sandwich-go/rueidis-benchmark
 
 ## Client Side Caching
 
-The Opt-In mode of server-assisted client side caching is always enabled, and can be used by calling `DoCache()` or `DoMultiCache()` with
+The Opt-In mode of server-assisted client side caching is enabled by default, and can be used by calling `DoCache()` or `DoMultiCache()` with
 an explicit client side TTL.
 
 ```golang
@@ -179,6 +182,12 @@ Benchmark source code: https://github.com/sandwich-go/rueidis-benchmark
 
 `rueidis.MGetCache` and `JsonMGetCache.MGetCache` are handy helpers fetching multiple keys across different slots through the client side caching.
 They will first group keys by slot to build `MGET` or `JSON.MGET` commands respectively and then send requests with only cache missed keys to redis nodes.
+
+### Disable Client Side Caching
+
+Some Redis provider doesn't support client-side caching, ex. Google Cloud Memorystore.
+You can disable client-side caching by setting `ClientOption.DisableCache` to `true`.
+This will also fall back `Client.DoCache/Client.DoMultiCache` to `Client.Do/Client.DoMulti`.
 
 ## Blocking Commands
 
@@ -345,7 +354,7 @@ list, err := script.Exec(ctx, client, []string{"k1", "k2"}, []string{"a1", "a2"}
 To connect to a redis cluster, the `NewClient` should be used:
 
 ```golang
-c, _ := rueidis.NewClient(rueidis.ClientOption{
+c, err := rueidis.NewClient(rueidis.ClientOption{
     InitAddress: []string{"127.0.0.1:7001", "127.0.0.1:7002", "127.0.0.1:7003"},
     ShuffleInit: true,
 })
@@ -354,7 +363,7 @@ c, _ := rueidis.NewClient(rueidis.ClientOption{
 To connect to a single redis node, still use the `NewClient` with one InitAddress
 
 ```golang
-c, _ := rueidis.NewClient(rueidis.ClientOption{
+c, err := rueidis.NewClient(rueidis.ClientOption{
     InitAddress: []string{"127.0.0.1:6379"},
 })
 ```
@@ -362,7 +371,7 @@ c, _ := rueidis.NewClient(rueidis.ClientOption{
 To connect to sentinels, specify the required master set name:
 
 ```golang
-c, _ := rueidis.NewClient(rueidis.ClientOption{
+c, err := rueidis.NewClient(rueidis.ClientOption{
     InitAddress: []string{"127.0.0.1:26379", "127.0.0.1:26380", "127.0.0.1:26381"},
     Sentinel: rueidis.SentinelOption{
         MasterSet: "my_master",
@@ -442,7 +451,10 @@ import (
 
 func main() {
 	ctx := context.Background()
-	client, _ := rueidis.NewClient(rueidis.ClientOption{InitAddress: []string{"127.0.0.1:6379"}})
+	client, err := rueidis.NewClient(rueidis.ClientOption{InitAddress: []string{"127.0.0.1:6379"}})
+	if err != nil {
+		panic(err)
+	}
 	defer client.Close()
 
 	compat := rueidiscompat.NewAdapter(client)
@@ -477,7 +489,10 @@ type Example struct {
 
 func main() {
     ctx := context.Background()
-    c, _ := rueidis.NewClient(rueidis.ClientOption{InitAddress: []string{"127.0.0.1:6379"}})
+    c, err := rueidis.NewClient(rueidis.ClientOption{InitAddress: []string{"127.0.0.1:6379"}})
+    if err != nil {
+        panic(err)
+    }
     // create the repo with NewHashRepository or NewJSONRepository
     repo := om.NewHashRepository("my_prefix", Example{}, c)
 
@@ -552,7 +567,10 @@ import (
 )
 
 func main() {
-    client, _ := rueidis.NewClient(rueidis.ClientOption{InitAddress: []string{"127.0.0.1:6379"}})
+    client, err := rueidis.NewClient(rueidis.ClientOption{InitAddress: []string{"127.0.0.1:6379"}})
+    if err != nil {
+        panic(err)
+    }
     client = rueidisotel.WithClient(client)
     defer client.Close()
 }

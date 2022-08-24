@@ -7,6 +7,7 @@ import (
 	"errors"
 	"math/rand"
 	"net"
+	"strings"
 	"time"
 
 	"github.com/sandwich-go/rueidis/internal/cmds"
@@ -85,6 +86,8 @@ type ClientOption struct {
 	ShuffleInit bool
 	// DisableRetry disables retrying read-only commands under network errors
 	DisableRetry bool
+	// DisableCache falls back Client.DoCache/Client.DoMultiCache to Client.Do/Client.DoMulti
+	DisableCache bool
 }
 
 // SentinelOption contains MasterSet,
@@ -219,7 +222,7 @@ func NewClient(option ClientOption) (client Client, err error) {
 		return newSentinelClient(&option, makeConn)
 	}
 	if client, err = newClusterClient(&option, makeConn); err != nil {
-		if len(option.InitAddress) == 1 && err.Error() == redisErrMsgClusterDisabled {
+		if len(option.InitAddress) == 1 && (err.Error() == redisErrMsgClusterDisabled || strings.HasPrefix(err.Error(), redisErrMsgUnknownClusterCmd)) {
 			client, err = newSingleClient(&option, client.(*clusterClient).single(), makeConn)
 		} else if client != (*clusterClient)(nil) {
 			client.Close()
@@ -243,3 +246,4 @@ func dial(dst string, opt *ClientOption) (conn net.Conn, err error) {
 }
 
 const redisErrMsgClusterDisabled = "ERR This instance has cluster support disabled"
+const redisErrMsgUnknownClusterCmd = "ERR unknown command `CLUSTER`, with args beginning with"
