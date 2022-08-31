@@ -54,6 +54,8 @@ type pipe struct {
 	ssubs *subs
 	pshks atomic.Value
 	error atomic.Value
+
+	onInvalidations func([]RedisMessage)
 }
 
 func newPipe(conn net.Conn, option *ClientOption) (p *pipe, err error) {
@@ -119,7 +121,9 @@ func newPipe(conn net.Conn, option *ClientOption) (p *pipe, err error) {
 			p.version = int32(vv)
 		}
 	}
-
+	if p.onInvalidations = option.OnInvalidations; p.onInvalidations != nil {
+		p.background()
+	}
 	return p, nil
 }
 
@@ -396,6 +400,13 @@ func (p *pipe) handlePush(values []RedisMessage) (reply bool) {
 				p.cache.Delete(nil)
 			} else {
 				p.cache.Delete(values[1].values)
+			}
+		}
+		if p.onInvalidations != nil {
+			if values[1].IsNil() {
+				p.onInvalidations(nil)
+			} else {
+				p.onInvalidations(values[1].values)
 			}
 		}
 	case "message":

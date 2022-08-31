@@ -88,6 +88,9 @@ type ClientOption struct {
 	DisableRetry bool
 	// DisableCache falls back Client.DoCache/Client.DoMultiCache to Client.Do/Client.DoMulti
 	DisableCache bool
+	// OnInvalidations is a callback function in case of client-side caching invalidation received.
+	// Note that this function must be fast, otherwise other redis messages will be blocked.
+	OnInvalidations func([]RedisMessage)
 }
 
 // SentinelOption contains MasterSet,
