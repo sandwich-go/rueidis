@@ -53,7 +53,7 @@ var (
 var _ = BeforeSuite(func() {
 	ctx = context.Background()
 	client, err = rueidis.NewClient(rueidis.ClientOption{
-		InitAddress: []string{"127.0.0.1:6378"},
+		InitAddress: []string{"127.0.0.1:6379"},
 		ClientName:  "rueidis",
 	})
 	Expect(err).NotTo(HaveOccurred())
@@ -5328,6 +5328,7 @@ var _ = Describe("Cache Commands", func() {
 
 	BeforeEach(func() {
 		Expect(adapter.FlushDB(ctx).Err()).NotTo(HaveOccurred())
+		Expect(adapter.FlushAll(ctx).Err()).NotTo(HaveOccurred())
 	})
 
 	Describe("keys", func() {

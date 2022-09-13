@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/sandwich-go/rueidis/internal/cmds"
+	"github.com/sandwich-go/rueidis/internal/util"
 )
 
 // MGetCache is a helper that consults the client-side caches with multiple keys by grouping keys within same slot into MGETs
@@ -45,40 +46,20 @@ func clientMGetCache(client Client, ctx context.Context, ttl time.Duration, cmd 
 
 func clusterMGetCache(cc *clusterClient, ctx context.Context, ttl time.Duration, mgets map[uint16]cmds.Completed, keys []string) (ret map[string]RedisMessage, err error) {
 	var mu sync.Mutex
-	var wg sync.WaitGroup
-	wg.Add(len(mgets))
-
 	ret = make(map[string]RedisMessage, len(keys))
-
-	ch := make(chan cmds.Cacheable, len(mgets))
-	for _, cmd := range mgets {
-		ch <- cmds.Cacheable(cmd)
-	}
-	close(ch)
-
-	concurrency := len(mgets)
-	if concurrency > cc.cpus {
-		concurrency = cc.cpus
-	}
-
-	for i := 0; i < concurrency; i++ {
-		go func() {
-			for cmd := range ch {
-				arr, err2 := cc.doCache(ctx, cmd, ttl).ToArray()
-				mu.Lock()
-				if err2 != nil {
-					err = err2
-				} else {
-					for i, resp := range arr {
-						ret[cmd.MGetCacheKey(i)] = resp
-					}
-				}
-				mu.Unlock()
-				wg.Done()
+	util.ParallelVals(mgets, func(cmd cmds.Completed) {
+		c := cmds.Cacheable(cmd)
+		arr, err2 := cc.doCache(ctx, c, ttl).ToArray()
+		mu.Lock()
+		if err2 != nil {
+			err = err2
+		} else {
+			for i, resp := range arr {
+				ret[c.MGetCacheKey(i)] = resp
 			}
-		}()
-	}
-	wg.Wait()
+		}
+		mu.Unlock()
+	})
 	if err != nil {
 		return nil, err
 	}

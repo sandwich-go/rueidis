@@ -286,7 +286,9 @@ func (b Builder) AiModeldel() (c AiModeldel) {
 }
 
 func (c AiModeldel) Key(key string) AiModeldelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -308,7 +310,9 @@ func (b Builder) AiModelexecute() (c AiModelexecute) {
 }
 
 func (c AiModelexecute) Key(key string) AiModelexecuteKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -387,7 +391,9 @@ func (b Builder) AiModelget() (c AiModelget) {
 }
 
 func (c AiModelget) Key(key string) AiModelgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -448,7 +454,9 @@ func (b Builder) AiModelstore() (c AiModelstore) {
 }
 
 func (c AiModelstore) Key(key string) AiModelstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -770,7 +778,9 @@ func (b Builder) AiScriptdel() (c AiScriptdel) {
 }
 
 func (c AiScriptdel) Key(key string) AiScriptdelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -792,7 +802,9 @@ func (b Builder) AiScriptexecute() (c AiScriptexecute) {
 }
 
 func (c AiScriptexecute) Key(key string) AiScriptexecuteKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -974,7 +986,9 @@ func (b Builder) AiScriptget() (c AiScriptget) {
 }
 
 func (c AiScriptget) Key(key string) AiScriptgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1035,7 +1049,9 @@ func (b Builder) AiScriptstore() (c AiScriptstore) {
 }
 
 func (c AiScriptstore) Key(key string) AiScriptstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1112,7 +1128,9 @@ func (b Builder) AiTensorget() (c AiTensorget) {
 }
 
 func (c AiTensorget) Key(key string) AiTensorgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1175,7 +1193,9 @@ func (b Builder) AiTensorset() (c AiTensorset) {
 }
 
 func (c AiTensorset) Key(key string) AiTensorsetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1381,7 +1401,9 @@ func (b Builder) Append() (c Append) {
 }
 
 func (c Append) Key(key string) AppendKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1453,7 +1475,9 @@ func (b Builder) BfAdd() (c BfAdd) {
 }
 
 func (c BfAdd) Key(key string) BfAddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1482,7 +1506,9 @@ func (b Builder) BfExists() (c BfExists) {
 }
 
 func (c BfExists) Key(key string) BfExistsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1515,7 +1541,9 @@ func (b Builder) BfInfo() (c BfInfo) {
 }
 
 func (c BfInfo) Key(key string) BfInfoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1541,7 +1569,9 @@ func (b Builder) BfInsert() (c BfInsert) {
 }
 
 func (c BfInsert) Key(key string) BfInsertKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1692,7 +1722,9 @@ func (b Builder) BfLoadchunk() (c BfLoadchunk) {
 }
 
 func (c BfLoadchunk) Key(key string) BfLoadchunkKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1728,7 +1760,9 @@ func (b Builder) BfMadd() (c BfMadd) {
 }
 
 func (c BfMadd) Key(key string) BfMaddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1762,7 +1796,9 @@ func (b Builder) BfMexists() (c BfMexists) {
 }
 
 func (c BfMexists) Key(key string) BfMexistsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1796,7 +1832,9 @@ func (b Builder) BfReserve() (c BfReserve) {
 }
 
 func (c BfReserve) Key(key string) BfReserveKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1859,7 +1897,9 @@ func (b Builder) BfScandump() (c BfScandump) {
 }
 
 func (c BfScandump) Key(key string) BfScandumpKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -1923,7 +1963,9 @@ func (b Builder) Bitcount() (c Bitcount) {
 }
 
 func (c Bitcount) Key(key string) BitcountKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2001,7 +2043,9 @@ func (b Builder) Bitfield() (c Bitfield) {
 }
 
 func (c Bitfield) Key(key string) BitfieldKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2184,7 +2228,9 @@ func (b Builder) BitfieldRo() (c BitfieldRo) {
 }
 
 func (c BitfieldRo) Key(key string) BitfieldRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2194,7 +2240,7 @@ func (c BitfieldRo) Key(key string) BitfieldRoKey {
 type BitfieldRoGet Completed
 
 func (c BitfieldRoGet) Get(encoding string, offset int64) BitfieldRoGet {
-	c.cs.s = append(c.cs.s, encoding, strconv.FormatInt(offset, 10))
+	c.cs.s = append(c.cs.s, "GET", encoding, strconv.FormatInt(offset, 10))
 	return c
 }
 
@@ -2209,7 +2255,6 @@ func (c BitfieldRoGet) Cache() Cacheable {
 type BitfieldRoKey Completed
 
 func (c BitfieldRoKey) Get() BitfieldRoGet {
-	c.cs.s = append(c.cs.s, "GET")
 	return (BitfieldRoGet)(c)
 }
 
@@ -2229,7 +2274,12 @@ func (c Bitop) Operation(operation string) BitopOperation {
 type BitopDestkey Completed
 
 func (c BitopDestkey) Key(key ...string) BitopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2241,7 +2291,12 @@ func (c BitopDestkey) Key(key ...string) BitopKey {
 type BitopKey Completed
 
 func (c BitopKey) Key(key ...string) BitopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2257,7 +2312,9 @@ func (c BitopKey) Build() Completed {
 type BitopOperation Completed
 
 func (c BitopOperation) Destkey(destkey string) BitopDestkey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destkey)
+	} else {
 		c.ks = check(c.ks, slot(destkey))
 	}
 	c.cs.s = append(c.cs.s, destkey)
@@ -2273,7 +2330,9 @@ func (b Builder) Bitpos() (c Bitpos) {
 }
 
 func (c Bitpos) Key(key string) BitposKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2366,7 +2425,9 @@ func (b Builder) Blmove() (c Blmove) {
 }
 
 func (c Blmove) Source(source string) BlmoveSource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(source)
+	} else {
 		c.ks = check(c.ks, slot(source))
 	}
 	c.cs.s = append(c.cs.s, source)
@@ -2388,7 +2449,9 @@ func (c BlmoveDestination) Right() BlmoveWherefromRight {
 type BlmoveSource Completed
 
 func (c BlmoveSource) Destination(destination string) BlmoveDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -2461,7 +2524,12 @@ func (c BlmpopCount) Build() Completed {
 type BlmpopKey Completed
 
 func (c BlmpopKey) Key(key ...string) BlmpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2483,7 +2551,12 @@ func (c BlmpopKey) Right() BlmpopWhereRight {
 type BlmpopNumkeys Completed
 
 func (c BlmpopNumkeys) Key(key ...string) BlmpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2530,7 +2603,12 @@ func (b Builder) Blpop() (c Blpop) {
 }
 
 func (c Blpop) Key(key ...string) BlpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2542,7 +2620,12 @@ func (c Blpop) Key(key ...string) BlpopKey {
 type BlpopKey Completed
 
 func (c BlpopKey) Key(key ...string) BlpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2571,7 +2654,12 @@ func (b Builder) Brpop() (c Brpop) {
 }
 
 func (c Brpop) Key(key ...string) BrpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2583,7 +2671,12 @@ func (c Brpop) Key(key ...string) BrpopKey {
 type BrpopKey Completed
 
 func (c BrpopKey) Key(key ...string) BrpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2612,7 +2705,9 @@ func (b Builder) Brpoplpush() (c Brpoplpush) {
 }
 
 func (c Brpoplpush) Source(source string) BrpoplpushSource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(source)
+	} else {
 		c.ks = check(c.ks, slot(source))
 	}
 	c.cs.s = append(c.cs.s, source)
@@ -2629,7 +2724,9 @@ func (c BrpoplpushDestination) Timeout(timeout float64) BrpoplpushTimeout {
 type BrpoplpushSource Completed
 
 func (c BrpoplpushSource) Destination(destination string) BrpoplpushDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -2664,7 +2761,12 @@ func (c BzmpopCount) Build() Completed {
 type BzmpopKey Completed
 
 func (c BzmpopKey) Key(key ...string) BzmpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2686,7 +2788,12 @@ func (c BzmpopKey) Max() BzmpopWhereMax {
 type BzmpopNumkeys Completed
 
 func (c BzmpopNumkeys) Key(key ...string) BzmpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2733,7 +2840,12 @@ func (b Builder) Bzpopmax() (c Bzpopmax) {
 }
 
 func (c Bzpopmax) Key(key ...string) BzpopmaxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2745,7 +2857,12 @@ func (c Bzpopmax) Key(key ...string) BzpopmaxKey {
 type BzpopmaxKey Completed
 
 func (c BzpopmaxKey) Key(key ...string) BzpopmaxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2774,7 +2891,12 @@ func (b Builder) Bzpopmin() (c Bzpopmin) {
 }
 
 func (c Bzpopmin) Key(key ...string) BzpopminKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2786,7 +2908,12 @@ func (c Bzpopmin) Key(key ...string) BzpopminKey {
 type BzpopminKey Completed
 
 func (c BzpopminKey) Key(key ...string) BzpopminKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -2815,7 +2942,9 @@ func (b Builder) CfAdd() (c CfAdd) {
 }
 
 func (c CfAdd) Key(key string) CfAddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2844,7 +2973,9 @@ func (b Builder) CfAddnx() (c CfAddnx) {
 }
 
 func (c CfAddnx) Key(key string) CfAddnxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2873,7 +3004,9 @@ func (b Builder) CfCount() (c CfCount) {
 }
 
 func (c CfCount) Key(key string) CfCountKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2906,7 +3039,9 @@ func (b Builder) CfDel() (c CfDel) {
 }
 
 func (c CfDel) Key(key string) CfDelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2935,7 +3070,9 @@ func (b Builder) CfExists() (c CfExists) {
 }
 
 func (c CfExists) Key(key string) CfExistsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2968,7 +3105,9 @@ func (b Builder) CfInfo() (c CfInfo) {
 }
 
 func (c CfInfo) Key(key string) CfInfoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -2994,7 +3133,9 @@ func (b Builder) CfInsert() (c CfInsert) {
 }
 
 func (c CfInsert) Key(key string) CfInsertKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -3064,7 +3205,9 @@ func (b Builder) CfInsertnx() (c CfInsertnx) {
 }
 
 func (c CfInsertnx) Key(key string) CfInsertnxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -3134,7 +3277,9 @@ func (b Builder) CfLoadchunk() (c CfLoadchunk) {
 }
 
 func (c CfLoadchunk) Key(key string) CfLoadchunkKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -3170,7 +3315,9 @@ func (b Builder) CfMexists() (c CfMexists) {
 }
 
 func (c CfMexists) Key(key string) CfMexistsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -3204,7 +3351,9 @@ func (b Builder) CfReserve() (c CfReserve) {
 }
 
 func (c CfReserve) Key(key string) CfReserveKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -3281,7 +3430,9 @@ func (b Builder) CfScandump() (c CfScandump) {
 }
 
 func (c CfScandump) Key(key string) CfScandumpKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -4004,9 +4155,8 @@ func (c ClientTrackingOptout) Build() Completed {
 
 type ClientTrackingPrefix Completed
 
-func (c ClientTrackingPrefix) Prefix(prefix ...string) ClientTrackingPrefix {
-	c.cs.s = append(c.cs.s, "PREFIX")
-	c.cs.s = append(c.cs.s, prefix...)
+func (c ClientTrackingPrefix) Prefix(prefix string) ClientTrackingPrefix {
+	c.cs.s = append(c.cs.s, "PREFIX", prefix)
 	return c
 }
 
@@ -4036,9 +4186,7 @@ func (c ClientTrackingPrefix) Build() Completed {
 
 type ClientTrackingRedirect Completed
 
-func (c ClientTrackingRedirect) Prefix(prefix ...string) ClientTrackingPrefix {
-	c.cs.s = append(c.cs.s, "PREFIX")
-	c.cs.s = append(c.cs.s, prefix...)
+func (c ClientTrackingRedirect) Prefix() ClientTrackingPrefix {
 	return (ClientTrackingPrefix)(c)
 }
 
@@ -4073,9 +4221,7 @@ func (c ClientTrackingStatusOff) Redirect(clientId int64) ClientTrackingRedirect
 	return (ClientTrackingRedirect)(c)
 }
 
-func (c ClientTrackingStatusOff) Prefix(prefix ...string) ClientTrackingPrefix {
-	c.cs.s = append(c.cs.s, "PREFIX")
-	c.cs.s = append(c.cs.s, prefix...)
+func (c ClientTrackingStatusOff) Prefix() ClientTrackingPrefix {
 	return (ClientTrackingPrefix)(c)
 }
 
@@ -4110,9 +4256,7 @@ func (c ClientTrackingStatusOn) Redirect(clientId int64) ClientTrackingRedirect 
 	return (ClientTrackingRedirect)(c)
 }
 
-func (c ClientTrackingStatusOn) Prefix(prefix ...string) ClientTrackingPrefix {
-	c.cs.s = append(c.cs.s, "PREFIX")
-	c.cs.s = append(c.cs.s, prefix...)
+func (c ClientTrackingStatusOn) Prefix() ClientTrackingPrefix {
 	return (ClientTrackingPrefix)(c)
 }
 
@@ -4781,7 +4925,9 @@ func (b Builder) CmsIncrby() (c CmsIncrby) {
 }
 
 func (c CmsIncrby) Key(key string) CmsIncrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -4822,7 +4968,9 @@ func (b Builder) CmsInfo() (c CmsInfo) {
 }
 
 func (c CmsInfo) Key(key string) CmsInfoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -4848,7 +4996,9 @@ func (b Builder) CmsInitbydim() (c CmsInitbydim) {
 }
 
 func (c CmsInitbydim) Key(key string) CmsInitbydimKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -4884,7 +5034,9 @@ func (b Builder) CmsInitbyprob() (c CmsInitbyprob) {
 }
 
 func (c CmsInitbyprob) Key(key string) CmsInitbyprobKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -4920,7 +5072,9 @@ func (b Builder) CmsMerge() (c CmsMerge) {
 }
 
 func (c CmsMerge) Destination(destination string) CmsMergeDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -4937,7 +5091,12 @@ func (c CmsMergeDestination) Numkeys(numkeys int64) CmsMergeNumkeys {
 type CmsMergeNumkeys Completed
 
 func (c CmsMergeNumkeys) Source(source ...string) CmsMergeSource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range source {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range source {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -4949,7 +5108,12 @@ func (c CmsMergeNumkeys) Source(source ...string) CmsMergeSource {
 type CmsMergeSource Completed
 
 func (c CmsMergeSource) Source(source ...string) CmsMergeSource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range source {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range source {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -4998,7 +5162,9 @@ func (b Builder) CmsQuery() (c CmsQuery) {
 }
 
 func (c CmsQuery) Key(key string) CmsQueryKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -5256,7 +5422,9 @@ func (b Builder) Copy() (c Copy) {
 }
 
 func (c Copy) Source(source string) CopySource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(source)
+	} else {
 		c.ks = check(c.ks, slot(source))
 	}
 	c.cs.s = append(c.cs.s, source)
@@ -5299,7 +5467,9 @@ func (c CopyReplace) Build() Completed {
 type CopySource Completed
 
 func (c CopySource) Destination(destination string) CopyDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -5327,7 +5497,9 @@ func (b Builder) DebugObject() (c DebugObject) {
 }
 
 func (c DebugObject) Key(key string) DebugObjectKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -5361,7 +5533,9 @@ func (b Builder) Decr() (c Decr) {
 }
 
 func (c Decr) Key(key string) DecrKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -5383,7 +5557,9 @@ func (b Builder) Decrby() (c Decrby) {
 }
 
 func (c Decrby) Key(key string) DecrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -5412,7 +5588,12 @@ func (b Builder) Del() (c Del) {
 }
 
 func (c Del) Key(key ...string) DelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5424,7 +5605,12 @@ func (c Del) Key(key ...string) DelKey {
 type DelKey Completed
 
 func (c DelKey) Key(key ...string) DelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5458,7 +5644,9 @@ func (b Builder) Dump() (c Dump) {
 }
 
 func (c Dump) Key(key string) DumpKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -5517,7 +5705,12 @@ func (c EvalArg) Build() Completed {
 type EvalKey Completed
 
 func (c EvalKey) Key(key ...string) EvalKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5538,7 +5731,12 @@ func (c EvalKey) Build() Completed {
 type EvalNumkeys Completed
 
 func (c EvalNumkeys) Key(key ...string) EvalKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5583,7 +5781,12 @@ func (c EvalRoArg) Build() Completed {
 type EvalRoKey Completed
 
 func (c EvalRoKey) Key(key ...string) EvalRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5600,7 +5803,12 @@ func (c EvalRoKey) Arg(arg ...string) EvalRoArg {
 type EvalRoNumkeys Completed
 
 func (c EvalRoNumkeys) Key(key ...string) EvalRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5650,7 +5858,12 @@ func (c EvalshaArg) Build() Completed {
 type EvalshaKey Completed
 
 func (c EvalshaKey) Key(key ...string) EvalshaKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5671,7 +5884,12 @@ func (c EvalshaKey) Build() Completed {
 type EvalshaNumkeys Completed
 
 func (c EvalshaNumkeys) Key(key ...string) EvalshaKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5716,7 +5934,12 @@ func (c EvalshaRoArg) Build() Completed {
 type EvalshaRoKey Completed
 
 func (c EvalshaRoKey) Key(key ...string) EvalshaRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5733,7 +5956,12 @@ func (c EvalshaRoKey) Arg(arg ...string) EvalshaRoArg {
 type EvalshaRoNumkeys Completed
 
 func (c EvalshaRoNumkeys) Key(key ...string) EvalshaRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5777,7 +6005,12 @@ func (b Builder) Exists() (c Exists) {
 }
 
 func (c Exists) Key(key ...string) ExistsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5789,7 +6022,12 @@ func (c Exists) Key(key ...string) ExistsKey {
 type ExistsKey Completed
 
 func (c ExistsKey) Key(key ...string) ExistsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -5811,7 +6049,9 @@ func (b Builder) Expire() (c Expire) {
 }
 
 func (c Expire) Key(key string) ExpireKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -5884,7 +6124,9 @@ func (b Builder) Expireat() (c Expireat) {
 }
 
 func (c Expireat) Key(key string) ExpireatKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -5957,7 +6199,9 @@ func (b Builder) Expiretime() (c Expiretime) {
 }
 
 func (c Expiretime) Key(key string) ExpiretimeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -6103,7 +6347,12 @@ func (c FcallFunction) Numkeys(numkeys int64) FcallNumkeys {
 type FcallKey Completed
 
 func (c FcallKey) Key(key ...string) FcallKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -6120,7 +6369,12 @@ func (c FcallKey) Arg(arg ...string) FcallArg {
 type FcallNumkeys Completed
 
 func (c FcallNumkeys) Key(key ...string) FcallKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -6167,7 +6421,12 @@ func (c FcallRoFunction) Numkeys(numkeys int64) FcallRoNumkeys {
 type FcallRoKey Completed
 
 func (c FcallRoKey) Key(key ...string) FcallRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -6184,7 +6443,12 @@ func (c FcallRoKey) Arg(arg ...string) FcallRoArg {
 type FcallRoNumkeys Completed
 
 func (c FcallRoNumkeys) Key(key ...string) FcallRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -12800,7 +13064,9 @@ func (b Builder) Geoadd() (c Geoadd) {
 }
 
 func (c Geoadd) Key(key string) GeoaddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -12876,7 +13142,9 @@ func (b Builder) Geodist() (c Geodist) {
 }
 
 func (c Geodist) Key(key string) GeodistKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -12976,7 +13244,9 @@ func (b Builder) Geohash() (c Geohash) {
 }
 
 func (c Geohash) Key(key string) GeohashKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -13014,7 +13284,9 @@ func (b Builder) Geopos() (c Geopos) {
 }
 
 func (c Geopos) Key(key string) GeoposKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -13052,7 +13324,9 @@ func (b Builder) Georadius() (c Georadius) {
 }
 
 func (c Georadius) Key(key string) GeoradiusKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -13072,7 +13346,9 @@ func (c GeoradiusCountAny) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusCountAny) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13080,7 +13356,9 @@ func (c GeoradiusCountAny) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusCountAny) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13109,7 +13387,9 @@ func (c GeoradiusCountCount) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusCountCount) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13117,7 +13397,9 @@ func (c GeoradiusCountCount) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusCountCount) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13152,7 +13434,9 @@ func (c GeoradiusLongitude) Latitude(latitude float64) GeoradiusLatitude {
 type GeoradiusOrderAsc Completed
 
 func (c GeoradiusOrderAsc) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13160,7 +13444,9 @@ func (c GeoradiusOrderAsc) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusOrderAsc) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13174,7 +13460,9 @@ func (c GeoradiusOrderAsc) Build() Completed {
 type GeoradiusOrderDesc Completed
 
 func (c GeoradiusOrderDesc) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13182,7 +13470,9 @@ func (c GeoradiusOrderDesc) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusOrderDesc) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13224,7 +13514,9 @@ func (b Builder) GeoradiusRo() (c GeoradiusRo) {
 }
 
 func (c GeoradiusRo) Key(key string) GeoradiusRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -13592,7 +13884,9 @@ func (c GeoradiusRoWithhash) Cache() Cacheable {
 type GeoradiusStore Completed
 
 func (c GeoradiusStore) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13642,7 +13936,9 @@ func (c GeoradiusUnitFt) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusUnitFt) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13650,7 +13946,9 @@ func (c GeoradiusUnitFt) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusUnitFt) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13694,7 +13992,9 @@ func (c GeoradiusUnitKm) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusUnitKm) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13702,7 +14002,9 @@ func (c GeoradiusUnitKm) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusUnitKm) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13746,7 +14048,9 @@ func (c GeoradiusUnitM) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusUnitM) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13754,7 +14058,9 @@ func (c GeoradiusUnitM) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusUnitM) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13798,7 +14104,9 @@ func (c GeoradiusUnitMi) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusUnitMi) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13806,7 +14114,9 @@ func (c GeoradiusUnitMi) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusUnitMi) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13845,7 +14155,9 @@ func (c GeoradiusWithcoord) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusWithcoord) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13853,7 +14165,9 @@ func (c GeoradiusWithcoord) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusWithcoord) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13887,7 +14201,9 @@ func (c GeoradiusWithdist) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusWithdist) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13895,7 +14211,9 @@ func (c GeoradiusWithdist) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusWithdist) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13924,7 +14242,9 @@ func (c GeoradiusWithhash) Desc() GeoradiusOrderDesc {
 }
 
 func (c GeoradiusWithhash) Store(key string) GeoradiusStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13932,7 +14252,9 @@ func (c GeoradiusWithhash) Store(key string) GeoradiusStore {
 }
 
 func (c GeoradiusWithhash) Storedist(key string) GeoradiusStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -13952,7 +14274,9 @@ func (b Builder) Georadiusbymember() (c Georadiusbymember) {
 }
 
 func (c Georadiusbymember) Key(key string) GeoradiusbymemberKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -13972,7 +14296,9 @@ func (c GeoradiusbymemberCountAny) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberCountAny) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -13980,7 +14306,9 @@ func (c GeoradiusbymemberCountAny) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberCountAny) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14009,7 +14337,9 @@ func (c GeoradiusbymemberCountCount) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberCountCount) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14017,7 +14347,9 @@ func (c GeoradiusbymemberCountCount) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberCountCount) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14045,7 +14377,9 @@ func (c GeoradiusbymemberMember) Radius(radius float64) GeoradiusbymemberRadius 
 type GeoradiusbymemberOrderAsc Completed
 
 func (c GeoradiusbymemberOrderAsc) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14053,7 +14387,9 @@ func (c GeoradiusbymemberOrderAsc) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberOrderAsc) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14067,7 +14403,9 @@ func (c GeoradiusbymemberOrderAsc) Build() Completed {
 type GeoradiusbymemberOrderDesc Completed
 
 func (c GeoradiusbymemberOrderDesc) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14075,7 +14413,9 @@ func (c GeoradiusbymemberOrderDesc) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberOrderDesc) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14117,7 +14457,9 @@ func (b Builder) GeoradiusbymemberRo() (c GeoradiusbymemberRo) {
 }
 
 func (c GeoradiusbymemberRo) Key(key string) GeoradiusbymemberRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -14478,7 +14820,9 @@ func (c GeoradiusbymemberRoWithhash) Cache() Cacheable {
 type GeoradiusbymemberStore Completed
 
 func (c GeoradiusbymemberStore) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14528,7 +14872,9 @@ func (c GeoradiusbymemberUnitFt) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberUnitFt) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14536,7 +14882,9 @@ func (c GeoradiusbymemberUnitFt) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberUnitFt) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14580,7 +14928,9 @@ func (c GeoradiusbymemberUnitKm) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberUnitKm) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14588,7 +14938,9 @@ func (c GeoradiusbymemberUnitKm) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberUnitKm) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14632,7 +14984,9 @@ func (c GeoradiusbymemberUnitM) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberUnitM) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14640,7 +14994,9 @@ func (c GeoradiusbymemberUnitM) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberUnitM) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14684,7 +15040,9 @@ func (c GeoradiusbymemberUnitMi) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberUnitMi) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14692,7 +15050,9 @@ func (c GeoradiusbymemberUnitMi) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberUnitMi) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14731,7 +15091,9 @@ func (c GeoradiusbymemberWithcoord) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberWithcoord) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14739,7 +15101,9 @@ func (c GeoradiusbymemberWithcoord) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberWithcoord) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14773,7 +15137,9 @@ func (c GeoradiusbymemberWithdist) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberWithdist) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14781,7 +15147,9 @@ func (c GeoradiusbymemberWithdist) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberWithdist) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14810,7 +15178,9 @@ func (c GeoradiusbymemberWithhash) Desc() GeoradiusbymemberOrderDesc {
 }
 
 func (c GeoradiusbymemberWithhash) Store(key string) GeoradiusbymemberStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STORE", key)
@@ -14818,7 +15188,9 @@ func (c GeoradiusbymemberWithhash) Store(key string) GeoradiusbymemberStore {
 }
 
 func (c GeoradiusbymemberWithhash) Storedist(key string) GeoradiusbymemberStoredist {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, "STOREDIST", key)
@@ -14838,7 +15210,9 @@ func (b Builder) Geosearch() (c Geosearch) {
 }
 
 func (c Geosearch) Key(key string) GeosearchKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -15446,7 +15820,9 @@ func (b Builder) Geosearchstore() (c Geosearchstore) {
 }
 
 func (c Geosearchstore) Destination(destination string) GeosearchstoreDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -15762,7 +16138,9 @@ func (c GeosearchstoreCountCount) Build() Completed {
 type GeosearchstoreDestination Completed
 
 func (c GeosearchstoreDestination) Source(source string) GeosearchstoreSource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(source)
+	} else {
 		c.ks = check(c.ks, slot(source))
 	}
 	c.cs.s = append(c.cs.s, source)
@@ -15857,7 +16235,9 @@ func (b Builder) Get() (c Get) {
 }
 
 func (c Get) Key(key string) GetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -15883,7 +16263,9 @@ func (b Builder) Getbit() (c Getbit) {
 }
 
 func (c Getbit) Key(key string) GetbitKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -15916,7 +16298,9 @@ func (b Builder) Getdel() (c Getdel) {
 }
 
 func (c Getdel) Key(key string) GetdelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -15938,7 +16322,9 @@ func (b Builder) Getex() (c Getex) {
 }
 
 func (c Getex) Key(key string) GetexKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16015,7 +16401,9 @@ func (b Builder) Getrange() (c Getrange) {
 }
 
 func (c Getrange) Key(key string) GetrangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16055,7 +16443,9 @@ func (b Builder) Getset() (c Getset) {
 }
 
 func (c Getset) Key(key string) GetsetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16129,7 +16519,9 @@ func (b Builder) GraphDelete() (c GraphDelete) {
 }
 
 func (c GraphDelete) Graph(graph string) GraphDeleteGraph {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(graph)
+	} else {
 		c.ks = check(c.ks, slot(graph))
 	}
 	c.cs.s = append(c.cs.s, graph)
@@ -16151,7 +16543,9 @@ func (b Builder) GraphExplain() (c GraphExplain) {
 }
 
 func (c GraphExplain) Graph(graph string) GraphExplainGraph {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(graph)
+	} else {
 		c.ks = check(c.ks, slot(graph))
 	}
 	c.cs.s = append(c.cs.s, graph)
@@ -16192,7 +16586,9 @@ func (b Builder) GraphProfile() (c GraphProfile) {
 }
 
 func (c GraphProfile) Graph(graph string) GraphProfileGraph {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(graph)
+	} else {
 		c.ks = check(c.ks, slot(graph))
 	}
 	c.cs.s = append(c.cs.s, graph)
@@ -16221,7 +16617,9 @@ func (b Builder) GraphQuery() (c GraphQuery) {
 }
 
 func (c GraphQuery) Graph(graph string) GraphQueryGraph {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(graph)
+	} else {
 		c.ks = check(c.ks, slot(graph))
 	}
 	c.cs.s = append(c.cs.s, graph)
@@ -16250,7 +16648,9 @@ func (b Builder) GraphRoQuery() (c GraphRoQuery) {
 }
 
 func (c GraphRoQuery) Graph(graph string) GraphRoQueryGraph {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(graph)
+	} else {
 		c.ks = check(c.ks, slot(graph))
 	}
 	c.cs.s = append(c.cs.s, graph)
@@ -16283,7 +16683,9 @@ func (b Builder) GraphSlowlog() (c GraphSlowlog) {
 }
 
 func (c GraphSlowlog) Graph(graph string) GraphSlowlogGraph {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(graph)
+	} else {
 		c.ks = check(c.ks, slot(graph))
 	}
 	c.cs.s = append(c.cs.s, graph)
@@ -16305,7 +16707,9 @@ func (b Builder) Hdel() (c Hdel) {
 }
 
 func (c Hdel) Key(key string) HdelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16389,7 +16793,9 @@ func (b Builder) Hexists() (c Hexists) {
 }
 
 func (c Hexists) Key(key string) HexistsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16422,7 +16828,9 @@ func (b Builder) Hget() (c Hget) {
 }
 
 func (c Hget) Key(key string) HgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16455,7 +16863,9 @@ func (b Builder) Hgetall() (c Hgetall) {
 }
 
 func (c Hgetall) Key(key string) HgetallKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16481,7 +16891,9 @@ func (b Builder) Hincrby() (c Hincrby) {
 }
 
 func (c Hincrby) Key(key string) HincrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16517,7 +16929,9 @@ func (b Builder) Hincrbyfloat() (c Hincrbyfloat) {
 }
 
 func (c Hincrbyfloat) Key(key string) HincrbyfloatKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16553,7 +16967,9 @@ func (b Builder) Hkeys() (c Hkeys) {
 }
 
 func (c Hkeys) Key(key string) HkeysKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16579,7 +16995,9 @@ func (b Builder) Hlen() (c Hlen) {
 }
 
 func (c Hlen) Key(key string) HlenKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16605,7 +17023,9 @@ func (b Builder) Hmget() (c Hmget) {
 }
 
 func (c Hmget) Key(key string) HmgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16643,7 +17063,9 @@ func (b Builder) Hmset() (c Hmset) {
 }
 
 func (c Hmset) Key(key string) HmsetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16676,7 +17098,9 @@ func (b Builder) Hrandfield() (c Hrandfield) {
 }
 
 func (c Hrandfield) Key(key string) HrandfieldKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16720,7 +17144,9 @@ func (b Builder) Hscan() (c Hscan) {
 }
 
 func (c Hscan) Key(key string) HscanKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16776,7 +17202,9 @@ func (b Builder) Hset() (c Hset) {
 }
 
 func (c Hset) Key(key string) HsetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16809,7 +17237,9 @@ func (b Builder) Hsetnx() (c Hsetnx) {
 }
 
 func (c Hsetnx) Key(key string) HsetnxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16845,7 +17275,9 @@ func (b Builder) Hstrlen() (c Hstrlen) {
 }
 
 func (c Hstrlen) Key(key string) HstrlenKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16878,7 +17310,9 @@ func (b Builder) Hvals() (c Hvals) {
 }
 
 func (c Hvals) Key(key string) HvalsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16904,7 +17338,9 @@ func (b Builder) Incr() (c Incr) {
 }
 
 func (c Incr) Key(key string) IncrKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16926,7 +17362,9 @@ func (b Builder) Incrby() (c Incrby) {
 }
 
 func (c Incrby) Key(key string) IncrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -16955,7 +17393,9 @@ func (b Builder) Incrbyfloat() (c Incrbyfloat) {
 }
 
 func (c Incrbyfloat) Key(key string) IncrbyfloatKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17012,7 +17452,9 @@ func (b Builder) JsonArrappend() (c JsonArrappend) {
 }
 
 func (c JsonArrappend) Key(key string) JsonArrappendKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17058,7 +17500,9 @@ func (b Builder) JsonArrindex() (c JsonArrindex) {
 }
 
 func (c JsonArrindex) Key(key string) JsonArrindexKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17128,7 +17572,9 @@ func (b Builder) JsonArrinsert() (c JsonArrinsert) {
 }
 
 func (c JsonArrinsert) Key(key string) JsonArrinsertKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17176,7 +17622,9 @@ func (b Builder) JsonArrlen() (c JsonArrlen) {
 }
 
 func (c JsonArrlen) Key(key string) JsonArrlenKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17214,7 +17662,9 @@ func (b Builder) JsonArrpop() (c JsonArrpop) {
 }
 
 func (c JsonArrpop) Key(key string) JsonArrpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17258,7 +17708,9 @@ func (b Builder) JsonArrtrim() (c JsonArrtrim) {
 }
 
 func (c JsonArrtrim) Key(key string) JsonArrtrimKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17301,7 +17753,9 @@ func (b Builder) JsonClear() (c JsonClear) {
 }
 
 func (c JsonClear) Key(key string) JsonClearKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17346,7 +17800,9 @@ func (b Builder) JsonDebugMemory() (c JsonDebugMemory) {
 }
 
 func (c JsonDebugMemory) Key(key string) JsonDebugMemoryKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17379,7 +17835,9 @@ func (b Builder) JsonDel() (c JsonDel) {
 }
 
 func (c JsonDel) Key(key string) JsonDelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17412,7 +17870,9 @@ func (b Builder) JsonForget() (c JsonForget) {
 }
 
 func (c JsonForget) Key(key string) JsonForgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17445,7 +17905,9 @@ func (b Builder) JsonGet() (c JsonGet) {
 }
 
 func (c JsonGet) Key(key string) JsonGetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17566,7 +18028,12 @@ func (b Builder) JsonMget() (c JsonMget) {
 }
 
 func (c JsonMget) Key(key ...string) JsonMgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -17578,7 +18045,12 @@ func (c JsonMget) Key(key ...string) JsonMgetKey {
 type JsonMgetKey Completed
 
 func (c JsonMgetKey) Key(key ...string) JsonMgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -17611,7 +18083,9 @@ func (b Builder) JsonNumincrby() (c JsonNumincrby) {
 }
 
 func (c JsonNumincrby) Key(key string) JsonNumincrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17647,7 +18121,9 @@ func (b Builder) JsonNummultby() (c JsonNummultby) {
 }
 
 func (c JsonNummultby) Key(key string) JsonNummultbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17683,7 +18159,9 @@ func (b Builder) JsonObjkeys() (c JsonObjkeys) {
 }
 
 func (c JsonObjkeys) Key(key string) JsonObjkeysKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17724,7 +18202,9 @@ func (b Builder) JsonObjlen() (c JsonObjlen) {
 }
 
 func (c JsonObjlen) Key(key string) JsonObjlenKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17765,7 +18245,9 @@ func (b Builder) JsonResp() (c JsonResp) {
 }
 
 func (c JsonResp) Key(key string) JsonRespKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17806,7 +18288,9 @@ func (b Builder) JsonSet() (c JsonSet) {
 }
 
 func (c JsonSet) Key(key string) JsonSetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17864,7 +18348,9 @@ func (b Builder) JsonStrappend() (c JsonStrappend) {
 }
 
 func (c JsonStrappend) Key(key string) JsonStrappendKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17905,7 +18391,9 @@ func (b Builder) JsonStrlen() (c JsonStrlen) {
 }
 
 func (c JsonStrlen) Key(key string) JsonStrlenKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17946,7 +18434,9 @@ func (b Builder) JsonToggle() (c JsonToggle) {
 }
 
 func (c JsonToggle) Key(key string) JsonToggleKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -17979,7 +18469,9 @@ func (b Builder) JsonType() (c JsonType) {
 }
 
 func (c JsonType) Key(key string) JsonTypeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18181,7 +18673,9 @@ func (b Builder) Lcs() (c Lcs) {
 }
 
 func (c Lcs) Key1(key1 string) LcsKey1 {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key1)
+	} else {
 		c.ks = check(c.ks, slot(key1))
 	}
 	c.cs.s = append(c.cs.s, key1)
@@ -18207,7 +18701,9 @@ func (c LcsIdx) Build() Completed {
 type LcsKey1 Completed
 
 func (c LcsKey1) Key2(key2 string) LcsKey2 {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key2)
+	} else {
 		c.ks = check(c.ks, slot(key2))
 	}
 	c.cs.s = append(c.cs.s, key2)
@@ -18287,7 +18783,9 @@ func (b Builder) Lindex() (c Lindex) {
 }
 
 func (c Lindex) Key(key string) LindexKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18320,7 +18818,9 @@ func (b Builder) Linsert() (c Linsert) {
 }
 
 func (c Linsert) Key(key string) LinsertKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18375,7 +18875,9 @@ func (b Builder) Llen() (c Llen) {
 }
 
 func (c Llen) Key(key string) LlenKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18401,7 +18903,9 @@ func (b Builder) Lmove() (c Lmove) {
 }
 
 func (c Lmove) Source(source string) LmoveSource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(source)
+	} else {
 		c.ks = check(c.ks, slot(source))
 	}
 	c.cs.s = append(c.cs.s, source)
@@ -18423,7 +18927,9 @@ func (c LmoveDestination) Right() LmoveWherefromRight {
 type LmoveSource Completed
 
 func (c LmoveSource) Destination(destination string) LmoveDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -18488,7 +18994,12 @@ func (c LmpopCount) Build() Completed {
 type LmpopKey Completed
 
 func (c LmpopKey) Key(key ...string) LmpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -18510,7 +19021,12 @@ func (c LmpopKey) Right() LmpopWhereRight {
 type LmpopNumkeys Completed
 
 func (c LmpopNumkeys) Key(key ...string) LmpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -18573,7 +19089,9 @@ func (b Builder) Lpop() (c Lpop) {
 }
 
 func (c Lpop) Key(key string) LpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18606,7 +19124,9 @@ func (b Builder) Lpos() (c Lpos) {
 }
 
 func (c Lpos) Key(key string) LposKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18699,7 +19219,9 @@ func (b Builder) Lpush() (c Lpush) {
 }
 
 func (c Lpush) Key(key string) LpushKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18733,7 +19255,9 @@ func (b Builder) Lpushx() (c Lpushx) {
 }
 
 func (c Lpushx) Key(key string) LpushxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18767,7 +19291,9 @@ func (b Builder) Lrange() (c Lrange) {
 }
 
 func (c Lrange) Key(key string) LrangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18807,7 +19333,9 @@ func (b Builder) Lrem() (c Lrem) {
 }
 
 func (c Lrem) Key(key string) LremKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18843,7 +19371,9 @@ func (b Builder) Lset() (c Lset) {
 }
 
 func (c Lset) Key(key string) LsetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18879,7 +19409,9 @@ func (b Builder) Ltrim() (c Ltrim) {
 }
 
 func (c Ltrim) Key(key string) LtrimKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -18975,7 +19507,9 @@ func (b Builder) MemoryUsage() (c MemoryUsage) {
 }
 
 func (c MemoryUsage) Key(key string) MemoryUsageKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19008,7 +19542,12 @@ func (b Builder) Mget() (c Mget) {
 }
 
 func (c Mget) Key(key ...string) MgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19020,7 +19559,12 @@ func (c Mget) Key(key ...string) MgetKey {
 type MgetKey Completed
 
 func (c MgetKey) Key(key ...string) MgetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19058,7 +19602,12 @@ func (c MigrateAuthAuth) Auth2(username string, password string) MigrateAuthAuth
 }
 
 func (c MigrateAuthAuth) Keys(key ...string) MigrateKeys {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19075,7 +19624,12 @@ func (c MigrateAuthAuth) Build() Completed {
 type MigrateAuthAuth2 Completed
 
 func (c MigrateAuthAuth2) Keys(key ...string) MigrateKeys {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19107,7 +19661,12 @@ func (c MigrateCopy) Auth2(username string, password string) MigrateAuthAuth2 {
 }
 
 func (c MigrateCopy) Keys(key ...string) MigrateKeys {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19152,7 +19711,12 @@ func (c MigrateKeyEmpty) DestinationDb(destinationDb int64) MigrateDestinationDb
 type MigrateKeys Completed
 
 func (c MigrateKeys) Keys(key ...string) MigrateKeys {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19191,7 +19755,12 @@ func (c MigrateReplace) Auth2(username string, password string) MigrateAuthAuth2
 }
 
 func (c MigrateReplace) Keys(key ...string) MigrateKeys {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19228,7 +19797,12 @@ func (c MigrateTimeout) Auth2(username string, password string) MigrateAuthAuth2
 }
 
 func (c MigrateTimeout) Keys(key ...string) MigrateKeys {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19316,9 +19890,8 @@ func (c ModuleLoadexArgs) Build() Completed {
 
 type ModuleLoadexConfig Completed
 
-func (c ModuleLoadexConfig) Config(config ...string) ModuleLoadexConfig {
-	c.cs.s = append(c.cs.s, "CONFIG")
-	c.cs.s = append(c.cs.s, config...)
+func (c ModuleLoadexConfig) Config(name string, value string) ModuleLoadexConfig {
+	c.cs.s = append(c.cs.s, "CONFIG", name, value)
 	return c
 }
 
@@ -19334,9 +19907,7 @@ func (c ModuleLoadexConfig) Build() Completed {
 
 type ModuleLoadexPath Completed
 
-func (c ModuleLoadexPath) Config(config ...string) ModuleLoadexConfig {
-	c.cs.s = append(c.cs.s, "CONFIG")
-	c.cs.s = append(c.cs.s, config...)
+func (c ModuleLoadexPath) Config() ModuleLoadexConfig {
 	return (ModuleLoadexConfig)(c)
 }
 
@@ -19390,7 +19961,9 @@ func (b Builder) Move() (c Move) {
 }
 
 func (c Move) Key(key string) MoveKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19425,7 +19998,9 @@ func (c Mset) KeyValue() MsetKeyValue {
 type MsetKeyValue Completed
 
 func (c MsetKeyValue) KeyValue(key string, value string) MsetKeyValue {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key, value)
@@ -19451,7 +20026,9 @@ func (c Msetnx) KeyValue() MsetnxKeyValue {
 type MsetnxKeyValue Completed
 
 func (c MsetnxKeyValue) KeyValue(key string, value string) MsetnxKeyValue {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key, value)
@@ -19483,7 +20060,9 @@ func (b Builder) ObjectEncoding() (c ObjectEncoding) {
 }
 
 func (c ObjectEncoding) Key(key string) ObjectEncodingKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19505,7 +20084,9 @@ func (b Builder) ObjectFreq() (c ObjectFreq) {
 }
 
 func (c ObjectFreq) Key(key string) ObjectFreqKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19539,7 +20120,9 @@ func (b Builder) ObjectIdletime() (c ObjectIdletime) {
 }
 
 func (c ObjectIdletime) Key(key string) ObjectIdletimeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19561,7 +20144,9 @@ func (b Builder) ObjectRefcount() (c ObjectRefcount) {
 }
 
 func (c ObjectRefcount) Key(key string) ObjectRefcountKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19583,7 +20168,9 @@ func (b Builder) Persist() (c Persist) {
 }
 
 func (c Persist) Key(key string) PersistKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19605,7 +20192,9 @@ func (b Builder) Pexpire() (c Pexpire) {
 }
 
 func (c Pexpire) Key(key string) PexpireKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19678,7 +20267,9 @@ func (b Builder) Pexpireat() (c Pexpireat) {
 }
 
 func (c Pexpireat) Key(key string) PexpireatKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19751,7 +20342,9 @@ func (b Builder) Pexpiretime() (c Pexpiretime) {
 }
 
 func (c Pexpiretime) Key(key string) PexpiretimeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19777,7 +20370,9 @@ func (b Builder) Pfadd() (c Pfadd) {
 }
 
 func (c Pfadd) Key(key string) PfaddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -19815,7 +20410,12 @@ func (b Builder) Pfcount() (c Pfcount) {
 }
 
 func (c Pfcount) Key(key ...string) PfcountKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19827,7 +20427,12 @@ func (c Pfcount) Key(key ...string) PfcountKey {
 type PfcountKey Completed
 
 func (c PfcountKey) Key(key ...string) PfcountKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19849,7 +20454,9 @@ func (b Builder) Pfmerge() (c Pfmerge) {
 }
 
 func (c Pfmerge) Destkey(destkey string) PfmergeDestkey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destkey)
+	} else {
 		c.ks = check(c.ks, slot(destkey))
 	}
 	c.cs.s = append(c.cs.s, destkey)
@@ -19859,7 +20466,12 @@ func (c Pfmerge) Destkey(destkey string) PfmergeDestkey {
 type PfmergeDestkey Completed
 
 func (c PfmergeDestkey) Sourcekey(sourcekey ...string) PfmergeSourcekey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range sourcekey {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range sourcekey {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19871,7 +20483,12 @@ func (c PfmergeDestkey) Sourcekey(sourcekey ...string) PfmergeSourcekey {
 type PfmergeSourcekey Completed
 
 func (c PfmergeSourcekey) Sourcekey(sourcekey ...string) PfmergeSourcekey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range sourcekey {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range sourcekey {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -19916,7 +20533,9 @@ func (b Builder) Psetex() (c Psetex) {
 }
 
 func (c Psetex) Key(key string) PsetexKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -20002,7 +20621,9 @@ func (b Builder) Pttl() (c Pttl) {
 }
 
 func (c Pttl) Key(key string) PttlKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -20256,7 +20877,9 @@ func (b Builder) Rename() (c Rename) {
 }
 
 func (c Rename) Key(key string) RenameKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -20266,7 +20889,9 @@ func (c Rename) Key(key string) RenameKey {
 type RenameKey Completed
 
 func (c RenameKey) Newkey(newkey string) RenameNewkey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(newkey)
+	} else {
 		c.ks = check(c.ks, slot(newkey))
 	}
 	c.cs.s = append(c.cs.s, newkey)
@@ -20288,7 +20913,9 @@ func (b Builder) Renamenx() (c Renamenx) {
 }
 
 func (c Renamenx) Key(key string) RenamenxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -20298,7 +20925,9 @@ func (c Renamenx) Key(key string) RenamenxKey {
 type RenamenxKey Completed
 
 func (c RenamenxKey) Newkey(newkey string) RenamenxNewkey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(newkey)
+	} else {
 		c.ks = check(c.ks, slot(newkey))
 	}
 	c.cs.s = append(c.cs.s, newkey)
@@ -20358,7 +20987,9 @@ func (b Builder) Restore() (c Restore) {
 }
 
 func (c Restore) Key(key string) RestoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -20938,7 +21569,9 @@ func (b Builder) Rpop() (c Rpop) {
 }
 
 func (c Rpop) Key(key string) RpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -20971,7 +21604,9 @@ func (b Builder) Rpoplpush() (c Rpoplpush) {
 }
 
 func (c Rpoplpush) Source(source string) RpoplpushSource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(source)
+	} else {
 		c.ks = check(c.ks, slot(source))
 	}
 	c.cs.s = append(c.cs.s, source)
@@ -20987,7 +21622,9 @@ func (c RpoplpushDestination) Build() Completed {
 type RpoplpushSource Completed
 
 func (c RpoplpushSource) Destination(destination string) RpoplpushDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -21003,7 +21640,9 @@ func (b Builder) Rpush() (c Rpush) {
 }
 
 func (c Rpush) Key(key string) RpushKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21037,7 +21676,9 @@ func (b Builder) Rpushx() (c Rpushx) {
 }
 
 func (c Rpushx) Key(key string) RpushxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21071,7 +21712,9 @@ func (b Builder) Sadd() (c Sadd) {
 }
 
 func (c Sadd) Key(key string) SaddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21184,7 +21827,9 @@ func (b Builder) Scard() (c Scard) {
 }
 
 func (c Scard) Key(key string) ScardKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21340,7 +21985,12 @@ func (b Builder) Sdiff() (c Sdiff) {
 }
 
 func (c Sdiff) Key(key ...string) SdiffKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -21352,7 +22002,12 @@ func (c Sdiff) Key(key ...string) SdiffKey {
 type SdiffKey Completed
 
 func (c SdiffKey) Key(key ...string) SdiffKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -21374,7 +22029,9 @@ func (b Builder) Sdiffstore() (c Sdiffstore) {
 }
 
 func (c Sdiffstore) Destination(destination string) SdiffstoreDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -21384,7 +22041,12 @@ func (c Sdiffstore) Destination(destination string) SdiffstoreDestination {
 type SdiffstoreDestination Completed
 
 func (c SdiffstoreDestination) Key(key ...string) SdiffstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -21396,7 +22058,12 @@ func (c SdiffstoreDestination) Key(key ...string) SdiffstoreKey {
 type SdiffstoreKey Completed
 
 func (c SdiffstoreKey) Key(key ...string) SdiffstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -21494,7 +22161,9 @@ func (b Builder) Set() (c Set) {
 }
 
 func (c Set) Key(key string) SetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21696,7 +22365,9 @@ func (b Builder) Setbit() (c Setbit) {
 }
 
 func (c Setbit) Key(key string) SetbitKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21732,7 +22403,9 @@ func (b Builder) Setex() (c Setex) {
 }
 
 func (c Setex) Key(key string) SetexKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21768,7 +22441,9 @@ func (b Builder) Setnx() (c Setnx) {
 }
 
 func (c Setnx) Key(key string) SetnxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21797,7 +22472,9 @@ func (b Builder) Setrange() (c Setrange) {
 }
 
 func (c Setrange) Key(key string) SetrangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -21945,7 +22622,12 @@ func (b Builder) Sinter() (c Sinter) {
 }
 
 func (c Sinter) Key(key ...string) SinterKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -21957,7 +22639,12 @@ func (c Sinter) Key(key ...string) SinterKey {
 type SinterKey Completed
 
 func (c SinterKey) Key(key ...string) SinterKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -21986,7 +22673,12 @@ func (c Sintercard) Numkeys(numkeys int64) SintercardNumkeys {
 type SintercardKey Completed
 
 func (c SintercardKey) Key(key ...string) SintercardKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -22013,7 +22705,12 @@ func (c SintercardLimit) Build() Completed {
 type SintercardNumkeys Completed
 
 func (c SintercardNumkeys) Key(key ...string) SintercardKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -22031,7 +22728,9 @@ func (b Builder) Sinterstore() (c Sinterstore) {
 }
 
 func (c Sinterstore) Destination(destination string) SinterstoreDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -22041,7 +22740,12 @@ func (c Sinterstore) Destination(destination string) SinterstoreDestination {
 type SinterstoreDestination Completed
 
 func (c SinterstoreDestination) Key(key ...string) SinterstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -22053,7 +22757,12 @@ func (c SinterstoreDestination) Key(key ...string) SinterstoreKey {
 type SinterstoreKey Completed
 
 func (c SinterstoreKey) Key(key ...string) SinterstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -22075,7 +22784,9 @@ func (b Builder) Sismember() (c Sismember) {
 }
 
 func (c Sismember) Key(key string) SismemberKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22193,7 +22904,9 @@ func (b Builder) Smembers() (c Smembers) {
 }
 
 func (c Smembers) Key(key string) SmembersKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22219,7 +22932,9 @@ func (b Builder) Smismember() (c Smismember) {
 }
 
 func (c Smismember) Key(key string) SmismemberKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22257,7 +22972,9 @@ func (b Builder) Smove() (c Smove) {
 }
 
 func (c Smove) Source(source string) SmoveSource {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(source)
+	} else {
 		c.ks = check(c.ks, slot(source))
 	}
 	c.cs.s = append(c.cs.s, source)
@@ -22280,7 +22997,9 @@ func (c SmoveMember) Build() Completed {
 type SmoveSource Completed
 
 func (c SmoveSource) Destination(destination string) SmoveDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -22296,7 +23015,9 @@ func (b Builder) Sort() (c Sort) {
 }
 
 func (c Sort) Key(key string) SortKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22310,9 +23031,7 @@ func (c SortBy) Limit(offset int64, count int64) SortLimit {
 	return (SortLimit)(c)
 }
 
-func (c SortBy) Get(pattern ...string) SortGet {
-	c.cs.s = append(c.cs.s, "GET")
-	c.cs.s = append(c.cs.s, pattern...)
+func (c SortBy) Get() SortGet {
 	return (SortGet)(c)
 }
 
@@ -22332,7 +23051,9 @@ func (c SortBy) Alpha() SortSortingAlpha {
 }
 
 func (c SortBy) Store(destination string) SortStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, "STORE", destination)
@@ -22345,9 +23066,8 @@ func (c SortBy) Build() Completed {
 
 type SortGet Completed
 
-func (c SortGet) Get(pattern ...string) SortGet {
-	c.cs.s = append(c.cs.s, "GET")
-	c.cs.s = append(c.cs.s, pattern...)
+func (c SortGet) Get(pattern string) SortGet {
+	c.cs.s = append(c.cs.s, "GET", pattern)
 	return c
 }
 
@@ -22367,7 +23087,9 @@ func (c SortGet) Alpha() SortSortingAlpha {
 }
 
 func (c SortGet) Store(destination string) SortStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, "STORE", destination)
@@ -22390,9 +23112,7 @@ func (c SortKey) Limit(offset int64, count int64) SortLimit {
 	return (SortLimit)(c)
 }
 
-func (c SortKey) Get(pattern ...string) SortGet {
-	c.cs.s = append(c.cs.s, "GET")
-	c.cs.s = append(c.cs.s, pattern...)
+func (c SortKey) Get() SortGet {
 	return (SortGet)(c)
 }
 
@@ -22412,7 +23132,9 @@ func (c SortKey) Alpha() SortSortingAlpha {
 }
 
 func (c SortKey) Store(destination string) SortStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, "STORE", destination)
@@ -22425,9 +23147,7 @@ func (c SortKey) Build() Completed {
 
 type SortLimit Completed
 
-func (c SortLimit) Get(pattern ...string) SortGet {
-	c.cs.s = append(c.cs.s, "GET")
-	c.cs.s = append(c.cs.s, pattern...)
+func (c SortLimit) Get() SortGet {
 	return (SortGet)(c)
 }
 
@@ -22447,7 +23167,9 @@ func (c SortLimit) Alpha() SortSortingAlpha {
 }
 
 func (c SortLimit) Store(destination string) SortStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, "STORE", destination)
@@ -22466,7 +23188,9 @@ func (c SortOrderAsc) Alpha() SortSortingAlpha {
 }
 
 func (c SortOrderAsc) Store(destination string) SortStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, "STORE", destination)
@@ -22485,7 +23209,9 @@ func (c SortOrderDesc) Alpha() SortSortingAlpha {
 }
 
 func (c SortOrderDesc) Store(destination string) SortStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, "STORE", destination)
@@ -22505,7 +23231,9 @@ func (b Builder) SortRo() (c SortRo) {
 }
 
 func (c SortRo) Key(key string) SortRoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22519,9 +23247,7 @@ func (c SortRoBy) Limit(offset int64, count int64) SortRoLimit {
 	return (SortRoLimit)(c)
 }
 
-func (c SortRoBy) Get(pattern ...string) SortRoGet {
-	c.cs.s = append(c.cs.s, "GET")
-	c.cs.s = append(c.cs.s, pattern...)
+func (c SortRoBy) Get() SortRoGet {
 	return (SortRoGet)(c)
 }
 
@@ -22550,9 +23276,8 @@ func (c SortRoBy) Cache() Cacheable {
 
 type SortRoGet Completed
 
-func (c SortRoGet) Get(pattern ...string) SortRoGet {
-	c.cs.s = append(c.cs.s, "GET")
-	c.cs.s = append(c.cs.s, pattern...)
+func (c SortRoGet) Get(pattern string) SortRoGet {
+	c.cs.s = append(c.cs.s, "GET", pattern)
 	return c
 }
 
@@ -22591,9 +23316,7 @@ func (c SortRoKey) Limit(offset int64, count int64) SortRoLimit {
 	return (SortRoLimit)(c)
 }
 
-func (c SortRoKey) Get(pattern ...string) SortRoGet {
-	c.cs.s = append(c.cs.s, "GET")
-	c.cs.s = append(c.cs.s, pattern...)
+func (c SortRoKey) Get() SortRoGet {
 	return (SortRoGet)(c)
 }
 
@@ -22622,9 +23345,7 @@ func (c SortRoKey) Cache() Cacheable {
 
 type SortRoLimit Completed
 
-func (c SortRoLimit) Get(pattern ...string) SortRoGet {
-	c.cs.s = append(c.cs.s, "GET")
-	c.cs.s = append(c.cs.s, pattern...)
+func (c SortRoLimit) Get() SortRoGet {
 	return (SortRoGet)(c)
 }
 
@@ -22694,7 +23415,9 @@ func (c SortRoSortingAlpha) Cache() Cacheable {
 type SortSortingAlpha Completed
 
 func (c SortSortingAlpha) Store(destination string) SortStore {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, "STORE", destination)
@@ -22720,7 +23443,9 @@ func (b Builder) Spop() (c Spop) {
 }
 
 func (c Spop) Key(key string) SpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22753,7 +23478,9 @@ func (b Builder) Spublish() (c Spublish) {
 }
 
 func (c Spublish) Channel(channel string) SpublishChannel {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(channel)
+	} else {
 		c.ks = check(c.ks, slot(channel))
 	}
 	c.cs.s = append(c.cs.s, channel)
@@ -22782,7 +23509,9 @@ func (b Builder) Srandmember() (c Srandmember) {
 }
 
 func (c Srandmember) Key(key string) SrandmemberKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22815,7 +23544,9 @@ func (b Builder) Srem() (c Srem) {
 }
 
 func (c Srem) Key(key string) SremKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22849,7 +23580,9 @@ func (b Builder) Sscan() (c Sscan) {
 }
 
 func (c Sscan) Key(key string) SscanKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22905,7 +23638,12 @@ func (b Builder) Ssubscribe() (c Ssubscribe) {
 }
 
 func (c Ssubscribe) Channel(channel ...string) SsubscribeChannel {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range channel {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range channel {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -22917,7 +23655,12 @@ func (c Ssubscribe) Channel(channel ...string) SsubscribeChannel {
 type SsubscribeChannel Completed
 
 func (c SsubscribeChannel) Channel(channel ...string) SsubscribeChannel {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range channel {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range channel {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -22939,7 +23682,9 @@ func (b Builder) Strlen() (c Strlen) {
 }
 
 func (c Strlen) Key(key string) StrlenKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -22989,7 +23734,12 @@ func (b Builder) Sunion() (c Sunion) {
 }
 
 func (c Sunion) Key(key ...string) SunionKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23001,7 +23751,12 @@ func (c Sunion) Key(key ...string) SunionKey {
 type SunionKey Completed
 
 func (c SunionKey) Key(key ...string) SunionKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23023,7 +23778,9 @@ func (b Builder) Sunionstore() (c Sunionstore) {
 }
 
 func (c Sunionstore) Destination(destination string) SunionstoreDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -23033,7 +23790,12 @@ func (c Sunionstore) Destination(destination string) SunionstoreDestination {
 type SunionstoreDestination Completed
 
 func (c SunionstoreDestination) Key(key ...string) SunionstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23045,7 +23807,12 @@ func (c SunionstoreDestination) Key(key ...string) SunionstoreKey {
 type SunionstoreKey Completed
 
 func (c SunionstoreKey) Key(key ...string) SunionstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23067,7 +23834,12 @@ func (b Builder) Sunsubscribe() (c Sunsubscribe) {
 }
 
 func (c Sunsubscribe) Channel(channel ...string) SunsubscribeChannel {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range channel {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range channel {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23083,7 +23855,12 @@ func (c Sunsubscribe) Build() Completed {
 type SunsubscribeChannel Completed
 
 func (c SunsubscribeChannel) Channel(channel ...string) SunsubscribeChannel {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range channel {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range channel {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23143,7 +23920,9 @@ func (b Builder) TdigestAdd() (c TdigestAdd) {
 }
 
 func (c TdigestAdd) Key(key string) TdigestAddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23184,7 +23963,9 @@ func (b Builder) TdigestCdf() (c TdigestCdf) {
 }
 
 func (c TdigestCdf) Key(key string) TdigestCdfKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23213,7 +23994,9 @@ func (b Builder) TdigestCreate() (c TdigestCreate) {
 }
 
 func (c TdigestCreate) Key(key string) TdigestCreateKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23246,7 +24029,9 @@ func (b Builder) TdigestInfo() (c TdigestInfo) {
 }
 
 func (c TdigestInfo) Key(key string) TdigestInfoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23268,7 +24053,9 @@ func (b Builder) TdigestMax() (c TdigestMax) {
 }
 
 func (c TdigestMax) Key(key string) TdigestMaxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23290,7 +24077,9 @@ func (b Builder) TdigestMerge() (c TdigestMerge) {
 }
 
 func (c TdigestMerge) DestinationKey(destinationKey string) TdigestMergeDestinationKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destinationKey)
+	} else {
 		c.ks = check(c.ks, slot(destinationKey))
 	}
 	c.cs.s = append(c.cs.s, destinationKey)
@@ -23300,7 +24089,12 @@ func (c TdigestMerge) DestinationKey(destinationKey string) TdigestMergeDestinat
 type TdigestMergeDestinationKey Completed
 
 func (c TdigestMergeDestinationKey) SourceKey(sourceKey ...string) TdigestMergeSourceKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range sourceKey {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range sourceKey {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23312,7 +24106,12 @@ func (c TdigestMergeDestinationKey) SourceKey(sourceKey ...string) TdigestMergeS
 type TdigestMergeSourceKey Completed
 
 func (c TdigestMergeSourceKey) SourceKey(sourceKey ...string) TdigestMergeSourceKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range sourceKey {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range sourceKey {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23334,7 +24133,9 @@ func (b Builder) TdigestMergestore() (c TdigestMergestore) {
 }
 
 func (c TdigestMergestore) DestinationKey(destinationKey string) TdigestMergestoreDestinationKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destinationKey)
+	} else {
 		c.ks = check(c.ks, slot(destinationKey))
 	}
 	c.cs.s = append(c.cs.s, destinationKey)
@@ -23357,7 +24158,12 @@ func (c TdigestMergestoreDestinationKey) Numkeys(numkeys int64) TdigestMergestor
 type TdigestMergestoreNumkeys Completed
 
 func (c TdigestMergestoreNumkeys) SourceKey(sourceKey ...string) TdigestMergestoreSourceKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range sourceKey {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range sourceKey {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23369,7 +24175,12 @@ func (c TdigestMergestoreNumkeys) SourceKey(sourceKey ...string) TdigestMergesto
 type TdigestMergestoreSourceKey Completed
 
 func (c TdigestMergestoreSourceKey) SourceKey(sourceKey ...string) TdigestMergestoreSourceKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range sourceKey {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range sourceKey {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23396,7 +24207,9 @@ func (b Builder) TdigestMin() (c TdigestMin) {
 }
 
 func (c TdigestMin) Key(key string) TdigestMinKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23418,7 +24231,9 @@ func (b Builder) TdigestQuantile() (c TdigestQuantile) {
 }
 
 func (c TdigestQuantile) Key(key string) TdigestQuantileKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23456,7 +24271,9 @@ func (b Builder) TdigestReset() (c TdigestReset) {
 }
 
 func (c TdigestReset) Key(key string) TdigestResetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23478,7 +24295,9 @@ func (b Builder) TdigestTrimmedMean() (c TdigestTrimmedMean) {
 }
 
 func (c TdigestTrimmedMean) Key(key string) TdigestTrimmedMeanKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23526,7 +24345,9 @@ func (b Builder) TopkAdd() (c TopkAdd) {
 }
 
 func (c TopkAdd) Key(key string) TopkAddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23560,7 +24381,9 @@ func (b Builder) TopkCount() (c TopkCount) {
 }
 
 func (c TopkCount) Key(key string) TopkCountKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23594,7 +24417,9 @@ func (b Builder) TopkIncrby() (c TopkIncrby) {
 }
 
 func (c TopkIncrby) Key(key string) TopkIncrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23635,7 +24460,9 @@ func (b Builder) TopkInfo() (c TopkInfo) {
 }
 
 func (c TopkInfo) Key(key string) TopkInfoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23661,7 +24488,9 @@ func (b Builder) TopkList() (c TopkList) {
 }
 
 func (c TopkList) Key(key string) TopkListKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23694,7 +24523,9 @@ func (b Builder) TopkQuery() (c TopkQuery) {
 }
 
 func (c TopkQuery) Key(key string) TopkQueryKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23732,7 +24563,9 @@ func (b Builder) TopkReserve() (c TopkReserve) {
 }
 
 func (c TopkReserve) Key(key string) TopkReserveKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -23786,7 +24619,12 @@ func (b Builder) Touch() (c Touch) {
 }
 
 func (c Touch) Key(key ...string) TouchKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23798,7 +24636,12 @@ func (c Touch) Key(key ...string) TouchKey {
 type TouchKey Completed
 
 func (c TouchKey) Key(key ...string) TouchKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -23820,7 +24663,9 @@ func (b Builder) TsAdd() (c TsAdd) {
 }
 
 func (c TsAdd) Key(key string) TsAddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -24182,7 +25027,9 @@ func (b Builder) TsAlter() (c TsAlter) {
 }
 
 func (c TsAlter) Key(key string) TsAlterKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -24416,7 +25263,9 @@ func (b Builder) TsCreate() (c TsCreate) {
 }
 
 func (c TsCreate) Key(key string) TsCreateKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -24764,7 +25613,9 @@ func (b Builder) TsCreaterule() (c TsCreaterule) {
 }
 
 func (c TsCreaterule) Sourcekey(sourcekey string) TsCreateruleSourcekey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(sourcekey)
+	} else {
 		c.ks = check(c.ks, slot(sourcekey))
 	}
 	c.cs.s = append(c.cs.s, sourcekey)
@@ -24949,7 +25800,9 @@ func (c TsCreateruleDestkey) AggregationTwa() TsCreateruleAggregationTwa {
 type TsCreateruleSourcekey Completed
 
 func (c TsCreateruleSourcekey) Destkey(destkey string) TsCreateruleDestkey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destkey)
+	} else {
 		c.ks = check(c.ks, slot(destkey))
 	}
 	c.cs.s = append(c.cs.s, destkey)
@@ -24965,7 +25818,9 @@ func (b Builder) TsDecrby() (c TsDecrby) {
 }
 
 func (c TsDecrby) Key(key string) TsDecrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -25104,7 +25959,9 @@ func (b Builder) TsDel() (c TsDel) {
 }
 
 func (c TsDel) Key(key string) TsDelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -25140,7 +25997,9 @@ func (b Builder) TsDeleterule() (c TsDeleterule) {
 }
 
 func (c TsDeleterule) Sourcekey(sourcekey string) TsDeleteruleSourcekey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(sourcekey)
+	} else {
 		c.ks = check(c.ks, slot(sourcekey))
 	}
 	c.cs.s = append(c.cs.s, sourcekey)
@@ -25156,7 +26015,9 @@ func (c TsDeleteruleDestkey) Build() Completed {
 type TsDeleteruleSourcekey Completed
 
 func (c TsDeleteruleSourcekey) Destkey(destkey string) TsDeleteruleDestkey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destkey)
+	} else {
 		c.ks = check(c.ks, slot(destkey))
 	}
 	c.cs.s = append(c.cs.s, destkey)
@@ -25172,7 +26033,9 @@ func (b Builder) TsGet() (c TsGet) {
 }
 
 func (c TsGet) Key(key string) TsGetKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -25205,7 +26068,9 @@ func (b Builder) TsIncrby() (c TsIncrby) {
 }
 
 func (c TsIncrby) Key(key string) TsIncrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -25344,7 +26209,9 @@ func (b Builder) TsInfo() (c TsInfo) {
 }
 
 func (c TsInfo) Key(key string) TsInfoKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -25383,7 +26250,9 @@ func (c TsMadd) KeyTimestampValue() TsMaddKeyTimestampValue {
 type TsMaddKeyTimestampValue Completed
 
 func (c TsMaddKeyTimestampValue) KeyTimestampValue(key string, timestamp int64, value float64) TsMaddKeyTimestampValue {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key, strconv.FormatInt(timestamp, 10), strconv.FormatFloat(value, 'f', -1, 64))
@@ -27324,7 +28193,9 @@ func (b Builder) TsRange() (c TsRange) {
 }
 
 func (c TsRange) Key(key string) TsRangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -27993,7 +28864,9 @@ func (b Builder) TsRevrange() (c TsRevrange) {
 }
 
 func (c TsRevrange) Key(key string) TsRevrangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -28662,7 +29535,9 @@ func (b Builder) Ttl() (c Ttl) {
 }
 
 func (c Ttl) Key(key string) TtlKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -28688,7 +29563,9 @@ func (b Builder) Type() (c Type) {
 }
 
 func (c Type) Key(key string) TypeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -28714,7 +29591,12 @@ func (b Builder) Unlink() (c Unlink) {
 }
 
 func (c Unlink) Key(key ...string) UnlinkKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -28726,7 +29608,12 @@ func (c Unlink) Key(key ...string) UnlinkKey {
 type UnlinkKey Completed
 
 func (c UnlinkKey) Key(key ...string) UnlinkKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -28814,7 +29701,12 @@ func (b Builder) Watch() (c Watch) {
 }
 
 func (c Watch) Key(key ...string) WatchKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -28826,7 +29718,12 @@ func (c Watch) Key(key ...string) WatchKey {
 type WatchKey Completed
 
 func (c WatchKey) Key(key ...string) WatchKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -28848,7 +29745,9 @@ func (b Builder) Xack() (c Xack) {
 }
 
 func (c Xack) Key(key string) XackKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -28889,7 +29788,9 @@ func (b Builder) Xadd() (c Xadd) {
 }
 
 func (c Xadd) Key(key string) XaddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29028,7 +29929,9 @@ func (b Builder) Xautoclaim() (c Xautoclaim) {
 }
 
 func (c Xautoclaim) Key(key string) XautoclaimKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29105,7 +30008,9 @@ func (b Builder) Xclaim() (c Xclaim) {
 }
 
 func (c Xclaim) Key(key string) XclaimKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29265,7 +30170,9 @@ func (b Builder) Xdel() (c Xdel) {
 }
 
 func (c Xdel) Key(key string) XdelKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29299,7 +30206,9 @@ func (b Builder) XgroupCreate() (c XgroupCreate) {
 }
 
 func (c XgroupCreate) Key(key string) XgroupCreateKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29362,7 +30271,9 @@ func (b Builder) XgroupCreateconsumer() (c XgroupCreateconsumer) {
 }
 
 func (c XgroupCreateconsumer) Key(key string) XgroupCreateconsumerKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29398,7 +30309,9 @@ func (b Builder) XgroupDelconsumer() (c XgroupDelconsumer) {
 }
 
 func (c XgroupDelconsumer) Key(key string) XgroupDelconsumerKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29434,7 +30347,9 @@ func (b Builder) XgroupDestroy() (c XgroupDestroy) {
 }
 
 func (c XgroupDestroy) Key(key string) XgroupDestroyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29475,7 +30390,9 @@ func (b Builder) XgroupSetid() (c XgroupSetid) {
 }
 
 func (c XgroupSetid) Key(key string) XgroupSetidKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29522,7 +30439,9 @@ func (b Builder) XinfoConsumers() (c XinfoConsumers) {
 }
 
 func (c XinfoConsumers) Key(key string) XinfoConsumersKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29551,7 +30470,9 @@ func (b Builder) XinfoGroups() (c XinfoGroups) {
 }
 
 func (c XinfoGroups) Key(key string) XinfoGroupsKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29585,7 +30506,9 @@ func (b Builder) XinfoStream() (c XinfoStream) {
 }
 
 func (c XinfoStream) Key(key string) XinfoStreamKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29629,7 +30552,9 @@ func (b Builder) Xlen() (c Xlen) {
 }
 
 func (c Xlen) Key(key string) XlenKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29651,7 +30576,9 @@ func (b Builder) Xpending() (c Xpending) {
 }
 
 func (c Xpending) Key(key string) XpendingKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29728,7 +30655,9 @@ func (b Builder) Xrange() (c Xrange) {
 }
 
 func (c Xrange) Key(key string) XrangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -29824,7 +30753,12 @@ func (c XreadId) Build() Completed {
 type XreadKey Completed
 
 func (c XreadKey) Key(key ...string) XreadKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -29841,7 +30775,12 @@ func (c XreadKey) Id(id ...string) XreadId {
 type XreadStreams Completed
 
 func (c XreadStreams) Key(key ...string) XreadKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -29930,7 +30869,12 @@ func (c XreadgroupId) Build() Completed {
 type XreadgroupKey Completed
 
 func (c XreadgroupKey) Key(key ...string) XreadgroupKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -29954,7 +30898,12 @@ func (c XreadgroupNoack) Streams() XreadgroupStreams {
 type XreadgroupStreams Completed
 
 func (c XreadgroupStreams) Key(key ...string) XreadgroupKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -29972,7 +30921,9 @@ func (b Builder) Xrevrange() (c Xrevrange) {
 }
 
 func (c Xrevrange) Key(key string) XrevrangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -30019,7 +30970,9 @@ func (b Builder) Xsetid() (c Xsetid) {
 }
 
 func (c Xsetid) Key(key string) XsetidKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -30075,7 +31028,9 @@ func (b Builder) Xtrim() (c Xtrim) {
 }
 
 func (c Xtrim) Key(key string) XtrimKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -30168,7 +31123,9 @@ func (b Builder) Zadd() (c Zadd) {
 }
 
 func (c Zadd) Key(key string) ZaddKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -30332,7 +31289,9 @@ func (b Builder) Zcard() (c Zcard) {
 }
 
 func (c Zcard) Key(key string) ZcardKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -30358,7 +31317,9 @@ func (b Builder) Zcount() (c Zcount) {
 }
 
 func (c Zcount) Key(key string) ZcountKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -30405,7 +31366,12 @@ func (c Zdiff) Numkeys(numkeys int64) ZdiffNumkeys {
 type ZdiffKey Completed
 
 func (c ZdiffKey) Key(key ...string) ZdiffKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30426,7 +31392,12 @@ func (c ZdiffKey) Build() Completed {
 type ZdiffNumkeys Completed
 
 func (c ZdiffNumkeys) Key(key ...string) ZdiffKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30450,7 +31421,9 @@ func (b Builder) Zdiffstore() (c Zdiffstore) {
 }
 
 func (c Zdiffstore) Destination(destination string) ZdiffstoreDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -30467,7 +31440,12 @@ func (c ZdiffstoreDestination) Numkeys(numkeys int64) ZdiffstoreNumkeys {
 type ZdiffstoreKey Completed
 
 func (c ZdiffstoreKey) Key(key ...string) ZdiffstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30483,7 +31461,12 @@ func (c ZdiffstoreKey) Build() Completed {
 type ZdiffstoreNumkeys Completed
 
 func (c ZdiffstoreNumkeys) Key(key ...string) ZdiffstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30501,7 +31484,9 @@ func (b Builder) Zincrby() (c Zincrby) {
 }
 
 func (c Zincrby) Key(key string) ZincrbyKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -30577,7 +31562,12 @@ func (c ZinterAggregateSum) Build() Completed {
 type ZinterKey Completed
 
 func (c ZinterKey) Key(key ...string) ZinterKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30621,7 +31611,12 @@ func (c ZinterKey) Build() Completed {
 type ZinterNumkeys Completed
 
 func (c ZinterNumkeys) Key(key ...string) ZinterKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30686,7 +31681,12 @@ func (c Zintercard) Numkeys(numkeys int64) ZintercardNumkeys {
 type ZintercardKey Completed
 
 func (c ZintercardKey) Key(key ...string) ZintercardKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30713,7 +31713,12 @@ func (c ZintercardLimit) Build() Completed {
 type ZintercardNumkeys Completed
 
 func (c ZintercardNumkeys) Key(key ...string) ZintercardKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30731,7 +31736,9 @@ func (b Builder) Zinterstore() (c Zinterstore) {
 }
 
 func (c Zinterstore) Destination(destination string) ZinterstoreDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -30766,7 +31773,12 @@ func (c ZinterstoreDestination) Numkeys(numkeys int64) ZinterstoreNumkeys {
 type ZinterstoreKey Completed
 
 func (c ZinterstoreKey) Key(key ...string) ZinterstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30805,7 +31817,12 @@ func (c ZinterstoreKey) Build() Completed {
 type ZinterstoreNumkeys Completed
 
 func (c ZinterstoreNumkeys) Key(key ...string) ZinterstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30852,7 +31869,9 @@ func (b Builder) Zlexcount() (c Zlexcount) {
 }
 
 func (c Zlexcount) Key(key string) ZlexcountKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -30905,7 +31924,12 @@ func (c ZmpopCount) Build() Completed {
 type ZmpopKey Completed
 
 func (c ZmpopKey) Key(key ...string) ZmpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30927,7 +31951,12 @@ func (c ZmpopKey) Max() ZmpopWhereMax {
 type ZmpopNumkeys Completed
 
 func (c ZmpopNumkeys) Key(key ...string) ZmpopKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -30967,7 +31996,9 @@ func (b Builder) Zmscore() (c Zmscore) {
 }
 
 func (c Zmscore) Key(key string) ZmscoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31005,7 +32036,9 @@ func (b Builder) Zpopmax() (c Zpopmax) {
 }
 
 func (c Zpopmax) Key(key string) ZpopmaxKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31038,7 +32071,9 @@ func (b Builder) Zpopmin() (c Zpopmin) {
 }
 
 func (c Zpopmin) Key(key string) ZpopminKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31071,7 +32106,9 @@ func (b Builder) Zrandmember() (c Zrandmember) {
 }
 
 func (c Zrandmember) Key(key string) ZrandmemberKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31115,7 +32152,9 @@ func (b Builder) Zrange() (c Zrange) {
 }
 
 func (c Zrange) Key(key string) ZrangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31275,7 +32314,9 @@ func (b Builder) Zrangebylex() (c Zrangebylex) {
 }
 
 func (c Zrangebylex) Key(key string) ZrangebylexKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31330,7 +32371,9 @@ func (b Builder) Zrangebyscore() (c Zrangebyscore) {
 }
 
 func (c Zrangebyscore) Key(key string) ZrangebyscoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31405,7 +32448,9 @@ func (b Builder) Zrangestore() (c Zrangestore) {
 }
 
 func (c Zrangestore) Dst(dst string) ZrangestoreDst {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(dst)
+	} else {
 		c.ks = check(c.ks, slot(dst))
 	}
 	c.cs.s = append(c.cs.s, dst)
@@ -31415,7 +32460,9 @@ func (c Zrangestore) Dst(dst string) ZrangestoreDst {
 type ZrangestoreDst Completed
 
 func (c ZrangestoreDst) Src(src string) ZrangestoreSrc {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(src)
+	} else {
 		c.ks = check(c.ks, slot(src))
 	}
 	c.cs.s = append(c.cs.s, src)
@@ -31520,7 +32567,9 @@ func (b Builder) Zrank() (c Zrank) {
 }
 
 func (c Zrank) Key(key string) ZrankKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31553,7 +32602,9 @@ func (b Builder) Zrem() (c Zrem) {
 }
 
 func (c Zrem) Key(key string) ZremKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31587,7 +32638,9 @@ func (b Builder) Zremrangebylex() (c Zremrangebylex) {
 }
 
 func (c Zremrangebylex) Key(key string) ZremrangebylexKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31623,7 +32676,9 @@ func (b Builder) Zremrangebyrank() (c Zremrangebyrank) {
 }
 
 func (c Zremrangebyrank) Key(key string) ZremrangebyrankKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31659,7 +32714,9 @@ func (b Builder) Zremrangebyscore() (c Zremrangebyscore) {
 }
 
 func (c Zremrangebyscore) Key(key string) ZremrangebyscoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31695,7 +32752,9 @@ func (b Builder) Zrevrange() (c Zrevrange) {
 }
 
 func (c Zrevrange) Key(key string) ZrevrangeKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31750,7 +32809,9 @@ func (b Builder) Zrevrangebylex() (c Zrevrangebylex) {
 }
 
 func (c Zrevrangebylex) Key(key string) ZrevrangebylexKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31805,7 +32866,9 @@ func (b Builder) Zrevrangebyscore() (c Zrevrangebyscore) {
 }
 
 func (c Zrevrangebyscore) Key(key string) ZrevrangebyscoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31880,7 +32943,9 @@ func (b Builder) Zrevrank() (c Zrevrank) {
 }
 
 func (c Zrevrank) Key(key string) ZrevrankKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31913,7 +32978,9 @@ func (b Builder) Zscan() (c Zscan) {
 }
 
 func (c Zscan) Key(key string) ZscanKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -31969,7 +33036,9 @@ func (b Builder) Zscore() (c Zscore) {
 }
 
 func (c Zscore) Key(key string) ZscoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
 		c.ks = check(c.ks, slot(key))
 	}
 	c.cs.s = append(c.cs.s, key)
@@ -32042,7 +33111,12 @@ func (c ZunionAggregateSum) Build() Completed {
 type ZunionKey Completed
 
 func (c ZunionKey) Key(key ...string) ZunionKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -32086,7 +33160,12 @@ func (c ZunionKey) Build() Completed {
 type ZunionNumkeys Completed
 
 func (c ZunionNumkeys) Key(key ...string) ZunionKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -32144,7 +33223,9 @@ func (b Builder) Zunionstore() (c Zunionstore) {
 }
 
 func (c Zunionstore) Destination(destination string) ZunionstoreDestination {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(destination)
+	} else {
 		c.ks = check(c.ks, slot(destination))
 	}
 	c.cs.s = append(c.cs.s, destination)
@@ -32179,7 +33260,12 @@ func (c ZunionstoreDestination) Numkeys(numkeys int64) ZunionstoreNumkeys {
 type ZunionstoreKey Completed
 
 func (c ZunionstoreKey) Key(key ...string) ZunionstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}
@@ -32218,7 +33304,12 @@ func (c ZunionstoreKey) Build() Completed {
 type ZunionstoreNumkeys Completed
 
 func (c ZunionstoreNumkeys) Key(key ...string) ZunionstoreKey {
-	if c.ks != NoSlot {
+	if c.ks&NoSlot == NoSlot {
+		for _, k := range key {
+			c.ks = NoSlot | slot(k)
+			break
+		}
+	} else {
 		for _, k := range key {
 			c.ks = check(c.ks, slot(k))
 		}

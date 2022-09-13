@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/sandwich-go/rueidis/internal/cmds"
+	"github.com/sandwich-go/rueidis/internal/util"
 )
 
 type connFn func(dst string, opt *ClientOption) conn
@@ -33,7 +34,7 @@ type conn interface {
 	Override(conn)
 	Acquire() wire
 	Store(w wire)
-	Is(addr string) bool
+	Addr() string
 }
 
 var _ conn = (*mux)(nil)
@@ -41,12 +42,12 @@ var _ conn = (*mux)(nil)
 type mux struct {
 	init   wire
 	dead   wire
-	wire   atomic.Value
-	sc     *singleconnect
+	wire   []atomic.Value
+	sc     []*singleconnect
+	mu     []sync.Mutex
 	pool   *pool
 	wireFn wireFn
 	dst    string
-	mu     sync.Mutex
 }
 
 func makeMux(dst string, option *ClientOption, dialFn dialFn) *mux {
@@ -65,53 +66,57 @@ func makeMux(dst string, option *ClientOption, dialFn dialFn) *mux {
 }
 
 func newMux(dst string, option *ClientOption, init, dead wire, wireFn wireFn) *mux {
-	m := &mux{dst: dst, init: init, dead: dead, wireFn: wireFn}
-	m.wire.Store(init)
+	multiplex := 1 << option.PipelineMultiplex
+	m := &mux{dst: dst, init: init, dead: dead, wireFn: wireFn,
+		wire: make([]atomic.Value, multiplex),
+		mu:   make([]sync.Mutex, multiplex),
+		sc:   make([]*singleconnect, multiplex),
+	}
+	for i := 0; i < len(m.wire); i++ {
+		m.wire[i].Store(init)
+	}
 	m.pool = newPool(option.BlockingPoolSize, dead, wireFn)
 	return m
 }
 
 func (m *mux) Override(cc conn) {
 	if m2, ok := cc.(*mux); ok {
-		m.wire.CompareAndSwap(m.init, m2.wire.Load())
+		for i := 0; i < len(m.wire) && i < len(m2.wire); i++ {
+			m.wire[i].CompareAndSwap(m.init, m2.wire[i].Load())
+		}
 	}
 }
 
-func (m *mux) pipe() wire {
-	w, _ := m._pipe()
-	return w
-}
-
-func (m *mux) _pipe() (w wire, err error) {
-	if w = m.wire.Load().(wire); w != m.init {
+func (m *mux) _pipe(i uint16) (w wire, err error) {
+	if w = m.wire[i].Load().(wire); w != m.init {
 		return w, nil
 	}
 
-	m.mu.Lock()
-	sc := m.sc
-	if m.sc == nil {
-		m.sc = &singleconnect{}
-		m.sc.g.Add(1)
+	m.mu[i].Lock()
+	sc := m.sc[i]
+	if m.sc[i] == nil {
+		m.sc[i] = &singleconnect{}
+		m.sc[i].g.Add(1)
 	}
-	m.mu.Unlock()
+	m.mu[i].Unlock()
 
 	if sc != nil {
 		sc.g.Wait()
 		return sc.w, sc.e
 	}
 
-	if w = m.wire.Load().(wire); w == m.init {
+	if w = m.wire[i].Load().(wire); w == m.init {
 		if w = m.wireFn(); w != m.dead {
-			m.wire.Store(w)
+			m.wire[i].Store(w)
 		} else {
 			err = w.Error()
 		}
 	}
 
-	m.mu.Lock()
-	sc = m.sc
-	m.sc = nil
-	m.mu.Unlock()
+	m.mu[i].Lock()
+	sc = m.sc[i]
+	m.sc[i] = nil
+	m.mu[i].Unlock()
 
 	sc.w = w
 	sc.e = err
@@ -120,17 +125,22 @@ func (m *mux) _pipe() (w wire, err error) {
 	return w, err
 }
 
-func (m *mux) Dial() error { // no retry
-	_, err := m._pipe()
+func (m *mux) pipe(i uint16) wire {
+	w, _ := m._pipe(i)
+	return w // this should never be nil
+}
+
+func (m *mux) Dial() error {
+	_, err := m._pipe(0)
 	return err
 }
 
 func (m *mux) Info() map[string]RedisMessage {
-	return m.pipe().Info()
+	return m.pipe(0).Info()
 }
 
 func (m *mux) Error() error {
-	return m.pipe().Error()
+	return m.pipe(0).Error()
 }
 
 func (m *mux) Do(ctx context.Context, cmd cmds.Completed) (resp RedisResult) {
@@ -178,19 +188,21 @@ func (m *mux) blockingMulti(ctx context.Context, cmd []cmds.Completed) (resp []R
 }
 
 func (m *mux) pipeline(ctx context.Context, cmd cmds.Completed) (resp RedisResult) {
-	wire := m.pipe()
+	slot := cmd.Slot() & uint16(len(m.wire)-1)
+	wire := m.pipe(slot)
 	if resp = wire.Do(ctx, cmd); isBroken(resp.NonRedisError(), wire) {
-		m.wire.CompareAndSwap(wire, m.init)
+		m.wire[slot].CompareAndSwap(wire, m.init)
 	}
 	return resp
 }
 
 func (m *mux) pipelineMulti(ctx context.Context, cmd []cmds.Completed) (resp []RedisResult) {
-	wire := m.pipe()
+	slot := cmd[0].Slot() & uint16(len(m.wire)-1)
+	wire := m.pipe(slot)
 	resp = wire.DoMulti(ctx, cmd...)
 	for _, r := range resp {
 		if isBroken(r.NonRedisError(), wire) {
-			m.wire.CompareAndSwap(wire, m.init)
+			m.wire[slot].CompareAndSwap(wire, m.init)
 			return resp
 		}
 	}
@@ -198,31 +210,72 @@ func (m *mux) pipelineMulti(ctx context.Context, cmd []cmds.Completed) (resp []R
 }
 
 func (m *mux) DoCache(ctx context.Context, cmd cmds.Cacheable, ttl time.Duration) RedisResult {
-	wire := m.pipe()
+	slot := cmd.Slot() & uint16(len(m.wire)-1)
+	wire := m.pipe(slot)
 	resp := wire.DoCache(ctx, cmd, ttl)
 	if isBroken(resp.NonRedisError(), wire) {
-		m.wire.CompareAndSwap(wire, m.init)
+		m.wire[slot].CompareAndSwap(wire, m.init)
 	}
 	return resp
 }
 
-func (m *mux) DoMultiCache(ctx context.Context, multi ...CacheableTTL) []RedisResult {
-	wire := m.pipe()
-	resp := wire.DoMultiCache(ctx, multi...)
-	for _, r := range resp {
+func (m *mux) DoMultiCache(ctx context.Context, multi ...CacheableTTL) (results []RedisResult) {
+	var slots map[uint16]int
+	var mask = uint16(len(m.wire) - 1)
+
+	if mask == 0 {
+		return m.doMultiCache(ctx, 0, multi)
+	}
+
+	slots = make(map[uint16]int, len(m.wire))
+	for _, cmd := range multi {
+		slots[cmd.Cmd.Slot()&mask]++
+	}
+
+	if len(slots) == 1 {
+		return m.doMultiCache(ctx, multi[0].Cmd.Slot()&mask, multi)
+	}
+
+	commands := make(map[uint16][]CacheableTTL, len(slots))
+	cIndexes := make(map[uint16][]int, len(slots))
+	for slot, count := range slots {
+		cIndexes[slot] = make([]int, 0, count)
+		commands[slot] = make([]CacheableTTL, 0, count)
+	}
+	for i, cmd := range multi {
+		slot := cmd.Cmd.Slot() & mask
+		commands[slot] = append(commands[slot], cmd)
+		cIndexes[slot] = append(cIndexes[slot], i)
+	}
+
+	results = make([]RedisResult, len(multi))
+	util.ParallelKeys(commands, func(slot uint16) {
+		for i, r := range m.doMultiCache(ctx, slot, commands[slot]) {
+			results[cIndexes[slot][i]] = r
+		}
+	})
+
+	return results
+}
+
+func (m *mux) doMultiCache(ctx context.Context, slot uint16, multi []CacheableTTL) (resps []RedisResult) {
+	wire := m.pipe(slot)
+	resps = wire.DoMultiCache(ctx, multi...)
+	for _, r := range resps {
 		if isBroken(r.NonRedisError(), wire) {
-			m.wire.CompareAndSwap(wire, m.init)
-			return resp
+			m.wire[slot].CompareAndSwap(wire, m.init)
+			return resps
 		}
 	}
-	return resp
+	return resps
 }
 
 func (m *mux) Receive(ctx context.Context, subscribe cmds.Completed, fn func(message PubSubMessage)) error {
-	wire := m.pipe()
+	slot := subscribe.Slot() & uint16(len(m.wire)-1)
+	wire := m.pipe(slot)
 	err := wire.Receive(ctx, subscribe, fn)
 	if isBroken(err, wire) {
-		m.wire.CompareAndSwap(wire, m.init)
+		m.wire[slot].CompareAndSwap(wire, m.init)
 	}
 	return err
 }
@@ -238,14 +291,16 @@ func (m *mux) Store(w wire) {
 }
 
 func (m *mux) Close() {
-	if prev := m.wire.Swap(m.dead).(wire); prev != m.init && prev != m.dead {
-		prev.Close()
+	for i := 0; i < len(m.wire); i++ {
+		if prev := m.wire[i].Swap(m.dead).(wire); prev != m.init && prev != m.dead {
+			prev.Close()
+		}
 	}
 	m.pool.Close()
 }
 
-func (m *mux) Is(addr string) bool {
-	return m.dst == addr
+func (m *mux) Addr() string {
+	return m.dst
 }
 
 func isBroken(err error, w wire) bool {

@@ -18,6 +18,8 @@ type goStruct struct {
 	BuildDef  buildDef
 	NextNodes []*node
 	Variadic  bool
+
+	MultipleToken bool
 }
 
 type buildDef struct {
@@ -52,6 +54,8 @@ type argument struct {
 	Multiple bool        `json:"multiple"`
 	Optional bool        `json:"optional"`
 	Variadic bool        `json:"variadic"`
+
+	MultipleToken bool `json:"multiple_token"`
 }
 
 type node struct {
@@ -106,8 +110,9 @@ func (n *node) GoStructs() (out []goStruct) {
 					Command:    nil,
 					Parameters: nil,
 				},
-				Variadic:  n.Variadic(),
-				NextNodes: n.NextNodes(),
+				Variadic:      n.Variadic() && !n.MultipleToken(),
+				MultipleToken: n.MultipleToken(),
+				NextNodes:     n.NextNodes(),
 			}
 			if len(n.Arg.Command) != 0 {
 				if !strings.HasSuffix(s.FullName, name(n.Arg.Command)) {
@@ -160,8 +165,9 @@ func (n *node) GoStructs() (out []goStruct) {
 				MethodName: n.Name(),
 				Parameters: nil,
 			},
-			Variadic:  n.Variadic(),
-			NextNodes: n.NextNodes(),
+			Variadic:      n.Variadic() && !n.MultipleToken(),
+			MultipleToken: n.MultipleToken(),
+			NextNodes:     n.NextNodes(),
 		}
 		if len(n.Arg.Command) != 0 {
 			s.BuildDef.Command = strings.Split(n.Arg.Command, " ")
@@ -187,6 +193,10 @@ func (n *node) GoStructs() (out []goStruct) {
 		out = append(out, s)
 	}
 	return
+}
+
+func (n *node) MultipleToken() bool {
+	return n.Arg.MultipleToken
 }
 
 func (n *node) Variadic() bool {
@@ -370,20 +380,34 @@ func tests(f io.Writer, structs map[string]goStruct) {
 
 	fmt.Fprintf(f, "import \"testing\"\n\n")
 
-	fmt.Fprintf(f, "var s = NewBuilder(InitSlot)\n\n")
+	mod := 100
 
 	for i, p := range pathes {
-		if i%100 == 0 {
-			fmt.Fprintf(f, "func TestCommand_%d(t *testing.T) {\n", i/100)
+		if i%mod == 0 {
+			fmt.Fprintf(f, "func tc%d(s Builder, t *testing.T) {\n", i/mod)
 		}
 		printPath(f, "s", p, "Build")
 		if within(p[0], cacheableCMDs) {
 			printPath(f, "s", p, "Cache")
 		}
-		if i%100 == 99 || i == len(pathes)-1 {
+		if i%mod == mod-1 || i == len(pathes)-1 {
 			fmt.Fprintf(f, "}\n\n")
 		}
 	}
+
+	fmt.Fprintf(f, "func TestCommand_InitSlot(t *testing.T) {\n")
+	fmt.Fprintf(f, "\tvar s = NewBuilder(InitSlot)\n")
+	for i := 0; i <= len(pathes)/mod; i++ {
+		fmt.Fprintf(f, "\tt.Run(\"%d\", func(t *testing.T) { tc%d(s, t) })\n", i, i)
+	}
+	fmt.Fprintf(f, "}\n\n")
+
+	fmt.Fprintf(f, "func TestCommand_NoSlot(t *testing.T) {\n")
+	fmt.Fprintf(f, "\tvar s = NewBuilder(NoSlot)\n")
+	for i := 0; i <= len(pathes)/mod; i++ {
+		fmt.Fprintf(f, "\tt.Run(\"%d\", func(t *testing.T) { tc%d(s, t) })\n", i, i)
+	}
+	fmt.Fprintf(f, "}\n\n")
 
 }
 
@@ -436,11 +460,11 @@ func printPath(f io.Writer, receiver string, path []goStruct, end string) {
 	fmt.Fprintf(f, "\t%s.%s()", receiver, path[0].BuildDef.MethodName)
 	for _, s := range path[1:] {
 		fmt.Fprintf(f, ".%s(", s.BuildDef.MethodName)
-		if len(s.BuildDef.Parameters) != 1 && s.Variadic {
+		if (len(s.BuildDef.Parameters) != 1 && s.Variadic) || s.MultipleToken {
 			fmt.Fprintf(f, ").%s(", s.BuildDef.MethodName)
 		}
 		fmt.Fprintf(f, "%s)", testParams(s.BuildDef.Parameters))
-		if s.Variadic {
+		if s.Variadic || s.MultipleToken {
 			fmt.Fprintf(f, ".%s(%s)", s.BuildDef.MethodName, testParams(s.BuildDef.Parameters))
 		}
 	}
@@ -604,7 +628,7 @@ func printBuilder(w io.Writer, parent, next goStruct) {
 	fmt.Fprintf(w, "func (c %s) %s(", parent.FullName, next.BuildDef.MethodName)
 	if len(next.BuildDef.Parameters) == 1 && next.Variadic {
 		fmt.Fprintf(w, "%s ...%s", toGoName(next.BuildDef.Parameters[0].Name), toGoType(next.BuildDef.Parameters[0].Type))
-	} else if next.Variadic && parent.FullName != next.FullName {
+	} else if (next.Variadic || next.MultipleToken) && parent.FullName != next.FullName {
 		// no parameter
 	} else {
 		for i, param := range next.BuildDef.Parameters {
@@ -618,19 +642,26 @@ func printBuilder(w io.Writer, parent, next goStruct) {
 
 	if len(next.BuildDef.Parameters) == 1 && next.Variadic {
 		if next.BuildDef.Parameters[0].Type == "key" {
-			fmt.Fprintf(w, "\tif c.ks != NoSlot {\n")
+			fmt.Fprintf(w, "\tif c.ks&NoSlot == NoSlot {\n")
+			fmt.Fprintf(w, "\t\tfor _, k := range %s {\n", toGoName(next.BuildDef.Parameters[0].Name))
+			fmt.Fprintf(w, "\t\t\tc.ks = NoSlot | slot(k)\n")
+			fmt.Fprintf(w, "\t\t\tbreak\n")
+			fmt.Fprintf(w, "\t\t}\n")
+			fmt.Fprintf(w, "\t} else {\n")
 			fmt.Fprintf(w, "\t\tfor _, k := range %s {\n", toGoName(next.BuildDef.Parameters[0].Name))
 			fmt.Fprintf(w, "\t\t\tc.ks = check(c.ks, slot(k))\n")
 			fmt.Fprintf(w, "\t\t}\n")
 			fmt.Fprintf(w, "\t}\n")
 		}
 	} else {
-		if len(next.BuildDef.Parameters) != 1 && next.Variadic && parent.FullName != next.FullName {
+		if len(next.BuildDef.Parameters) != 1 && (next.Variadic || next.MultipleToken) && parent.FullName != next.FullName {
 			// no parameter
 		} else {
 			for _, arg := range next.BuildDef.Parameters {
 				if arg.Type == "key" {
-					fmt.Fprintf(w, "\tif c.ks != NoSlot {\n")
+					fmt.Fprintf(w, "\tif c.ks&NoSlot == NoSlot {\n")
+					fmt.Fprintf(w, "\t\tc.ks = NoSlot | slot(%s)\n", toGoName(arg.Name))
+					fmt.Fprintf(w, "\t} else {\n")
 					fmt.Fprintf(w, "\t\tc.ks = check(c.ks, slot(%s))\n", toGoName(arg.Name))
 					fmt.Fprintf(w, "\t}\n")
 				}
@@ -663,12 +694,12 @@ func printBuilder(w io.Writer, parent, next goStruct) {
 	if len(appends) == 0 && next.Variadic && len(next.BuildDef.Parameters) == 1 && toGoType(next.BuildDef.Parameters[0].Type) == "string" {
 		appends = append(appends, toGoName(next.BuildDef.Parameters[0].Name)+"...")
 		fmt.Fprintf(w, "\tc.cs.s = append(c.cs.s, %s)\n", strings.Join(appends, ", "))
-	} else if len(next.BuildDef.Parameters) != 1 && next.Variadic && parent.FullName != next.FullName {
+	} else if len(next.BuildDef.Parameters) != 1 && (next.Variadic || next.MultipleToken) && parent.FullName != next.FullName {
 		// no parameter
-		if len(appends) != 0 {
+		if len(appends) != 0 && !next.MultipleToken {
 			fmt.Fprintf(w, "\tc.cs.s = append(c.cs.s, %s)\n", strings.Join(appends, ", "))
 		}
-	} else {
+	} else if !(next.MultipleToken && parent.FullName != next.FullName) {
 		allstring := true
 		for _, p := range next.BuildDef.Parameters {
 			if toGoType(p.Type) != "string" {
