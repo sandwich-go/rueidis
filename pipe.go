@@ -4,8 +4,10 @@ import (
 	"bufio"
 	"context"
 	"errors"
+	"fmt"
 	"net"
 	"os"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -15,6 +17,8 @@ import (
 
 	"github.com/sandwich-go/rueidis/internal/cmds"
 )
+
+var noHello = regexp.MustCompile("unknown command .HELLO.")
 
 type wire interface {
 	Do(ctx context.Context, cmd cmds.Completed) RedisResult
@@ -87,7 +91,8 @@ func newPipe(conn net.Conn, option *ClientOption) (p *pipe, err error) {
 		helloCmd = append(helloCmd, "SETNAME", option.ClientName)
 	}
 
-	init := [][]string{helloCmd, {"CLIENT", "TRACKING", "ON", "OPTIN"}}
+	init := make([][]string, 0, 3)
+	init = append(init, helloCmd, []string{"CLIENT", "TRACKING", "ON", "OPTIN"})
 	if option.DisableCache {
 		init = init[:1]
 	}
@@ -103,6 +108,7 @@ func newPipe(conn net.Conn, option *ClientOption) (p *pipe, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
+	var resp2 bool
 	for i, r := range p.DoMulti(ctx, cmds.NewMultiCompleted(init)...) {
 		if i == 0 {
 			p.info, err = r.ToMap()
@@ -110,19 +116,56 @@ func newPipe(conn net.Conn, option *ClientOption) (p *pipe, err error) {
 			err = r.Error()
 		}
 		if err != nil {
+			if re, ok := err.(*RedisError); ok {
+				if !resp2 && noHello.MatchString(re.string) {
+					resp2 = true
+					continue
+				} else if strings.Contains(re.string, "wrong number of arguments for 'TRACKING'") {
+					err = fmt.Errorf("%s: %w", re.string, ErrNoCache)
+				} else if resp2 {
+					continue
+				}
+			}
 			p.Close()
 			return nil, err
 		}
 	}
-
-	if ver, ok := p.info["version"]; ok {
-		if v := strings.Split(ver.string, "."); len(v) != 0 {
-			vv, _ := strconv.ParseInt(v[0], 10, 32)
-			p.version = int32(vv)
+	if !resp2 {
+		if ver, ok := p.info["version"]; ok {
+			if v := strings.Split(ver.string, "."); len(v) != 0 {
+				vv, _ := strconv.ParseInt(v[0], 10, 32)
+				p.version = int32(vv)
+			}
 		}
-	}
-	if p.onInvalidations = option.OnInvalidations; p.onInvalidations != nil {
-		p.background()
+		if p.onInvalidations = option.OnInvalidations; p.onInvalidations != nil {
+			p.background()
+		}
+	} else {
+		if !option.DisableCache {
+			p.Close()
+			return nil, ErrNoCache
+		}
+		init = init[:0]
+		if option.Password != "" && option.Username == "" {
+			init = append(init, []string{"AUTH", option.Password})
+		} else if option.Username != "" {
+			init = append(init, []string{"AUTH", option.Username, option.Password})
+		}
+		if option.ClientName != "" {
+			init = append(init, []string{"CLIENT", "SETNAME", option.ClientName})
+		}
+		if option.SelectDB != 0 {
+			init = append(init, []string{"SELECT", strconv.Itoa(option.SelectDB)})
+		}
+		if len(init) != 0 {
+			for _, r := range p.DoMulti(ctx, cmds.NewMultiCompleted(init)...) {
+				if err = r.Error(); err != nil {
+					p.Close()
+					return nil, err
+				}
+			}
+		}
+		p.version = 5
 	}
 	return p, nil
 }
@@ -485,6 +528,9 @@ func (p *pipe) Receive(ctx context.Context, subscribe cmds.Completed, fn func(me
 	default:
 		panic(wrongreceive)
 	}
+	if p.version < 6 {
+		return ErrRESP2PubSub
+	}
 
 	if ch, cancel := sb.Subscribe(args); ch != nil {
 		defer cancel()
@@ -581,6 +627,10 @@ func (p *pipe) Do(ctx context.Context, cmd cmds.Completed) (resp RedisResult) {
 			goto queue
 		}
 		if cmd.NoReply() {
+			if p.version < 6 {
+				atomic.AddInt32(&p.waits, -1)
+				return newErrResult(ErrRESP2PubSub)
+			}
 			p.background()
 			goto queue
 		}
@@ -633,6 +683,12 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...cmds.Completed) []RedisResu
 
 	for _, cmd := range multi {
 		if cmd.NoReply() {
+			if p.version < 6 {
+				for i := 0; i < len(resp); i++ {
+					resp[i] = newErrResult(ErrRESP2PubSub)
+				}
+				return resp
+			}
 			noReply = true
 			break
 		}

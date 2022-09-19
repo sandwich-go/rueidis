@@ -35,6 +35,10 @@ var (
 	ErrClosing = errors.New("rueidis client is closing or unable to connect redis")
 	// ErrNoAddr means the ClientOption.InitAddress is empty
 	ErrNoAddr = errors.New("no alive address in InitAddress")
+	// ErrNoCache means your redis does not support client-side caching and must set ClientOption.DisableCache to true
+	ErrNoCache = errors.New("ClientOption.DisableCache must be true for redis not supporting client-side caching or not supporting RESP3")
+	// ErrRESP2PubSub means your redis does not support RESP3 and rueidis can't handle SUBSCRIBE/PSUBSCRIBE/SSUBSCRIBE in this case
+	ErrRESP2PubSub = errors.New("rueidis does not support SUBSCRIBE/PSUBSCRIBE/SSUBSCRIBE in RESP2")
 )
 
 // ClientOption should be passed to NewClient to construct a Client
@@ -250,7 +254,7 @@ func NewClient(option ClientOption) (client Client, err error) {
 		return newSentinelClient(&option, makeConn)
 	}
 	if client, err = newClusterClient(&option, makeConn); err != nil {
-		if len(option.InitAddress) == 1 && (err.Error() == redisErrMsgClusterDisabled || strings.HasPrefix(err.Error(), redisErrMsgUnknownClusterCmd)) {
+		if len(option.InitAddress) == 1 && (err.Error() == redisErrMsgClusterDisabled || err.Error() == redisErrMsgCommandNotAllow || strings.HasPrefix(err.Error(), redisErrMsgUnknownClusterCmd)) {
 			option.PipelineMultiplex = singleClientMultiplex(option.PipelineMultiplex)
 			client, err = newSingleClient(&option, client.(*clusterClient).single(), makeConn)
 		} else if client != (*clusterClient)(nil) {
@@ -284,5 +288,6 @@ func dial(dst string, opt *ClientOption) (conn net.Conn, err error) {
 	return conn, err
 }
 
+const redisErrMsgCommandNotAllow = "ERR command is not allowed"
 const redisErrMsgClusterDisabled = "ERR This instance has cluster support disabled"
 const redisErrMsgUnknownClusterCmd = "ERR unknown command `CLUSTER`, with args beginning with"

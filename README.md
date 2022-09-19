@@ -7,21 +7,27 @@
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/rueian/rueidis.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/rueian/rueidis/alerts/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0d93d524c2b8497aacbe/maintainability)](https://codeclimate.com/github/rueian/rueidis/maintainability)
 
-A Fast Golang Redis RESP3 client that does auto pipelining and supports client side caching.
+A Fast Golang Redis client that does auto pipelining and supports client side caching.
 
 ## Features
 
 * Auto pipeline for non-blocking redis commands
 * Connection pooling for blocking redis commands
-* Opt-in client side caching
-* Redis Cluster, Sentinel, Pub/Sub, Redis 7 Sharded Pub/Sub, Streams, TLS, RedisJSON, RedisBloom, RediSearch, RedisGraph, RedisTimeseries, RedisAI, RedisGears
+* Opt-in client side caching in RESP3
+* Pub/Sub, Redis 7 Sharded Pub/Sub in RESP3
+* Redis Cluster, Sentinel, Streams, TLS, RedisJSON, RedisBloom, RediSearch, RedisGraph, RedisTimeseries, RedisAI, RedisGears
 * IDE friendly redis command builder
 * Generic Hash/RedisJSON Object Mapping with client side caching and optimistic locking
 * OpenTelemetry tracing and metrics
 
-## Requirement
+## Limitations
 
-* Currently, only supports redis >= 6.x
+Rueidis is built around the latest RESP3 protocol, and supports almost all redis features.
+However, the following features has not yet been implemented in RESP2 mode:
+
+* PubSub only works in RESP3
+* Redis Sentinel only works in RESP3
+* Client side caching only works in RESP3
 
 ## Getting Started
 
@@ -56,18 +62,20 @@ func main() {
 All non-blocking commands sending to a single redis node are automatically pipelined through connections,
 which reduces the overall round trips and system calls, and gets higher throughput.
 
-### Benchmark comparison with go-redis v8.11.4
+### Benchmark comparison with go-redis v9
 
-Rueidis has higher throughput than go-redis v8.11.4 across 1, 8, and 64 parallelism settings.
+Rueidis has higher throughput than go-redis v9 across 1, 8, and 64 parallelism settings.
 
-It is even able to achieve ~14x throughput over go-redis in a local benchmark. (see `parallelism(64)-key(16)-value(64)-10`)
+It is even able to achieve ~14x throughput over go-redis in a local benchmark of Macbook Pro 16" M1 Pro 2021. (see `parallelism(64)-key(16)-value(64)-10`)
 
 #### Single Client
-![client_test_set](https://github.com/sandwich-go/rueidis-benchmark/blob/master/client_test_set_6.png)
+![client_test_set](https://github.com/sandwich-go/rueidis-benchmark/blob/master/client_test_set_8.png)
 #### Cluster Client
-![cluster_test_set](https://github.com/sandwich-go/rueidis-benchmark/blob/master/cluster_test_set_5.png)
+![cluster_test_set](https://github.com/sandwich-go/rueidis-benchmark/blob/master/cluster_test_set_8.png)
 
 Benchmark source code: https://github.com/sandwich-go/rueidis-benchmark
+
+There is also a benchmark result performed on two GCP n2-highcpu-2 machines shows that rueidis can achieve higher throughput with lower latencies: https://github.com/sandwich-go/rueidis/pull/93
 
 ## Client Side Caching
 
@@ -99,7 +107,7 @@ If the OpenTelemetry is enabled by the `rueidisotel.WithClient(client)`, then th
 
 ### Benchmark
 
-![client_test_get](https://github.com/sandwich-go/rueidis-benchmark/blob/master/client_test_get_6.png)
+![client_test_get](https://github.com/sandwich-go/rueidis-benchmark/blob/master/client_test_get_8.png)
 
 Benchmark source code: https://github.com/sandwich-go/rueidis-benchmark
 
@@ -178,9 +186,9 @@ Benchmark source code: https://github.com/sandwich-go/rueidis-benchmark
 * aimodelexecute
 * aiscriptget
 
-### Client Side Caching Helpers
+### MGET/JSON.MGET Client Side Caching Helpers
 
-`rueidis.MGetCache` and `JsonMGetCache.MGetCache` are handy helpers fetching multiple keys across different slots through the client side caching.
+`rueidis.MGetCache` and `rueidis.JsonMGetCache` are handy helpers fetching multiple keys across different slots through the client side caching.
 They will first group keys by slot to build `MGET` or `JSON.MGET` commands respectively and then send requests with only cache missed keys to redis nodes.
 
 ### Disable Client Side Caching
@@ -589,7 +597,7 @@ client.Do(ctx, client.B().Mget().Key("k1", "k2").Build()).ToArray()
 // SET
 client.Do(ctx, client.B().Set().Key("k").Value("v").Build()).Error()
 // INCR
-client.Do(ctx, client.B().Incr().Key("k").Build()).ToInt64()
+client.Do(ctx, client.B().Incr().Key("k").Build()).AsInt64()
 // HGET
 client.Do(ctx, client.B().Hget().Key("k").Field("f").Build()).ToString()
 // HMGET
@@ -599,11 +607,17 @@ client.Do(ctx, client.B().Hgetall().Key("h").Build()).AsStrMap()
 // ZRANGE
 client.Do(ctx, client.B().Zrange().Key("k").Min("1").Max("2").Build()).AsStrSlice()
 // ZRANK
-client.Do(ctx, client.B().Zrank().Key("k").Member("m").Build()).ToInt64()
+client.Do(ctx, client.B().Zrank().Key("k").Member("m").Build()).AsInt64()
 // ZSCORE
-client.Do(ctx, client.B().Zscore().Key("k").Member("m").Build()).ToFloat64()
+client.Do(ctx, client.B().Zscore().Key("k").Member("m").Build()).AsFloat64()
+// ZRANGE
+client.Do(ctx, client.B().Zrange().Key("k").Min("0").Max("-1").Build()).AsStrSlice()
+client.Do(ctx, client.B().Zrange().Key("k").Min("0").Max("-1").Withscores().Build()).AsZScores()
+// ZPOPMIN
+client.Do(ctx, client.B().Zpopmin().Key("k").Build()).AsZScore()
+client.Do(ctx, client.B().Zpopmin().Key("myzset").Count(2).Build()).AsZScores()
 // SCARD
-client.Do(ctx, client.B().Scard().Key("k").Build()).ToInt64()
+client.Do(ctx, client.B().Scard().Key("k").Build()).AsInt64()
 // SMEMBERS
 client.Do(ctx, client.B().Smembers().Key("k").Build()).AsStrSlice()
 // LINDEX
@@ -616,4 +630,5 @@ client.Do(ctx, client.B().Lpop().Key("k").Count(2).Build()).AsStrSlice()
 ## Not Yet Implement
 
 The following subjects are not yet implemented.
-* RESP2
+* PubSub in RESP2
+* Sentinel in RESP2
