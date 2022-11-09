@@ -1,7 +1,7 @@
 # rueidis
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/sandwich-go/rueidis.svg)](https://pkg.go.dev/github.com/sandwich-go/rueidis)
-[![circleci](https://circleci.com/gh/rueian/rueidis.svg?style=shield)](https://app.circleci.com/pipelines/github/rueian/rueidis)
+[![Build status](https://badge.buildkite.com/d15fbd91b3b22b55c8d799564f84918a322118ae02590858c4.svg)](https://buildkite.com/rueian/rueidis)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sandwich-go/rueidis)](https://goreportcard.com/report/github.com/sandwich-go/rueidis)
 [![codecov](https://codecov.io/gh/rueian/rueidis/branch/master/graph/badge.svg?token=wGTB8GdY06)](https://codecov.io/gh/rueian/rueidis)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/rueian/rueidis.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/rueian/rueidis/alerts/)
@@ -14,20 +14,20 @@ A Fast Golang Redis client that does auto pipelining and supports client side ca
 * Auto pipeline for non-blocking redis commands
 * Connection pooling for blocking redis commands
 * Opt-in client side caching in RESP3
-* Pub/Sub, Redis 7 Sharded Pub/Sub in RESP3
+* Pub/Sub, Redis 7 Sharded Pub/Sub
 * Redis Cluster, Sentinel, Streams, TLS, RedisJSON, RedisBloom, RediSearch, RedisGraph, RedisTimeseries, RedisAI, RedisGears
 * IDE friendly redis command builder
 * Generic Hash/RedisJSON Object Mapping with client side caching and optimistic locking
 * OpenTelemetry tracing and metrics
+* Distributed Locks with client side caching
+* Helpers for writing tests with rueidis mock
 
 ## Limitations
 
-Rueidis is built around the latest RESP3 protocol, and supports almost all redis features.
+Rueidis is built around RESP2 and RESP3 protocol, and supports almost all redis features.
 However, the following features has not yet been implemented in RESP2 mode:
 
-* PubSub only works in RESP3
-* Redis Sentinel only works in RESP3
-* Client side caching only works in RESP3
+* Client side caching only works in RESP3 and Redis >= 6.0
 
 ## Getting Started
 
@@ -190,6 +190,25 @@ Benchmark source code: https://github.com/sandwich-go/rueidis-benchmark
 
 `rueidis.MGetCache` and `rueidis.JsonMGetCache` are handy helpers fetching multiple keys across different slots through the client side caching.
 They will first group keys by slot to build `MGET` or `JSON.MGET` commands respectively and then send requests with only cache missed keys to redis nodes.
+
+### Broadcast Mode Client Side Caching
+
+Although the default is opt-in mode, you can use broadcast mode by specifying your prefixes in `ClientOption.ClientTrackingOptions`:
+
+```go
+c, err := rueidis.NewClient(rueidis.ClientOption{
+	InitAddress:           []string{"127.0.0.1:6379"},
+	ClientTrackingOptions: []string{"PREFIX", "prefix1:", "PREFIX", "prefix2:", "BCAST"},
+})
+if err != nil {
+	panic(err)
+}
+c.DoCache(ctx, c.B().Get().Key("prefix1:1").Cache(), time.Minute).IsCacheHit() == false
+c.DoCache(ctx, c.B().Get().Key("prefix1:1").Cache(), time.Minute).IsCacheHit() == true
+```
+
+Please make sure that commands passed to `DoCache()` and `DoMultiCache()` are covered by your prefixes.
+Otherwise, their client-side cache will not be invalidated by redis.
 
 ### Disable Client Side Caching
 
@@ -584,6 +603,20 @@ func main() {
 }
 ```
 
+## Hooks and Other Observability Integration
+
+In addition to `rueidisotel`, `rueidishook` provides a general hook mechanism for users to intercept `rueidis.Client` interface.
+
+See [rueidishook](./rueidishook) for more details.
+
+## Distributed Locks with client side caching
+
+See [rueidislock](./rueidislock) for more details.
+
+## Writing tests by mocking rueidis
+
+See [mock](./mock) for more details.
+
 ## Command Response Cheatsheet
 
 It is hard to remember what message type is returned from redis and which parsing method should be used with. So, here is some common examples:
@@ -626,9 +659,3 @@ client.Do(ctx, client.B().Lindex().Key("k").Index(0).Build()).ToString()
 client.Do(ctx, client.B().Lpop().Key("k").Build()).ToString()
 client.Do(ctx, client.B().Lpop().Key("k").Count(2).Build()).AsStrSlice()
 ```
-
-## Not Yet Implement
-
-The following subjects are not yet implemented.
-* PubSub in RESP2
-* Sentinel in RESP2

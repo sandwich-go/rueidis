@@ -37,8 +37,8 @@ var (
 	ErrNoAddr = errors.New("no alive address in InitAddress")
 	// ErrNoCache means your redis does not support client-side caching and must set ClientOption.DisableCache to true
 	ErrNoCache = errors.New("ClientOption.DisableCache must be true for redis not supporting client-side caching or not supporting RESP3")
-	// ErrRESP2PubSub means your redis does not support RESP3 and rueidis can't handle SUBSCRIBE/PSUBSCRIBE/SSUBSCRIBE in this case
-	ErrRESP2PubSub = errors.New("rueidis does not support SUBSCRIBE/PSUBSCRIBE/SSUBSCRIBE in RESP2")
+	// ErrRESP2PubSubMixed means your redis does not support RESP3 and rueidis can't handle SUBSCRIBE/PSUBSCRIBE/SSUBSCRIBE in mixed case
+	ErrRESP2PubSubMixed = errors.New("rueidis does not support SUBSCRIBE/PSUBSCRIBE/SSUBSCRIBE mixed with other commands in RESP2")
 )
 
 // ClientOption should be passed to NewClient to construct a Client
@@ -109,6 +109,9 @@ type ClientOption struct {
 	// OnInvalidations is a callback function in case of client-side caching invalidation received.
 	// Note that this function must be fast, otherwise other redis messages will be blocked.
 	OnInvalidations func([]RedisMessage)
+	// ClientTrackingOptions will be appended to CLIENT TRACKING ON command when the connection is established.
+	// The default is []string{"OPTIN"}
+	ClientTrackingOptions []string
 }
 
 // SentinelOption contains MasterSet,
@@ -254,7 +257,7 @@ func NewClient(option ClientOption) (client Client, err error) {
 		return newSentinelClient(&option, makeConn)
 	}
 	if client, err = newClusterClient(&option, makeConn); err != nil {
-		if len(option.InitAddress) == 1 && (err.Error() == redisErrMsgClusterDisabled || err.Error() == redisErrMsgCommandNotAllow || strings.HasPrefix(err.Error(), redisErrMsgUnknownClusterCmd)) {
+		if len(option.InitAddress) == 1 && (err.Error() == redisErrMsgCommandNotAllow || strings.Contains(strings.ToUpper(err.Error()), "CLUSTER")) {
 			option.PipelineMultiplex = singleClientMultiplex(option.PipelineMultiplex)
 			client, err = newSingleClient(&option, client.(*clusterClient).single(), makeConn)
 		} else if client != (*clusterClient)(nil) {
@@ -289,5 +292,3 @@ func dial(dst string, opt *ClientOption) (conn net.Conn, err error) {
 }
 
 const redisErrMsgCommandNotAllow = "ERR command is not allowed"
-const redisErrMsgClusterDisabled = "ERR This instance has cluster support disabled"
-const redisErrMsgUnknownClusterCmd = "ERR unknown command `CLUSTER`, with args beginning with"

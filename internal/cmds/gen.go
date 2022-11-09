@@ -1552,11 +1552,86 @@ func (c BfInfo) Key(key string) BfInfoKey {
 
 type BfInfoKey Completed
 
+func (c BfInfoKey) Capacity() BfInfoSingleValueCapacity {
+	c.cs.s = append(c.cs.s, "CAPACITY")
+	return (BfInfoSingleValueCapacity)(c)
+}
+
+func (c BfInfoKey) Size() BfInfoSingleValueSize {
+	c.cs.s = append(c.cs.s, "SIZE")
+	return (BfInfoSingleValueSize)(c)
+}
+
+func (c BfInfoKey) Filters() BfInfoSingleValueFilters {
+	c.cs.s = append(c.cs.s, "FILTERS")
+	return (BfInfoSingleValueFilters)(c)
+}
+
+func (c BfInfoKey) Items() BfInfoSingleValueItems {
+	c.cs.s = append(c.cs.s, "ITEMS")
+	return (BfInfoSingleValueItems)(c)
+}
+
+func (c BfInfoKey) Expansion() BfInfoSingleValueExpansion {
+	c.cs.s = append(c.cs.s, "EXPANSION")
+	return (BfInfoSingleValueExpansion)(c)
+}
+
 func (c BfInfoKey) Build() Completed {
 	return Completed(c)
 }
 
 func (c BfInfoKey) Cache() Cacheable {
+	return Cacheable(c)
+}
+
+type BfInfoSingleValueCapacity Completed
+
+func (c BfInfoSingleValueCapacity) Build() Completed {
+	return Completed(c)
+}
+
+func (c BfInfoSingleValueCapacity) Cache() Cacheable {
+	return Cacheable(c)
+}
+
+type BfInfoSingleValueExpansion Completed
+
+func (c BfInfoSingleValueExpansion) Build() Completed {
+	return Completed(c)
+}
+
+func (c BfInfoSingleValueExpansion) Cache() Cacheable {
+	return Cacheable(c)
+}
+
+type BfInfoSingleValueFilters Completed
+
+func (c BfInfoSingleValueFilters) Build() Completed {
+	return Completed(c)
+}
+
+func (c BfInfoSingleValueFilters) Cache() Cacheable {
+	return Cacheable(c)
+}
+
+type BfInfoSingleValueItems Completed
+
+func (c BfInfoSingleValueItems) Build() Completed {
+	return Completed(c)
+}
+
+func (c BfInfoSingleValueItems) Cache() Cacheable {
+	return Cacheable(c)
+}
+
+type BfInfoSingleValueSize Completed
+
+func (c BfInfoSingleValueSize) Build() Completed {
+	return Completed(c)
+}
+
+func (c BfInfoSingleValueSize) Cache() Cacheable {
 	return Cacheable(c)
 }
 
@@ -4648,6 +4723,12 @@ func (c ClusterMeet) Ip(ip string) ClusterMeetIp {
 	return (ClusterMeetIp)(c)
 }
 
+type ClusterMeetClusterBusPort Completed
+
+func (c ClusterMeetClusterBusPort) Build() Completed {
+	return Completed(c)
+}
+
 type ClusterMeetIp Completed
 
 func (c ClusterMeetIp) Port(port int64) ClusterMeetPort {
@@ -4656,6 +4737,11 @@ func (c ClusterMeetIp) Port(port int64) ClusterMeetPort {
 }
 
 type ClusterMeetPort Completed
+
+func (c ClusterMeetPort) ClusterBusPort(clusterBusPort int64) ClusterMeetClusterBusPort {
+	c.cs.s = append(c.cs.s, strconv.FormatInt(clusterBusPort, 10))
+	return (ClusterMeetClusterBusPort)(c)
+}
 
 func (c ClusterMeetPort) Build() Completed {
 	return Completed(c)
@@ -5800,6 +5886,10 @@ func (c EvalRoKey) Arg(arg ...string) EvalRoArg {
 	return (EvalRoArg)(c)
 }
 
+func (c EvalRoKey) Build() Completed {
+	return Completed(c)
+}
+
 type EvalRoNumkeys Completed
 
 func (c EvalRoNumkeys) Key(key ...string) EvalRoKey {
@@ -5815,6 +5905,15 @@ func (c EvalRoNumkeys) Key(key ...string) EvalRoKey {
 	}
 	c.cs.s = append(c.cs.s, key...)
 	return (EvalRoKey)(c)
+}
+
+func (c EvalRoNumkeys) Arg(arg ...string) EvalRoArg {
+	c.cs.s = append(c.cs.s, arg...)
+	return (EvalRoArg)(c)
+}
+
+func (c EvalRoNumkeys) Build() Completed {
+	return Completed(c)
 }
 
 type EvalRoScript Completed
@@ -5953,6 +6052,10 @@ func (c EvalshaRoKey) Arg(arg ...string) EvalshaRoArg {
 	return (EvalshaRoArg)(c)
 }
 
+func (c EvalshaRoKey) Build() Completed {
+	return Completed(c)
+}
+
 type EvalshaRoNumkeys Completed
 
 func (c EvalshaRoNumkeys) Key(key ...string) EvalshaRoKey {
@@ -5968,6 +6071,15 @@ func (c EvalshaRoNumkeys) Key(key ...string) EvalshaRoKey {
 	}
 	c.cs.s = append(c.cs.s, key...)
 	return (EvalshaRoKey)(c)
+}
+
+func (c EvalshaRoNumkeys) Arg(arg ...string) EvalshaRoArg {
+	c.cs.s = append(c.cs.s, arg...)
+	return (EvalshaRoArg)(c)
+}
+
+func (c EvalshaRoNumkeys) Build() Completed {
+	return Completed(c)
 }
 
 type EvalshaRoSha1 Completed
@@ -6366,6 +6478,10 @@ func (c FcallKey) Arg(arg ...string) FcallArg {
 	return (FcallArg)(c)
 }
 
+func (c FcallKey) Build() Completed {
+	return Completed(c)
+}
+
 type FcallNumkeys Completed
 
 func (c FcallNumkeys) Key(key ...string) FcallKey {
@@ -6381,6 +6497,15 @@ func (c FcallNumkeys) Key(key ...string) FcallKey {
 	}
 	c.cs.s = append(c.cs.s, key...)
 	return (FcallKey)(c)
+}
+
+func (c FcallNumkeys) Arg(arg ...string) FcallArg {
+	c.cs.s = append(c.cs.s, arg...)
+	return (FcallArg)(c)
+}
+
+func (c FcallNumkeys) Build() Completed {
+	return Completed(c)
 }
 
 type FcallRo Completed
@@ -6440,6 +6565,14 @@ func (c FcallRoKey) Arg(arg ...string) FcallRoArg {
 	return (FcallRoArg)(c)
 }
 
+func (c FcallRoKey) Build() Completed {
+	return Completed(c)
+}
+
+func (c FcallRoKey) Cache() Cacheable {
+	return Cacheable(c)
+}
+
 type FcallRoNumkeys Completed
 
 func (c FcallRoNumkeys) Key(key ...string) FcallRoKey {
@@ -6455,6 +6588,19 @@ func (c FcallRoNumkeys) Key(key ...string) FcallRoKey {
 	}
 	c.cs.s = append(c.cs.s, key...)
 	return (FcallRoKey)(c)
+}
+
+func (c FcallRoNumkeys) Arg(arg ...string) FcallRoArg {
+	c.cs.s = append(c.cs.s, arg...)
+	return (FcallRoArg)(c)
+}
+
+func (c FcallRoNumkeys) Build() Completed {
+	return Completed(c)
+}
+
+func (c FcallRoNumkeys) Cache() Cacheable {
+	return Cacheable(c)
 }
 
 type Flushall Completed
@@ -7504,6 +7650,60 @@ func (c FtAggregateOpSortbyFieldsProperty) Desc() FtAggregateOpSortbyFieldsOrder
 	return (FtAggregateOpSortbyFieldsOrderDesc)(c)
 }
 
+func (c FtAggregateOpSortbyFieldsProperty) Property(property string) FtAggregateOpSortbyFieldsProperty {
+	c.cs.s = append(c.cs.s, property)
+	return c
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Max(num int64) FtAggregateOpSortbyMax {
+	c.cs.s = append(c.cs.s, "MAX", strconv.FormatInt(num, 10))
+	return (FtAggregateOpSortbyMax)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Apply(expression string) FtAggregateOpApplyApply {
+	c.cs.s = append(c.cs.s, "APPLY", expression)
+	return (FtAggregateOpApplyApply)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Limit() FtAggregateOpLimitLimit {
+	c.cs.s = append(c.cs.s, "LIMIT")
+	return (FtAggregateOpLimitLimit)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Filter(filter string) FtAggregateOpFilter {
+	c.cs.s = append(c.cs.s, "FILTER", filter)
+	return (FtAggregateOpFilter)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Groupby(nargs int64) FtAggregateOpGroupbyGroupby {
+	c.cs.s = append(c.cs.s, "GROUPBY", strconv.FormatInt(nargs, 10))
+	return (FtAggregateOpGroupbyGroupby)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Sortby(nargs int64) FtAggregateOpSortbySortby {
+	c.cs.s = append(c.cs.s, "SORTBY", strconv.FormatInt(nargs, 10))
+	return (FtAggregateOpSortbySortby)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Withcursor() FtAggregateCursorWithcursor {
+	c.cs.s = append(c.cs.s, "WITHCURSOR")
+	return (FtAggregateCursorWithcursor)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Params() FtAggregateParamsParams {
+	c.cs.s = append(c.cs.s, "PARAMS")
+	return (FtAggregateParamsParams)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Dialect(dialect int64) FtAggregateDialect {
+	c.cs.s = append(c.cs.s, "DIALECT", strconv.FormatInt(dialect, 10))
+	return (FtAggregateDialect)(c)
+}
+
+func (c FtAggregateOpSortbyFieldsProperty) Build() Completed {
+	return Completed(c)
+}
+
 type FtAggregateOpSortbyMax Completed
 
 func (c FtAggregateOpSortbyMax) Apply(expression string) FtAggregateOpApplyApply {
@@ -8042,8 +8242,9 @@ func (c FtCreateFieldAs) Geo() FtCreateFieldFieldTypeGeo {
 	return (FtCreateFieldFieldTypeGeo)(c)
 }
 
-func (c FtCreateFieldAs) Vector() FtCreateFieldFieldTypeVector {
-	c.cs.s = append(c.cs.s, "VECTOR")
+func (c FtCreateFieldAs) Vector(algo string, nargs int64, args ...string) FtCreateFieldFieldTypeVector {
+	c.cs.s = append(c.cs.s, "VECTOR", algo, strconv.FormatInt(nargs, 10))
+	c.cs.s = append(c.cs.s, args...)
 	return (FtCreateFieldFieldTypeVector)(c)
 }
 
@@ -8074,26 +8275,52 @@ func (c FtCreateFieldFieldName) Geo() FtCreateFieldFieldTypeGeo {
 	return (FtCreateFieldFieldTypeGeo)(c)
 }
 
-func (c FtCreateFieldFieldName) Vector() FtCreateFieldFieldTypeVector {
-	c.cs.s = append(c.cs.s, "VECTOR")
+func (c FtCreateFieldFieldName) Vector(algo string, nargs int64, args ...string) FtCreateFieldFieldTypeVector {
+	c.cs.s = append(c.cs.s, "VECTOR", algo, strconv.FormatInt(nargs, 10))
+	c.cs.s = append(c.cs.s, args...)
 	return (FtCreateFieldFieldTypeVector)(c)
 }
 
 type FtCreateFieldFieldTypeGeo Completed
 
-func (c FtCreateFieldFieldTypeGeo) Withsuffixtrie() FtCreateFieldWithsuffixtrie {
+func (c FtCreateFieldFieldTypeGeo) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
 	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
-	return (FtCreateFieldWithsuffixtrie)(c)
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
 }
 
-func (c FtCreateFieldFieldTypeGeo) Sortable() FtCreateFieldSortableSortable {
+func (c FtCreateFieldFieldTypeGeo) Sortable() FtCreateFieldOptionSortableSortable {
 	c.cs.s = append(c.cs.s, "SORTABLE")
-	return (FtCreateFieldSortableSortable)(c)
+	return (FtCreateFieldOptionSortableSortable)(c)
 }
 
-func (c FtCreateFieldFieldTypeGeo) Noindex() FtCreateFieldNoindex {
+func (c FtCreateFieldFieldTypeGeo) Noindex() FtCreateFieldOptionNoindex {
 	c.cs.s = append(c.cs.s, "NOINDEX")
-	return (FtCreateFieldNoindex)(c)
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldFieldTypeGeo) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldFieldTypeGeo) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldFieldTypeGeo) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldFieldTypeGeo) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldFieldTypeGeo) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
 }
 
 func (c FtCreateFieldFieldTypeGeo) FieldName(fieldName string) FtCreateFieldFieldName {
@@ -8107,19 +8334,44 @@ func (c FtCreateFieldFieldTypeGeo) Build() Completed {
 
 type FtCreateFieldFieldTypeNumeric Completed
 
-func (c FtCreateFieldFieldTypeNumeric) Withsuffixtrie() FtCreateFieldWithsuffixtrie {
+func (c FtCreateFieldFieldTypeNumeric) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
 	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
-	return (FtCreateFieldWithsuffixtrie)(c)
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
 }
 
-func (c FtCreateFieldFieldTypeNumeric) Sortable() FtCreateFieldSortableSortable {
+func (c FtCreateFieldFieldTypeNumeric) Sortable() FtCreateFieldOptionSortableSortable {
 	c.cs.s = append(c.cs.s, "SORTABLE")
-	return (FtCreateFieldSortableSortable)(c)
+	return (FtCreateFieldOptionSortableSortable)(c)
 }
 
-func (c FtCreateFieldFieldTypeNumeric) Noindex() FtCreateFieldNoindex {
+func (c FtCreateFieldFieldTypeNumeric) Noindex() FtCreateFieldOptionNoindex {
 	c.cs.s = append(c.cs.s, "NOINDEX")
-	return (FtCreateFieldNoindex)(c)
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldFieldTypeNumeric) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldFieldTypeNumeric) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldFieldTypeNumeric) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldFieldTypeNumeric) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldFieldTypeNumeric) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
 }
 
 func (c FtCreateFieldFieldTypeNumeric) FieldName(fieldName string) FtCreateFieldFieldName {
@@ -8133,19 +8385,44 @@ func (c FtCreateFieldFieldTypeNumeric) Build() Completed {
 
 type FtCreateFieldFieldTypeTag Completed
 
-func (c FtCreateFieldFieldTypeTag) Withsuffixtrie() FtCreateFieldWithsuffixtrie {
+func (c FtCreateFieldFieldTypeTag) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
 	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
-	return (FtCreateFieldWithsuffixtrie)(c)
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
 }
 
-func (c FtCreateFieldFieldTypeTag) Sortable() FtCreateFieldSortableSortable {
+func (c FtCreateFieldFieldTypeTag) Sortable() FtCreateFieldOptionSortableSortable {
 	c.cs.s = append(c.cs.s, "SORTABLE")
-	return (FtCreateFieldSortableSortable)(c)
+	return (FtCreateFieldOptionSortableSortable)(c)
 }
 
-func (c FtCreateFieldFieldTypeTag) Noindex() FtCreateFieldNoindex {
+func (c FtCreateFieldFieldTypeTag) Noindex() FtCreateFieldOptionNoindex {
 	c.cs.s = append(c.cs.s, "NOINDEX")
-	return (FtCreateFieldNoindex)(c)
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldFieldTypeTag) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldFieldTypeTag) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldFieldTypeTag) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldFieldTypeTag) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldFieldTypeTag) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
 }
 
 func (c FtCreateFieldFieldTypeTag) FieldName(fieldName string) FtCreateFieldFieldName {
@@ -8159,19 +8436,44 @@ func (c FtCreateFieldFieldTypeTag) Build() Completed {
 
 type FtCreateFieldFieldTypeText Completed
 
-func (c FtCreateFieldFieldTypeText) Withsuffixtrie() FtCreateFieldWithsuffixtrie {
+func (c FtCreateFieldFieldTypeText) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
 	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
-	return (FtCreateFieldWithsuffixtrie)(c)
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
 }
 
-func (c FtCreateFieldFieldTypeText) Sortable() FtCreateFieldSortableSortable {
+func (c FtCreateFieldFieldTypeText) Sortable() FtCreateFieldOptionSortableSortable {
 	c.cs.s = append(c.cs.s, "SORTABLE")
-	return (FtCreateFieldSortableSortable)(c)
+	return (FtCreateFieldOptionSortableSortable)(c)
 }
 
-func (c FtCreateFieldFieldTypeText) Noindex() FtCreateFieldNoindex {
+func (c FtCreateFieldFieldTypeText) Noindex() FtCreateFieldOptionNoindex {
 	c.cs.s = append(c.cs.s, "NOINDEX")
-	return (FtCreateFieldNoindex)(c)
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldFieldTypeText) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldFieldTypeText) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldFieldTypeText) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldFieldTypeText) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldFieldTypeText) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
 }
 
 func (c FtCreateFieldFieldTypeText) FieldName(fieldName string) FtCreateFieldFieldName {
@@ -8185,19 +8487,44 @@ func (c FtCreateFieldFieldTypeText) Build() Completed {
 
 type FtCreateFieldFieldTypeVector Completed
 
-func (c FtCreateFieldFieldTypeVector) Withsuffixtrie() FtCreateFieldWithsuffixtrie {
+func (c FtCreateFieldFieldTypeVector) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
 	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
-	return (FtCreateFieldWithsuffixtrie)(c)
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
 }
 
-func (c FtCreateFieldFieldTypeVector) Sortable() FtCreateFieldSortableSortable {
+func (c FtCreateFieldFieldTypeVector) Sortable() FtCreateFieldOptionSortableSortable {
 	c.cs.s = append(c.cs.s, "SORTABLE")
-	return (FtCreateFieldSortableSortable)(c)
+	return (FtCreateFieldOptionSortableSortable)(c)
 }
 
-func (c FtCreateFieldFieldTypeVector) Noindex() FtCreateFieldNoindex {
+func (c FtCreateFieldFieldTypeVector) Noindex() FtCreateFieldOptionNoindex {
 	c.cs.s = append(c.cs.s, "NOINDEX")
-	return (FtCreateFieldNoindex)(c)
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldFieldTypeVector) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldFieldTypeVector) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldFieldTypeVector) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldFieldTypeVector) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldFieldTypeVector) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
 }
 
 func (c FtCreateFieldFieldTypeVector) FieldName(fieldName string) FtCreateFieldFieldName {
@@ -8209,72 +8536,467 @@ func (c FtCreateFieldFieldTypeVector) Build() Completed {
 	return Completed(c)
 }
 
-type FtCreateFieldNoindex Completed
+type FtCreateFieldOptionCasesensitive Completed
 
-func (c FtCreateFieldNoindex) FieldName(fieldName string) FtCreateFieldFieldName {
-	c.cs.s = append(c.cs.s, fieldName)
-	return (FtCreateFieldFieldName)(c)
+func (c FtCreateFieldOptionCasesensitive) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
 }
 
-func (c FtCreateFieldNoindex) Build() Completed {
-	return Completed(c)
-}
-
-type FtCreateFieldSortableSortable Completed
-
-func (c FtCreateFieldSortableSortable) Unf() FtCreateFieldSortableUnf {
-	c.cs.s = append(c.cs.s, "UNF")
-	return (FtCreateFieldSortableUnf)(c)
-}
-
-func (c FtCreateFieldSortableSortable) Noindex() FtCreateFieldNoindex {
-	c.cs.s = append(c.cs.s, "NOINDEX")
-	return (FtCreateFieldNoindex)(c)
-}
-
-func (c FtCreateFieldSortableSortable) FieldName(fieldName string) FtCreateFieldFieldName {
-	c.cs.s = append(c.cs.s, fieldName)
-	return (FtCreateFieldFieldName)(c)
-}
-
-func (c FtCreateFieldSortableSortable) Build() Completed {
-	return Completed(c)
-}
-
-type FtCreateFieldSortableUnf Completed
-
-func (c FtCreateFieldSortableUnf) Noindex() FtCreateFieldNoindex {
-	c.cs.s = append(c.cs.s, "NOINDEX")
-	return (FtCreateFieldNoindex)(c)
-}
-
-func (c FtCreateFieldSortableUnf) FieldName(fieldName string) FtCreateFieldFieldName {
-	c.cs.s = append(c.cs.s, fieldName)
-	return (FtCreateFieldFieldName)(c)
-}
-
-func (c FtCreateFieldSortableUnf) Build() Completed {
-	return Completed(c)
-}
-
-type FtCreateFieldWithsuffixtrie Completed
-
-func (c FtCreateFieldWithsuffixtrie) Sortable() FtCreateFieldSortableSortable {
+func (c FtCreateFieldOptionCasesensitive) Sortable() FtCreateFieldOptionSortableSortable {
 	c.cs.s = append(c.cs.s, "SORTABLE")
-	return (FtCreateFieldSortableSortable)(c)
+	return (FtCreateFieldOptionSortableSortable)(c)
 }
 
-func (c FtCreateFieldWithsuffixtrie) Noindex() FtCreateFieldNoindex {
+func (c FtCreateFieldOptionCasesensitive) Noindex() FtCreateFieldOptionNoindex {
 	c.cs.s = append(c.cs.s, "NOINDEX")
-	return (FtCreateFieldNoindex)(c)
+	return (FtCreateFieldOptionNoindex)(c)
 }
 
-func (c FtCreateFieldWithsuffixtrie) FieldName(fieldName string) FtCreateFieldFieldName {
+func (c FtCreateFieldOptionCasesensitive) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldOptionCasesensitive) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldOptionCasesensitive) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldOptionCasesensitive) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldOptionCasesensitive) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return c
+}
+
+func (c FtCreateFieldOptionCasesensitive) FieldName(fieldName string) FtCreateFieldFieldName {
 	c.cs.s = append(c.cs.s, fieldName)
 	return (FtCreateFieldFieldName)(c)
 }
 
-func (c FtCreateFieldWithsuffixtrie) Build() Completed {
+func (c FtCreateFieldOptionCasesensitive) Build() Completed {
+	return Completed(c)
+}
+
+type FtCreateFieldOptionNoindex Completed
+
+func (c FtCreateFieldOptionNoindex) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldOptionNoindex) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldOptionNoindex) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldOptionNoindex) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldOptionNoindex) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
+}
+
+func (c FtCreateFieldOptionNoindex) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
+}
+
+func (c FtCreateFieldOptionNoindex) Sortable() FtCreateFieldOptionSortableSortable {
+	c.cs.s = append(c.cs.s, "SORTABLE")
+	return (FtCreateFieldOptionSortableSortable)(c)
+}
+
+func (c FtCreateFieldOptionNoindex) Noindex() FtCreateFieldOptionNoindex {
+	c.cs.s = append(c.cs.s, "NOINDEX")
+	return c
+}
+
+func (c FtCreateFieldOptionNoindex) FieldName(fieldName string) FtCreateFieldFieldName {
+	c.cs.s = append(c.cs.s, fieldName)
+	return (FtCreateFieldFieldName)(c)
+}
+
+func (c FtCreateFieldOptionNoindex) Build() Completed {
+	return Completed(c)
+}
+
+type FtCreateFieldOptionNostem Completed
+
+func (c FtCreateFieldOptionNostem) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldOptionNostem) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldOptionNostem) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldOptionNostem) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
+}
+
+func (c FtCreateFieldOptionNostem) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
+}
+
+func (c FtCreateFieldOptionNostem) Sortable() FtCreateFieldOptionSortableSortable {
+	c.cs.s = append(c.cs.s, "SORTABLE")
+	return (FtCreateFieldOptionSortableSortable)(c)
+}
+
+func (c FtCreateFieldOptionNostem) Noindex() FtCreateFieldOptionNoindex {
+	c.cs.s = append(c.cs.s, "NOINDEX")
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldOptionNostem) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return c
+}
+
+func (c FtCreateFieldOptionNostem) FieldName(fieldName string) FtCreateFieldFieldName {
+	c.cs.s = append(c.cs.s, fieldName)
+	return (FtCreateFieldFieldName)(c)
+}
+
+func (c FtCreateFieldOptionNostem) Build() Completed {
+	return Completed(c)
+}
+
+type FtCreateFieldOptionPhonetic Completed
+
+func (c FtCreateFieldOptionPhonetic) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldOptionPhonetic) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldOptionPhonetic) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
+}
+
+func (c FtCreateFieldOptionPhonetic) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
+}
+
+func (c FtCreateFieldOptionPhonetic) Sortable() FtCreateFieldOptionSortableSortable {
+	c.cs.s = append(c.cs.s, "SORTABLE")
+	return (FtCreateFieldOptionSortableSortable)(c)
+}
+
+func (c FtCreateFieldOptionPhonetic) Noindex() FtCreateFieldOptionNoindex {
+	c.cs.s = append(c.cs.s, "NOINDEX")
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldOptionPhonetic) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldOptionPhonetic) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return c
+}
+
+func (c FtCreateFieldOptionPhonetic) FieldName(fieldName string) FtCreateFieldFieldName {
+	c.cs.s = append(c.cs.s, fieldName)
+	return (FtCreateFieldFieldName)(c)
+}
+
+func (c FtCreateFieldOptionPhonetic) Build() Completed {
+	return Completed(c)
+}
+
+type FtCreateFieldOptionSeparator Completed
+
+func (c FtCreateFieldOptionSeparator) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
+}
+
+func (c FtCreateFieldOptionSeparator) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
+}
+
+func (c FtCreateFieldOptionSeparator) Sortable() FtCreateFieldOptionSortableSortable {
+	c.cs.s = append(c.cs.s, "SORTABLE")
+	return (FtCreateFieldOptionSortableSortable)(c)
+}
+
+func (c FtCreateFieldOptionSeparator) Noindex() FtCreateFieldOptionNoindex {
+	c.cs.s = append(c.cs.s, "NOINDEX")
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldOptionSeparator) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldOptionSeparator) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldOptionSeparator) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldOptionSeparator) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return c
+}
+
+func (c FtCreateFieldOptionSeparator) FieldName(fieldName string) FtCreateFieldFieldName {
+	c.cs.s = append(c.cs.s, fieldName)
+	return (FtCreateFieldFieldName)(c)
+}
+
+func (c FtCreateFieldOptionSeparator) Build() Completed {
+	return Completed(c)
+}
+
+type FtCreateFieldOptionSortableSortable Completed
+
+func (c FtCreateFieldOptionSortableSortable) Unf() FtCreateFieldOptionSortableUnf {
+	c.cs.s = append(c.cs.s, "UNF")
+	return (FtCreateFieldOptionSortableUnf)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Noindex() FtCreateFieldOptionNoindex {
+	c.cs.s = append(c.cs.s, "NOINDEX")
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Sortable() FtCreateFieldOptionSortableSortable {
+	c.cs.s = append(c.cs.s, "SORTABLE")
+	return c
+}
+
+func (c FtCreateFieldOptionSortableSortable) FieldName(fieldName string) FtCreateFieldFieldName {
+	c.cs.s = append(c.cs.s, fieldName)
+	return (FtCreateFieldFieldName)(c)
+}
+
+func (c FtCreateFieldOptionSortableSortable) Build() Completed {
+	return Completed(c)
+}
+
+type FtCreateFieldOptionSortableUnf Completed
+
+func (c FtCreateFieldOptionSortableUnf) Noindex() FtCreateFieldOptionNoindex {
+	c.cs.s = append(c.cs.s, "NOINDEX")
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) Sortable() FtCreateFieldOptionSortableSortable {
+	c.cs.s = append(c.cs.s, "SORTABLE")
+	return (FtCreateFieldOptionSortableSortable)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) FieldName(fieldName string) FtCreateFieldFieldName {
+	c.cs.s = append(c.cs.s, fieldName)
+	return (FtCreateFieldFieldName)(c)
+}
+
+func (c FtCreateFieldOptionSortableUnf) Build() Completed {
+	return Completed(c)
+}
+
+type FtCreateFieldOptionWeight Completed
+
+func (c FtCreateFieldOptionWeight) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldOptionWeight) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
+}
+
+func (c FtCreateFieldOptionWeight) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return (FtCreateFieldOptionWithsuffixtrie)(c)
+}
+
+func (c FtCreateFieldOptionWeight) Sortable() FtCreateFieldOptionSortableSortable {
+	c.cs.s = append(c.cs.s, "SORTABLE")
+	return (FtCreateFieldOptionSortableSortable)(c)
+}
+
+func (c FtCreateFieldOptionWeight) Noindex() FtCreateFieldOptionNoindex {
+	c.cs.s = append(c.cs.s, "NOINDEX")
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldOptionWeight) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldOptionWeight) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldOptionWeight) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return c
+}
+
+func (c FtCreateFieldOptionWeight) FieldName(fieldName string) FtCreateFieldFieldName {
+	c.cs.s = append(c.cs.s, fieldName)
+	return (FtCreateFieldFieldName)(c)
+}
+
+func (c FtCreateFieldOptionWeight) Build() Completed {
+	return Completed(c)
+}
+
+type FtCreateFieldOptionWithsuffixtrie Completed
+
+func (c FtCreateFieldOptionWithsuffixtrie) Sortable() FtCreateFieldOptionSortableSortable {
+	c.cs.s = append(c.cs.s, "SORTABLE")
+	return (FtCreateFieldOptionSortableSortable)(c)
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) Noindex() FtCreateFieldOptionNoindex {
+	c.cs.s = append(c.cs.s, "NOINDEX")
+	return (FtCreateFieldOptionNoindex)(c)
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) Nostem() FtCreateFieldOptionNostem {
+	c.cs.s = append(c.cs.s, "NOSTEM")
+	return (FtCreateFieldOptionNostem)(c)
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) Phonetic(phonetic string) FtCreateFieldOptionPhonetic {
+	c.cs.s = append(c.cs.s, "PHONETIC", phonetic)
+	return (FtCreateFieldOptionPhonetic)(c)
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) Weight(weight float64) FtCreateFieldOptionWeight {
+	c.cs.s = append(c.cs.s, "WEIGHT", strconv.FormatFloat(weight, 'f', -1, 64))
+	return (FtCreateFieldOptionWeight)(c)
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) Separator(separator string) FtCreateFieldOptionSeparator {
+	c.cs.s = append(c.cs.s, "SEPARATOR", separator)
+	return (FtCreateFieldOptionSeparator)(c)
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) Casesensitive() FtCreateFieldOptionCasesensitive {
+	c.cs.s = append(c.cs.s, "CASESENSITIVE")
+	return (FtCreateFieldOptionCasesensitive)(c)
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) Withsuffixtrie() FtCreateFieldOptionWithsuffixtrie {
+	c.cs.s = append(c.cs.s, "WITHSUFFIXTRIE")
+	return c
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) FieldName(fieldName string) FtCreateFieldFieldName {
+	c.cs.s = append(c.cs.s, fieldName)
+	return (FtCreateFieldFieldName)(c)
+}
+
+func (c FtCreateFieldOptionWithsuffixtrie) Build() Completed {
 	return Completed(c)
 }
 
@@ -16604,7 +17326,18 @@ func (c GraphProfileGraph) Query(query string) GraphProfileQuery {
 
 type GraphProfileQuery Completed
 
+func (c GraphProfileQuery) Timeout(timeout int64) GraphProfileTimeout {
+	c.cs.s = append(c.cs.s, "TIMEOUT", strconv.FormatInt(timeout, 10))
+	return (GraphProfileTimeout)(c)
+}
+
 func (c GraphProfileQuery) Build() Completed {
+	return Completed(c)
+}
+
+type GraphProfileTimeout Completed
+
+func (c GraphProfileTimeout) Build() Completed {
 	return Completed(c)
 }
 
@@ -16635,7 +17368,18 @@ func (c GraphQueryGraph) Query(query string) GraphQueryQuery {
 
 type GraphQueryQuery Completed
 
+func (c GraphQueryQuery) Timeout(timeout int64) GraphQueryTimeout {
+	c.cs.s = append(c.cs.s, "TIMEOUT", strconv.FormatInt(timeout, 10))
+	return (GraphQueryTimeout)(c)
+}
+
 func (c GraphQueryQuery) Build() Completed {
+	return Completed(c)
+}
+
+type GraphQueryTimeout Completed
+
+func (c GraphQueryTimeout) Build() Completed {
 	return Completed(c)
 }
 
@@ -16666,11 +17410,26 @@ func (c GraphRoQueryGraph) Query(query string) GraphRoQueryQuery {
 
 type GraphRoQueryQuery Completed
 
+func (c GraphRoQueryQuery) Timeout(timeout int64) GraphRoQueryTimeout {
+	c.cs.s = append(c.cs.s, "TIMEOUT", strconv.FormatInt(timeout, 10))
+	return (GraphRoQueryTimeout)(c)
+}
+
 func (c GraphRoQueryQuery) Build() Completed {
 	return Completed(c)
 }
 
 func (c GraphRoQueryQuery) Cache() Cacheable {
+	return Cacheable(c)
+}
+
+type GraphRoQueryTimeout Completed
+
+func (c GraphRoQueryTimeout) Build() Completed {
+	return Completed(c)
+}
+
+func (c GraphRoQueryTimeout) Cache() Cacheable {
 	return Cacheable(c)
 }
 
@@ -17633,17 +18392,20 @@ func (c JsonArrlen) Key(key string) JsonArrlenKey {
 
 type JsonArrlenKey Completed
 
-func (c JsonArrlenKey) Path(path ...string) JsonArrlenPath {
-	c.cs.s = append(c.cs.s, path...)
+func (c JsonArrlenKey) Path(path string) JsonArrlenPath {
+	c.cs.s = append(c.cs.s, path)
 	return (JsonArrlenPath)(c)
 }
 
-type JsonArrlenPath Completed
-
-func (c JsonArrlenPath) Path(path ...string) JsonArrlenPath {
-	c.cs.s = append(c.cs.s, path...)
-	return c
+func (c JsonArrlenKey) Build() Completed {
+	return Completed(c)
 }
+
+func (c JsonArrlenKey) Cache() Cacheable {
+	return Cacheable(c)
+}
+
+type JsonArrlenPath Completed
 
 func (c JsonArrlenPath) Build() Completed {
 	return Completed(c)
@@ -18448,10 +19210,6 @@ type JsonToggleKey Completed
 func (c JsonToggleKey) Path(path string) JsonTogglePath {
 	c.cs.s = append(c.cs.s, path)
 	return (JsonTogglePath)(c)
-}
-
-func (c JsonToggleKey) Build() Completed {
-	return Completed(c)
 }
 
 type JsonTogglePath Completed
@@ -19701,13 +20459,6 @@ func (c MigrateKey) DestinationDb(destinationDb int64) MigrateDestinationDb {
 	return (MigrateDestinationDb)(c)
 }
 
-type MigrateKeyEmpty Completed
-
-func (c MigrateKeyEmpty) DestinationDb(destinationDb int64) MigrateDestinationDb {
-	c.cs.s = append(c.cs.s, strconv.FormatInt(destinationDb, 10))
-	return (MigrateDestinationDb)(c)
-}
-
 type MigrateKeys Completed
 
 func (c MigrateKeys) Keys(key ...string) MigrateKeys {
@@ -19732,14 +20483,14 @@ func (c MigrateKeys) Build() Completed {
 
 type MigratePort Completed
 
-func (c MigratePort) Key() MigrateKey {
-	c.cs.s = append(c.cs.s, "key")
+func (c MigratePort) Key(key string) MigrateKey {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
+		c.ks = check(c.ks, slot(key))
+	}
+	c.cs.s = append(c.cs.s, key)
 	return (MigrateKey)(c)
-}
-
-func (c MigratePort) Empty() MigrateKeyEmpty {
-	c.cs.s = append(c.cs.s, "")
-	return (MigrateKeyEmpty)(c)
 }
 
 type MigrateReplace Completed
@@ -23938,19 +24689,92 @@ func (c TdigestAddKey) Value(value float64) TdigestAddValuesValue {
 
 type TdigestAddValuesValue Completed
 
-func (c TdigestAddValuesValue) Weight(weight float64) TdigestAddValuesWeight {
-	c.cs.s = append(c.cs.s, strconv.FormatFloat(weight, 'f', -1, 64))
-	return (TdigestAddValuesWeight)(c)
-}
-
-type TdigestAddValuesWeight Completed
-
-func (c TdigestAddValuesWeight) Value(value float64) TdigestAddValuesValue {
+func (c TdigestAddValuesValue) Value(value float64) TdigestAddValuesValue {
 	c.cs.s = append(c.cs.s, strconv.FormatFloat(value, 'f', -1, 64))
-	return (TdigestAddValuesValue)(c)
+	return c
 }
 
-func (c TdigestAddValuesWeight) Build() Completed {
+func (c TdigestAddValuesValue) Build() Completed {
+	return Completed(c)
+}
+
+type TdigestByrank Completed
+
+func (b Builder) TdigestByrank() (c TdigestByrank) {
+	c = TdigestByrank{cs: get(), ks: b.ks}
+	c.cs.s = append(c.cs.s, "TDIGEST.BYRANK")
+	return c
+}
+
+func (c TdigestByrank) Key(key string) TdigestByrankKey {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
+		c.ks = check(c.ks, slot(key))
+	}
+	c.cs.s = append(c.cs.s, key)
+	return (TdigestByrankKey)(c)
+}
+
+type TdigestByrankKey Completed
+
+func (c TdigestByrankKey) Rank(rank ...float64) TdigestByrankRank {
+	for _, n := range rank {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return (TdigestByrankRank)(c)
+}
+
+type TdigestByrankRank Completed
+
+func (c TdigestByrankRank) Rank(rank ...float64) TdigestByrankRank {
+	for _, n := range rank {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return c
+}
+
+func (c TdigestByrankRank) Build() Completed {
+	return Completed(c)
+}
+
+type TdigestByrevrank Completed
+
+func (b Builder) TdigestByrevrank() (c TdigestByrevrank) {
+	c = TdigestByrevrank{cs: get(), ks: b.ks}
+	c.cs.s = append(c.cs.s, "TDIGEST.BYREVRANK")
+	return c
+}
+
+func (c TdigestByrevrank) Key(key string) TdigestByrevrankKey {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
+		c.ks = check(c.ks, slot(key))
+	}
+	c.cs.s = append(c.cs.s, key)
+	return (TdigestByrevrankKey)(c)
+}
+
+type TdigestByrevrankKey Completed
+
+func (c TdigestByrevrankKey) ReverseRank(reverseRank ...float64) TdigestByrevrankReverseRank {
+	for _, n := range reverseRank {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return (TdigestByrevrankReverseRank)(c)
+}
+
+type TdigestByrevrankReverseRank Completed
+
+func (c TdigestByrevrankReverseRank) ReverseRank(reverseRank ...float64) TdigestByrevrankReverseRank {
+	for _, n := range reverseRank {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return c
+}
+
+func (c TdigestByrevrankReverseRank) Build() Completed {
 	return Completed(c)
 }
 
@@ -23974,12 +24798,21 @@ func (c TdigestCdf) Key(key string) TdigestCdfKey {
 
 type TdigestCdfKey Completed
 
-func (c TdigestCdfKey) Value(value float64) TdigestCdfValue {
-	c.cs.s = append(c.cs.s, strconv.FormatFloat(value, 'f', -1, 64))
+func (c TdigestCdfKey) Value(value ...float64) TdigestCdfValue {
+	for _, n := range value {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
 	return (TdigestCdfValue)(c)
 }
 
 type TdigestCdfValue Completed
+
+func (c TdigestCdfValue) Value(value ...float64) TdigestCdfValue {
+	for _, n := range value {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return c
+}
 
 func (c TdigestCdfValue) Build() Completed {
 	return Completed(c)
@@ -24012,7 +24845,7 @@ func (c TdigestCreateCompression) Build() Completed {
 type TdigestCreateKey Completed
 
 func (c TdigestCreateKey) Compression(compression int64) TdigestCreateCompression {
-	c.cs.s = append(c.cs.s, strconv.FormatInt(compression, 10))
+	c.cs.s = append(c.cs.s, "COMPRESSION", strconv.FormatInt(compression, 10))
 	return (TdigestCreateCompression)(c)
 }
 
@@ -24086,9 +24919,27 @@ func (c TdigestMerge) DestinationKey(destinationKey string) TdigestMergeDestinat
 	return (TdigestMergeDestinationKey)(c)
 }
 
+type TdigestMergeConfigCompression Completed
+
+func (c TdigestMergeConfigCompression) Override() TdigestMergeOverride {
+	c.cs.s = append(c.cs.s, "OVERRIDE")
+	return (TdigestMergeOverride)(c)
+}
+
+func (c TdigestMergeConfigCompression) Build() Completed {
+	return Completed(c)
+}
+
 type TdigestMergeDestinationKey Completed
 
-func (c TdigestMergeDestinationKey) SourceKey(sourceKey ...string) TdigestMergeSourceKey {
+func (c TdigestMergeDestinationKey) Numkeys(numkeys int64) TdigestMergeNumkeys {
+	c.cs.s = append(c.cs.s, strconv.FormatInt(numkeys, 10))
+	return (TdigestMergeNumkeys)(c)
+}
+
+type TdigestMergeNumkeys Completed
+
+func (c TdigestMergeNumkeys) SourceKey(sourceKey ...string) TdigestMergeSourceKey {
 	if c.ks&NoSlot == NoSlot {
 		for _, k := range sourceKey {
 			c.ks = NoSlot | slot(k)
@@ -24101,6 +24952,12 @@ func (c TdigestMergeDestinationKey) SourceKey(sourceKey ...string) TdigestMergeS
 	}
 	c.cs.s = append(c.cs.s, sourceKey...)
 	return (TdigestMergeSourceKey)(c)
+}
+
+type TdigestMergeOverride Completed
+
+func (c TdigestMergeOverride) Build() Completed {
+	return Completed(c)
 }
 
 type TdigestMergeSourceKey Completed
@@ -24120,81 +24977,17 @@ func (c TdigestMergeSourceKey) SourceKey(sourceKey ...string) TdigestMergeSource
 	return c
 }
 
-func (c TdigestMergeSourceKey) Build() Completed {
-	return Completed(c)
-}
-
-type TdigestMergestore Completed
-
-func (b Builder) TdigestMergestore() (c TdigestMergestore) {
-	c = TdigestMergestore{cs: get(), ks: b.ks}
-	c.cs.s = append(c.cs.s, "TDIGEST.MERGESTORE")
-	return c
-}
-
-func (c TdigestMergestore) DestinationKey(destinationKey string) TdigestMergestoreDestinationKey {
-	if c.ks&NoSlot == NoSlot {
-		c.ks = NoSlot | slot(destinationKey)
-	} else {
-		c.ks = check(c.ks, slot(destinationKey))
-	}
-	c.cs.s = append(c.cs.s, destinationKey)
-	return (TdigestMergestoreDestinationKey)(c)
-}
-
-type TdigestMergestoreConfigCompression Completed
-
-func (c TdigestMergestoreConfigCompression) Build() Completed {
-	return Completed(c)
-}
-
-type TdigestMergestoreDestinationKey Completed
-
-func (c TdigestMergestoreDestinationKey) Numkeys(numkeys int64) TdigestMergestoreNumkeys {
-	c.cs.s = append(c.cs.s, strconv.FormatInt(numkeys, 10))
-	return (TdigestMergestoreNumkeys)(c)
-}
-
-type TdigestMergestoreNumkeys Completed
-
-func (c TdigestMergestoreNumkeys) SourceKey(sourceKey ...string) TdigestMergestoreSourceKey {
-	if c.ks&NoSlot == NoSlot {
-		for _, k := range sourceKey {
-			c.ks = NoSlot | slot(k)
-			break
-		}
-	} else {
-		for _, k := range sourceKey {
-			c.ks = check(c.ks, slot(k))
-		}
-	}
-	c.cs.s = append(c.cs.s, sourceKey...)
-	return (TdigestMergestoreSourceKey)(c)
-}
-
-type TdigestMergestoreSourceKey Completed
-
-func (c TdigestMergestoreSourceKey) SourceKey(sourceKey ...string) TdigestMergestoreSourceKey {
-	if c.ks&NoSlot == NoSlot {
-		for _, k := range sourceKey {
-			c.ks = NoSlot | slot(k)
-			break
-		}
-	} else {
-		for _, k := range sourceKey {
-			c.ks = check(c.ks, slot(k))
-		}
-	}
-	c.cs.s = append(c.cs.s, sourceKey...)
-	return c
-}
-
-func (c TdigestMergestoreSourceKey) Compression(compression int64) TdigestMergestoreConfigCompression {
+func (c TdigestMergeSourceKey) Compression(compression int64) TdigestMergeConfigCompression {
 	c.cs.s = append(c.cs.s, "COMPRESSION", strconv.FormatInt(compression, 10))
-	return (TdigestMergestoreConfigCompression)(c)
+	return (TdigestMergeConfigCompression)(c)
 }
 
-func (c TdigestMergestoreSourceKey) Build() Completed {
+func (c TdigestMergeSourceKey) Override() TdigestMergeOverride {
+	c.cs.s = append(c.cs.s, "OVERRIDE")
+	return (TdigestMergeOverride)(c)
+}
+
+func (c TdigestMergeSourceKey) Build() Completed {
 	return Completed(c)
 }
 
@@ -24262,6 +25055,46 @@ func (c TdigestQuantileQuantile) Build() Completed {
 	return Completed(c)
 }
 
+type TdigestRank Completed
+
+func (b Builder) TdigestRank() (c TdigestRank) {
+	c = TdigestRank{cs: get(), ks: b.ks}
+	c.cs.s = append(c.cs.s, "TDIGEST.RANK")
+	return c
+}
+
+func (c TdigestRank) Key(key string) TdigestRankKey {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
+		c.ks = check(c.ks, slot(key))
+	}
+	c.cs.s = append(c.cs.s, key)
+	return (TdigestRankKey)(c)
+}
+
+type TdigestRankKey Completed
+
+func (c TdigestRankKey) Value(value ...float64) TdigestRankValue {
+	for _, n := range value {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return (TdigestRankValue)(c)
+}
+
+type TdigestRankValue Completed
+
+func (c TdigestRankValue) Value(value ...float64) TdigestRankValue {
+	for _, n := range value {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return c
+}
+
+func (c TdigestRankValue) Build() Completed {
+	return Completed(c)
+}
+
 type TdigestReset Completed
 
 func (b Builder) TdigestReset() (c TdigestReset) {
@@ -24283,6 +25116,46 @@ func (c TdigestReset) Key(key string) TdigestResetKey {
 type TdigestResetKey Completed
 
 func (c TdigestResetKey) Build() Completed {
+	return Completed(c)
+}
+
+type TdigestRevrank Completed
+
+func (b Builder) TdigestRevrank() (c TdigestRevrank) {
+	c = TdigestRevrank{cs: get(), ks: b.ks}
+	c.cs.s = append(c.cs.s, "TDIGEST.REVRANK")
+	return c
+}
+
+func (c TdigestRevrank) Key(key string) TdigestRevrankKey {
+	if c.ks&NoSlot == NoSlot {
+		c.ks = NoSlot | slot(key)
+	} else {
+		c.ks = check(c.ks, slot(key))
+	}
+	c.cs.s = append(c.cs.s, key)
+	return (TdigestRevrankKey)(c)
+}
+
+type TdigestRevrankKey Completed
+
+func (c TdigestRevrankKey) Value(value ...float64) TdigestRevrankValue {
+	for _, n := range value {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return (TdigestRevrankValue)(c)
+}
+
+type TdigestRevrankValue Completed
+
+func (c TdigestRevrankValue) Value(value ...float64) TdigestRevrankValue {
+	for _, n := range value {
+		c.cs.s = append(c.cs.s, strconv.FormatFloat(n, 'f', -1, 64))
+	}
+	return c
+}
+
+func (c TdigestRevrankValue) Build() Completed {
 	return Completed(c)
 }
 
@@ -24502,6 +25375,14 @@ type TopkListKey Completed
 func (c TopkListKey) Withcount() TopkListWithcount {
 	c.cs.s = append(c.cs.s, "WITHCOUNT")
 	return (TopkListWithcount)(c)
+}
+
+func (c TopkListKey) Build() Completed {
+	return Completed(c)
+}
+
+func (c TopkListKey) Cache() Cacheable {
+	return Cacheable(c)
 }
 
 type TopkListWithcount Completed
@@ -30031,6 +30912,11 @@ func (c XclaimForce) Justid() XclaimJustid {
 	return (XclaimJustid)(c)
 }
 
+func (c XclaimForce) Lastid() XclaimLastid {
+	c.cs.s = append(c.cs.s, "LASTID")
+	return (XclaimLastid)(c)
+}
+
 func (c XclaimForce) Build() Completed {
 	return Completed(c)
 }
@@ -30074,6 +30960,11 @@ func (c XclaimId) Justid() XclaimJustid {
 	return (XclaimJustid)(c)
 }
 
+func (c XclaimId) Lastid() XclaimLastid {
+	c.cs.s = append(c.cs.s, "LASTID")
+	return (XclaimLastid)(c)
+}
+
 func (c XclaimId) Build() Completed {
 	return Completed(c)
 }
@@ -30100,11 +30991,21 @@ func (c XclaimIdle) Justid() XclaimJustid {
 	return (XclaimJustid)(c)
 }
 
+func (c XclaimIdle) Lastid() XclaimLastid {
+	c.cs.s = append(c.cs.s, "LASTID")
+	return (XclaimLastid)(c)
+}
+
 func (c XclaimIdle) Build() Completed {
 	return Completed(c)
 }
 
 type XclaimJustid Completed
+
+func (c XclaimJustid) Lastid() XclaimLastid {
+	c.cs.s = append(c.cs.s, "LASTID")
+	return (XclaimLastid)(c)
+}
 
 func (c XclaimJustid) Build() Completed {
 	return Completed(c)
@@ -30115,6 +31016,12 @@ type XclaimKey Completed
 func (c XclaimKey) Group(group string) XclaimGroup {
 	c.cs.s = append(c.cs.s, group)
 	return (XclaimGroup)(c)
+}
+
+type XclaimLastid Completed
+
+func (c XclaimLastid) Build() Completed {
+	return Completed(c)
 }
 
 type XclaimMinIdleTime Completed
@@ -30136,6 +31043,11 @@ func (c XclaimRetrycount) Justid() XclaimJustid {
 	return (XclaimJustid)(c)
 }
 
+func (c XclaimRetrycount) Lastid() XclaimLastid {
+	c.cs.s = append(c.cs.s, "LASTID")
+	return (XclaimLastid)(c)
+}
+
 func (c XclaimRetrycount) Build() Completed {
 	return Completed(c)
 }
@@ -30155,6 +31067,11 @@ func (c XclaimTime) Force() XclaimForce {
 func (c XclaimTime) Justid() XclaimJustid {
 	c.cs.s = append(c.cs.s, "JUSTID")
 	return (XclaimJustid)(c)
+}
+
+func (c XclaimTime) Lastid() XclaimLastid {
+	c.cs.s = append(c.cs.s, "LASTID")
+	return (XclaimLastid)(c)
 }
 
 func (c XclaimTime) Build() Completed {

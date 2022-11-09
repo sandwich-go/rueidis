@@ -137,6 +137,34 @@ func TestNewHashRepository(t *testing.T) {
 			}
 		})
 
+		t.Run("Search Sort", func(t *testing.T) {
+			err := repo.CreateIndex(ctx, func(schema FtCreateSchema) Completed {
+				return schema.FieldName("Val").Text().Sortable().Build()
+			})
+			time.Sleep(time.Second)
+			if err != nil {
+				t.Fatal(err)
+			}
+			n, records, err := repo.Search(ctx, func(search FtSearchIndex) Completed {
+				return search.Query("*").Sortby("Val").Build()
+			})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if n != 1 {
+				t.Fatalf("unexpected total count %v", n)
+			}
+			if len(records) != 1 {
+				t.Fatalf("unexpected return count %v", n)
+			}
+			if !reflect.DeepEqual(e, records[0]) {
+				t.Fatalf("items[0] should be the same as e")
+			}
+			if err = repo.DropIndex(ctx); err != nil {
+				t.Fatal(err)
+			}
+		})
+
 		t.Run("Delete", func(t *testing.T) {
 			if err := repo.Remove(ctx, e.Key); err != nil {
 				t.Fatal(err)
@@ -150,5 +178,43 @@ func TestNewHashRepository(t *testing.T) {
 				t.Fatalf("should not be found, but got %v", e)
 			}
 		})
+	})
+
+	t.Run("SaveMulti", func(t *testing.T) {
+		entities := []*HashTestStruct{
+			repo.NewEntity(),
+			repo.NewEntity(),
+			repo.NewEntity(),
+		}
+
+		for _, e := range entities {
+			e.Val = []byte("any")
+		}
+
+		for i, err := range repo.SaveMulti(context.Background(), entities...) {
+			if err != nil {
+				t.Fatal(err)
+			}
+			if entities[i].Ver != 1 {
+				t.Fatalf("unexpected ver %d", entities[i].Ver)
+			}
+		}
+
+		entities[len(entities)-1].Ver = 0
+
+		for i, err := range repo.SaveMulti(context.Background(), entities...) {
+			if i == len(entities)-1 {
+				if err != ErrVersionMismatch {
+					t.Fatalf("unexpected err %v", err)
+				}
+			} else {
+				if err != nil {
+					t.Fatal(err)
+				}
+				if entities[i].Ver != 2 {
+					t.Fatalf("unexpected ver %d", entities[i].Ver)
+				}
+			}
+		}
 	})
 }

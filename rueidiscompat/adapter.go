@@ -464,11 +464,7 @@ func (c *Compat) Keys(ctx context.Context, pattern string) *StringSliceCmd {
 
 func (c *Compat) Migrate(ctx context.Context, host string, port int64, key string, db int64, timeout time.Duration) *StatusCmd {
 	var cmd cmds.Completed
-	if key == "key" {
-		cmd = c.client.B().Migrate().Host(host).Port(port).Key().DestinationDb(db).Timeout(formatSec(timeout)).Build()
-	} else {
-		cmd = c.client.B().Migrate().Host(host).Port(port).Empty().DestinationDb(db).Timeout(formatSec(timeout)).Build()
-	}
+	cmd = c.client.B().Migrate().Host(host).Port(port).Key(key).DestinationDb(db).Timeout(formatSec(timeout)).Build()
 	resp := c.client.Do(ctx, cmd)
 	return newStatusCmd(resp)
 }
@@ -2375,9 +2371,19 @@ func (c *Compat) ClusterKeySlot(ctx context.Context, key string) *IntCmd {
 }
 
 func (c *Compat) ClusterGetKeysInSlot(ctx context.Context, slot int64, count int64) *StringSliceCmd {
-	cmd := c.client.B().ClusterGetkeysinslot().Slot(slot).Count(count).Build()
-	resp := c.client.Do(ctx, cmd)
-	return newStringSliceCmd(resp)
+	var mu sync.Mutex
+	ret := &StringSliceCmd{}
+	ret.err = c.doPrimaries(ctx, func(c rueidis.Client) error {
+		cmd := c.B().ClusterGetkeysinslot().Slot(slot).Count(count).Build()
+		resp, err := c.Do(ctx, cmd).AsStrSlice()
+		if err == nil {
+			mu.Lock()
+			ret.val = append(ret.val, resp...)
+			mu.Unlock()
+		}
+		return err
+	})
+	return ret
 }
 
 func (c *Compat) ClusterCountFailureReports(ctx context.Context, nodeID string) *IntCmd {
@@ -2387,9 +2393,19 @@ func (c *Compat) ClusterCountFailureReports(ctx context.Context, nodeID string) 
 }
 
 func (c *Compat) ClusterCountKeysInSlot(ctx context.Context, slot int64) *IntCmd {
-	cmd := c.client.B().ClusterCountkeysinslot().Slot(slot).Build()
-	resp := c.client.Do(ctx, cmd)
-	return newIntCmd(resp)
+	var mu sync.Mutex
+	ret := &IntCmd{}
+	ret.err = c.doPrimaries(ctx, func(c rueidis.Client) error {
+		cmd := c.B().ClusterCountkeysinslot().Slot(slot).Build()
+		resp, err := c.Do(ctx, cmd).AsInt64()
+		if err == nil {
+			mu.Lock()
+			ret.val += resp
+			mu.Unlock()
+		}
+		return err
+	})
+	return ret
 }
 
 func (c *Compat) ClusterDelSlots(ctx context.Context, slots ...int64) *StatusCmd {

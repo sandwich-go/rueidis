@@ -1882,12 +1882,12 @@ func newClusterSlotsCmd(res rueidis.RedisResult) *ClusterSlotsCmd {
 			return &ClusterSlotsCmd{err: err}
 		}
 		nodes := make([]ClusterNode, len(slot)-2)
-		for i, j := 2, 0; i < len(nodes); i, j = i+1, j+1 {
+		for i, j := 2, 0; i < len(slot); i, j = i+1, j+1 {
 			node, err := slot[i].ToArray()
 			if err != nil {
 				return &ClusterSlotsCmd{err: err}
 			}
-			if len(node) != 2 && len(node) != 3 {
+			if len(node) < 2 {
 				return &ClusterSlotsCmd{err: fmt.Errorf("got %d, expected 2 or 3", len(node))}
 			}
 			ip, err := node[0].ToString()
@@ -1899,7 +1899,7 @@ func newClusterSlotsCmd(res rueidis.RedisResult) *ClusterSlotsCmd {
 				return &ClusterSlotsCmd{err: err}
 			}
 			nodes[j].Addr = net.JoinHostPort(ip, strconv.FormatInt(port, 10))
-			if len(node) == 3 {
+			if len(node) > 2 {
 				id, err := node[2].ToString()
 				if err != nil {
 					return &ClusterSlotsCmd{err: err}
@@ -2089,13 +2089,13 @@ func (cmd *GeoLocationCmd) Result() ([]GeoLocation, error) {
 }
 
 type CommandInfo struct {
-	Name        string
-	Arity       int8
 	Flags       []string
 	ACLFlags    []string
-	FirstKeyPos int8
-	LastKeyPos  int8
-	StepCount   int8
+	Name        string
+	Arity       int64
+	FirstKeyPos int64
+	LastKeyPos  int64
+	StepCount   int64
 	ReadOnly    bool
 }
 
@@ -2123,11 +2123,10 @@ func newCommandsInfoCmd(res rueidis.RedisResult) *CommandsInfoCmd {
 		if err != nil {
 			return &CommandsInfoCmd{err: err}
 		}
-		arity, err := info[1].AsInt64()
+		cmd.Arity, err = info[1].AsInt64()
 		if err != nil {
 			return &CommandsInfoCmd{err: err}
 		}
-		cmd.Arity = int8(arity)
 		cmd.Flags, err = info[2].AsStrSlice()
 		if err != nil {
 			if rueidis.IsRedisNil(err) {
@@ -2136,21 +2135,18 @@ func newCommandsInfoCmd(res rueidis.RedisResult) *CommandsInfoCmd {
 				return &CommandsInfoCmd{err: err}
 			}
 		}
-		firstKeyPos, err := info[3].AsInt64()
+		cmd.FirstKeyPos, err = info[3].AsInt64()
 		if err != nil {
 			return &CommandsInfoCmd{err: err}
 		}
-		cmd.FirstKeyPos = int8(firstKeyPos)
-		lastKeyPos, err := info[4].AsInt64()
+		cmd.LastKeyPos, err = info[4].AsInt64()
 		if err != nil {
 			return &CommandsInfoCmd{err: err}
 		}
-		cmd.LastKeyPos = int8(lastKeyPos)
-		stepCount, err := info[5].AsInt64()
+		cmd.StepCount, err = info[5].AsInt64()
 		if err != nil {
 			return &CommandsInfoCmd{err: err}
 		}
-		cmd.StepCount = int8(stepCount)
 		for _, flag := range cmd.Flags {
 			if flag == "readonly" {
 				cmd.ReadOnly = true
@@ -2313,7 +2309,6 @@ type ZAddArgs struct {
 	LT      bool
 	GT      bool
 	Ch      bool
-	Incr    bool
 	Members []Z
 }
 
@@ -2504,7 +2499,7 @@ func formatMs(dur time.Duration) int64 {
 
 func formatSec(dur time.Duration) int64 {
 	if dur > 0 && dur < time.Second {
-		// too small ,truncate too 1s
+		// too small, truncate too 1s
 		return 1
 	}
 	return int64(dur / time.Second)

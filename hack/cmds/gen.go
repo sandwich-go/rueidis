@@ -46,14 +46,15 @@ type command struct {
 }
 
 type argument struct {
-	Name     interface{} `json:"name"`
-	Type     interface{} `json:"type"`
-	Command  string      `json:"command"`
-	Enum     []string    `json:"enum"`
-	Block    []argument  `json:"block"`
-	Multiple bool        `json:"multiple"`
-	Optional bool        `json:"optional"`
-	Variadic bool        `json:"variadic"`
+	Name      interface{} `json:"name"`
+	Type      interface{} `json:"type"`
+	Command   string      `json:"command"`
+	Enum      []string    `json:"enum"`
+	Block     []argument  `json:"block"`
+	Arguments []argument  `json:"arguments"`
+	Multiple  bool        `json:"multiple"`
+	Optional  bool        `json:"optional"`
+	Variadic  bool        `json:"variadic"`
 
 	MultipleToken bool `json:"multiple_token"`
 }
@@ -126,8 +127,17 @@ func (n *node) GoStructs() (out []goStruct) {
 			}
 			cmds := strings.Split(e, " ")
 			if len(cmds) == 1 {
-				s.BuildDef.Command = append(s.BuildDef.Command, cmds...)
-				s.BuildDef.Parameters = nil
+				if cmds[0] == "VECTOR" {
+					s.BuildDef.Command = append(s.BuildDef.Command, cmds...)
+					s.BuildDef.Parameters = []parameter{
+						{Name: "algo", Type: "string"},
+						{Name: "nargs", Type: "integer"},
+						{Name: "args", Type: "...string"},
+					}
+				} else {
+					s.BuildDef.Command = append(s.BuildDef.Command, cmds...)
+					s.BuildDef.Parameters = nil
+				}
 			} else {
 				switch cmds[1] {
 				case "name", "category", "pattern":
@@ -552,6 +562,8 @@ func toGoType(paramType string) string {
 	switch paramType {
 	case "[]string": // TODO hack for TS.MRANGE, TS.MREVRANGE, TS.MGET
 		return "[]string"
+	case "...string": // TODO hack for FT.CREATE VECTOR
+		return "...string"
 	case "key", "string", "pattern", "type":
 		return "string"
 	case "double":
@@ -743,6 +755,8 @@ func printBuilder(w io.Writer, parent, next goStruct) {
 						appends = append(appends, toGoName(p.Name))
 					case "[]string": // TODO hack for TS.MRANGE, TS.MREVRANGE, TS.MGET
 						follows = append(follows, toGoName(p.Name)+"...")
+					case "...string": // TODO hack for FT.CREATE VECTOR
+						follows = append(follows, toGoName(p.Name)+"...")
 					default:
 						panic("unexpected param type " + next.BuildDef.Parameters[0].Type)
 					}
@@ -769,6 +783,18 @@ func makeChildNodes(parent *node, args []argument) (first *node) {
 	}
 	var nodes []*node
 	for _, arg := range args {
+
+		if len(arg.Arguments) != 0 {
+			arg.Block = arg.Arguments
+		}
+		if arg.Type == "enum" && len(arg.Enum) == 0 && arg.Command != "" {
+			arg.Enum = []string{arg.Command}
+			arg.Command = ""
+		}
+		if arg.Type == "oneof" && len(arg.Block) == 0 && arg.Command != "" {
+			arg.Enum = []string{arg.Command}
+		}
+
 		nodes = append(nodes, &node{Parent: parent, Arg: arg})
 	}
 	for i, node := range nodes {

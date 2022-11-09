@@ -30,6 +30,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -44,12 +45,16 @@ func TestAdapter(t *testing.T) {
 }
 
 var (
-	err          error
-	ctx          context.Context
-	clientresp2  rueidis.Client
-	clientresp3  rueidis.Client
-	adapterresp2 Cmdable
-	adapterresp3 Cmdable
+	err             error
+	ctx             context.Context
+	clientresp2     rueidis.Client
+	clusterresp2    rueidis.Client
+	clientresp3     rueidis.Client
+	clusterresp3    rueidis.Client
+	adapterresp2    Cmdable
+	adaptercluster2 Cmdable
+	adapterresp3    Cmdable
+	adaptercluster3 Cmdable
 )
 
 var _ = BeforeSuite(func() {
@@ -59,14 +64,27 @@ var _ = BeforeSuite(func() {
 		ClientName:  "rueidis",
 	})
 	Expect(err).NotTo(HaveOccurred())
+	clusterresp3, err = rueidis.NewClient(rueidis.ClientOption{
+		InitAddress: []string{"127.0.0.1:7001"},
+		ClientName:  "rueidis",
+	})
+	Expect(err).NotTo(HaveOccurred())
 	adapterresp3 = NewAdapter(clientresp3)
+	adaptercluster3 = NewAdapter(clusterresp3)
 	clientresp2, err = rueidis.NewClient(rueidis.ClientOption{
 		InitAddress:  []string{"127.0.0.1:6356"},
 		ClientName:   "rueidis",
 		DisableCache: true,
 	})
 	Expect(err).NotTo(HaveOccurred())
+	clusterresp2, err = rueidis.NewClient(rueidis.ClientOption{
+		InitAddress:  []string{"127.0.0.1:7004"},
+		ClientName:   "rueidis",
+		DisableCache: true,
+	})
+	Expect(err).NotTo(HaveOccurred())
 	adapterresp2 = NewAdapter(clientresp2)
+	adaptercluster2 = NewAdapter(clusterresp2)
 })
 
 var _ = AfterSuite(func() {
@@ -80,11 +98,70 @@ var _ = AfterSuite(func() {
 
 var _ = Describe("RESP3 Commands", func() {
 	testAdapter(true)
+	testAdapterCache(true)
+	testCluster(true)
 })
 
 var _ = Describe("RESP2 Commands", func() {
 	testAdapter(false)
+	testCluster(false)
 })
+
+func testCluster(resp3 bool) {
+	var adapter Cmdable
+
+	BeforeEach(func() {
+		if resp3 {
+			adapter = adaptercluster3
+		} else {
+			adapter = adaptercluster2
+		}
+	})
+
+	Describe("Cluster", func() {
+		It("ClusterSlots", func() {
+			slots, err := adapter.ClusterSlots(ctx).Result()
+			Expect(err).NotTo(HaveOccurred())
+			m := make(map[int64]struct{})
+			for _, slot := range slots {
+				for i := slot.Start; i <= slot.End; i++ {
+					m[i] = struct{}{}
+				}
+			}
+			Expect(m).To(HaveLen(16384))
+		})
+		It("ClusterNodes", func() {
+			nodes, err := adapter.ClusterNodes(ctx).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(strings.Split(strings.TrimSpace(nodes), "\n")).To(HaveLen(3))
+		})
+		It("ClusterInfo", func() {
+			info, err := adapter.ClusterInfo(ctx).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(info).NotTo(BeEmpty())
+		})
+		It("ClusterKeySlot", func() {
+			slot, err := adapter.ClusterKeySlot(ctx, "1").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(slot).To(Equal(int64(9842)))
+		})
+		It("ClusterGetKeysInSlot", func() {
+			Expect(adapter.Set(ctx, "1", "1", 0).Err()).NotTo(HaveOccurred())
+			keys, err := adapter.ClusterGetKeysInSlot(ctx, 9842, 1).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(keys).To(Equal([]string{"1"}))
+			kc, err := adapter.ClusterCountKeysInSlot(ctx, 9842).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(kc).To(Equal(int64(1)))
+		})
+		It("ClusterCountFailureReports", func() {
+			Expect(adapter.ClusterCountFailureReports(ctx, "1").Err()).To(MatchError("ERR Unknown node 1"))
+		})
+		It("ClusterSlaves", func() {
+			Expect(adapter.ClusterSlaves(ctx, "1").Err()).To(MatchError("ERR Unknown node 1"))
+		})
+	})
+}
 
 func testAdapter(resp3 bool) {
 	var adapter Cmdable
@@ -96,6 +173,7 @@ func testAdapter(resp3 bool) {
 			adapter = adapterresp2
 		}
 		Expect(adapter.FlushDB(ctx).Err()).NotTo(HaveOccurred())
+		Expect(adapter.FlushAll(ctx).Err()).NotTo(HaveOccurred())
 	})
 
 	Describe("server", func() {
@@ -113,10 +191,40 @@ func testAdapter(resp3 bool) {
 			Expect(ping.Val()).To(Equal("PONG"))
 		})
 
+		It("should Migrate", func() {
+			var r *StatusCmd
+			if resp3 {
+				r = adapter.Migrate(ctx, "127.0.0.1", 6378, "nonkey", 0, 1)
+			} else {
+				r = adapter.Migrate(ctx, "127.0.0.1", 6356, "nonkey", 0, 1)
+			}
+			Expect(r.Err()).To(BeNil())
+			Expect(r.Val()).To(Equal("NOKEY"))
+		})
+
+		It("should Move", func() {
+			Expect(adapter.Set(ctx, "movekey", "1", 0).Err()).To(BeNil())
+			r := adapter.Move(ctx, "movekey", 1)
+			Expect(r.Err()).To(BeNil())
+			Expect(r.Val()).To(BeTrue())
+		})
+
 		It("should ClientKill", func() {
 			r := adapter.ClientKill(ctx, "1.1.1.1:1111")
 			Expect(r.Err()).To(MatchError("ERR No such client"))
 			Expect(r.Val()).To(Equal(""))
+		})
+
+		It("should ClientKillByFilter", func() {
+			r := adapter.ClientKillByFilter(ctx, "ID", "12039487")
+			Expect(r.Err()).To(BeNil())
+			Expect(r.Val()).To(Equal(int64(0)))
+		})
+
+		It("should ClientList", func() {
+			r := adapter.ClientList(ctx)
+			Expect(r.Err()).To(BeNil())
+			Expect(r.Val()).NotTo(Equal(""))
 		})
 
 		It("should ClientID", func() {
@@ -199,19 +307,19 @@ func testAdapter(resp3 bool) {
 
 			cmd := cmds["mget"]
 			Expect(cmd.Name).To(Equal("mget"))
-			Expect(cmd.Arity).To(Equal(int8(-2)))
+			Expect(cmd.Arity).To(Equal(int64(-2)))
 			Expect(cmd.Flags).To(ContainElement("readonly"))
-			Expect(cmd.FirstKeyPos).To(Equal(int8(1)))
-			Expect(cmd.LastKeyPos).To(Equal(int8(-1)))
-			Expect(cmd.StepCount).To(Equal(int8(1)))
+			Expect(cmd.FirstKeyPos).To(Equal(int64(1)))
+			Expect(cmd.LastKeyPos).To(Equal(int64(-1)))
+			Expect(cmd.StepCount).To(Equal(int64(1)))
 
 			cmd = cmds["ping"]
 			Expect(cmd.Name).To(Equal("ping"))
-			Expect(cmd.Arity).To(Equal(int8(-1)))
+			Expect(cmd.Arity).To(Equal(int64(-1)))
 			Expect(cmd.Flags).To(ContainElement("fast"))
-			Expect(cmd.FirstKeyPos).To(Equal(int8(0)))
-			Expect(cmd.LastKeyPos).To(Equal(int8(0)))
-			Expect(cmd.StepCount).To(Equal(int8(0)))
+			Expect(cmd.FirstKeyPos).To(Equal(int64(0)))
+			Expect(cmd.LastKeyPos).To(Equal(int64(0)))
+			Expect(cmd.StepCount).To(Equal(int64(0)))
 		})
 	})
 
@@ -617,9 +725,38 @@ func testAdapter(resp3 bool) {
 				Offset: 0,
 				Count:  2,
 				Order:  "ASC",
+				Alpha:  true,
 			}).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(els).To(Equal([]string{"1", "2"}))
+		})
+
+		It("should Sort By", func() {
+			size, err := adapter.LPush(ctx, "list_by", "1").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(1)))
+
+			size, err = adapter.LPush(ctx, "list_by", "3").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(2)))
+
+			size, err = adapter.LPush(ctx, "list_by", "2").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(3)))
+
+			els, err := adapter.Sort(ctx, "list_by", Sort{
+				Offset: 0,
+				Count:  2,
+				By:     "nosort",
+			}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(els).To(Equal([]string{"2", "3"}))
+		})
+
+		It("should Sort Panic", func() {
+			Expect(func() {
+				adapter.Sort(ctx, "list", Sort{Order: "PANIC"})
+			}).To(Panic())
 		})
 
 		It("should Sort and Get", func() {
@@ -731,7 +868,7 @@ func testAdapter(resp3 bool) {
 				Expect(set.Err()).NotTo(HaveOccurred())
 			}
 
-			keys, cursor, err := adapter.Scan(ctx, 0, "", 0).Result()
+			keys, cursor, err := adapter.Scan(ctx, 0, "key*", 100).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(keys).NotTo(BeEmpty())
 			Expect(cursor).NotTo(BeZero())
@@ -744,7 +881,7 @@ func testAdapter(resp3 bool) {
 					Expect(set.Err()).NotTo(HaveOccurred())
 				}
 
-				keys, cursor, err := adapter.ScanType(ctx, 0, "", 0, "string").Result()
+				keys, cursor, err := adapter.ScanType(ctx, 0, "key*", 100, "string").Result()
 				Expect(err).NotTo(HaveOccurred())
 				Expect(keys).NotTo(BeEmpty())
 				Expect(cursor).NotTo(BeZero())
@@ -757,7 +894,7 @@ func testAdapter(resp3 bool) {
 				Expect(sadd.Err()).NotTo(HaveOccurred())
 			}
 
-			keys, cursor, err := adapter.SScan(ctx, "myset", 0, "", 0).Result()
+			keys, cursor, err := adapter.SScan(ctx, "myset", 0, "member*", 100).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(keys).NotTo(BeEmpty())
 			Expect(cursor).NotTo(BeZero())
@@ -769,7 +906,7 @@ func testAdapter(resp3 bool) {
 				Expect(sadd.Err()).NotTo(HaveOccurred())
 			}
 
-			keys, cursor, err := adapter.HScan(ctx, "myhash", 0, "", 0).Result()
+			keys, cursor, err := adapter.HScan(ctx, "myhash", 0, "key*", 100).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(keys).NotTo(BeEmpty())
 			Expect(cursor).NotTo(BeZero())
@@ -784,7 +921,7 @@ func testAdapter(resp3 bool) {
 				Expect(err).NotTo(HaveOccurred())
 			}
 
-			keys, cursor, err := adapter.ZScan(ctx, "myset", 0, "", 0).Result()
+			keys, cursor, err := adapter.ZScan(ctx, "myset", 0, "member*", 100).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(keys).NotTo(BeEmpty())
 			Expect(cursor).NotTo(BeZero())
@@ -3546,6 +3683,15 @@ func testAdapter(resp3 bool) {
 			Expect(zRangeByScore.Val()).To(Equal([]string{"one", "two", "three"}))
 
 			zRangeByScore = adapter.ZRangeByScore(ctx, "zset", ZRangeBy{
+				Min:    "-inf",
+				Max:    "+inf",
+				Offset: 1,
+				Count:  2,
+			})
+			Expect(zRangeByScore.Err()).NotTo(HaveOccurred())
+			Expect(zRangeByScore.Val()).To(Equal([]string{"two", "three"}))
+
+			zRangeByScore = adapter.ZRangeByScore(ctx, "zset", ZRangeBy{
 				Min: "1",
 				Max: "2",
 			})
@@ -3590,6 +3736,15 @@ func testAdapter(resp3 bool) {
 			})
 			Expect(zRangeByLex.Err()).NotTo(HaveOccurred())
 			Expect(zRangeByLex.Val()).To(Equal([]string{"a", "b", "c"}))
+
+			zRangeByLex = adapter.ZRangeByLex(ctx, "zset", ZRangeBy{
+				Min:    "-",
+				Max:    "+",
+				Offset: 1,
+				Count:  2,
+			})
+			Expect(zRangeByLex.Err()).NotTo(HaveOccurred())
+			Expect(zRangeByLex.Val()).To(Equal([]string{"b", "c"}))
 
 			zRangeByLex = adapter.ZRangeByLex(ctx, "zset", ZRangeBy{
 				Min: "[a",
@@ -3638,6 +3793,21 @@ func testAdapter(resp3 bool) {
 			}}))
 
 			vals, err = adapter.ZRangeByScoreWithScores(ctx, "zset", ZRangeBy{
+				Min:    "-inf",
+				Max:    "+inf",
+				Offset: 1,
+				Count:  2,
+			}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]Z{{
+				Score:  2,
+				Member: "two",
+			}, {
+				Score:  3,
+				Member: "three",
+			}}))
+
+			vals, err = adapter.ZRangeByScoreWithScores(ctx, "zset", ZRangeBy{
 				Min: "1",
 				Max: "2",
 			}).Result()
@@ -3667,6 +3837,34 @@ func testAdapter(resp3 bool) {
 
 		if resp3 {
 			It("should ZRangeStore", func() {
+				added, err := adapter.ZAddArgs(ctx, "zset", ZAddArgs{
+					Members: []Z{
+						{Score: 1, Member: "one"},
+						{Score: 2, Member: "two"},
+						{Score: 3, Member: "three"},
+						{Score: 4, Member: "four"},
+					},
+				}).Result()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(added).To(Equal(int64(4)))
+
+				rangeStore, err := adapter.ZRangeStore(ctx, "new-zset", ZRangeArgs{
+					Key:    "zset",
+					Start:  "-",
+					Stop:   "+",
+					ByLex:  true,
+					Rev:    false,
+					Offset: 1,
+					Count:  2,
+				}).Result()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(rangeStore).To(Equal(int64(2)))
+
+				zRange, err := adapter.ZRange(ctx, "new-zset", 0, -1).Result()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(zRange).To(Equal([]string{"two", "three"}))
+			})
+			It("should ZRangeStore Rev", func() {
 				added, err := adapter.ZAddArgs(ctx, "zset", ZAddArgs{
 					Members: []Z{
 						{Score: 1, Member: "one"},
@@ -3877,6 +4075,11 @@ func testAdapter(resp3 bool) {
 			Expect(vals).To(Equal([]string{"three", "two", "one"}))
 
 			vals, err = adapter.ZRevRangeByScore(
+				ctx, "zset", ZRangeBy{Max: "+inf", Min: "-inf", Offset: 1, Count: 2}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]string{"two", "one"}))
+
+			vals, err = adapter.ZRevRangeByScore(
 				ctx, "zset", ZRangeBy{Max: "2", Min: "(1"}).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(vals).To(Equal([]string{"two"}))
@@ -3899,6 +4102,11 @@ func testAdapter(resp3 bool) {
 				ctx, "zset", ZRangeBy{Max: "+", Min: "-"}).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(vals).To(Equal([]string{"c", "b", "a"}))
+
+			vals, err = adapter.ZRevRangeByLex(
+				ctx, "zset", ZRangeBy{Max: "+", Min: "-", Offset: 1, Count: 2}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]string{"b", "a"}))
 
 			vals, err = adapter.ZRevRangeByLex(
 				ctx, "zset", ZRangeBy{Max: "[b", Min: "(a"}).Result()
@@ -3926,6 +4134,17 @@ func testAdapter(resp3 bool) {
 				Score:  3,
 				Member: "three",
 			}, {
+				Score:  2,
+				Member: "two",
+			}, {
+				Score:  1,
+				Member: "one",
+			}}))
+
+			vals, err = adapter.ZRevRangeByScoreWithScores(
+				ctx, "zset", ZRangeBy{Max: "+inf", Min: "-inf", Offset: 1, Count: 2}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]Z{{
 				Score:  2,
 				Member: "two",
 			}, {
@@ -4208,6 +4427,16 @@ func testAdapter(resp3 bool) {
 
 	Describe("streams", func() {
 		BeforeEach(func() {
+			if resp3 {
+				_, err := adapter.XAdd(ctx, XAddArgs{
+					Stream:     "stream",
+					ID:         "1-0",
+					Values:     map[string]interface{}{"uno": "un"},
+					NoMkStream: true,
+				}).Result()
+				Expect(rueidis.IsRedisNil(err)).To(BeTrue())
+			}
+
 			id, err := adapter.XAdd(ctx, XAddArgs{
 				Stream: "stream",
 				ID:     "1-0",
@@ -4235,9 +4464,6 @@ func testAdapter(resp3 bool) {
 			Expect(id).To(Equal("3-0"))
 		})
 
-		// TODO XTrimMaxLenApprox/XTrimMinIDApprox There is a bug in the limit parameter.
-		// TODO Don't test it for now.
-		// TODO link: https://github.com/redis/redis/issues/9046
 		It("should XTrimMaxLen", func() {
 			n, err := adapter.XTrimMaxLen(ctx, "stream", 0).Result()
 			Expect(err).NotTo(HaveOccurred())
@@ -4251,6 +4477,12 @@ func testAdapter(resp3 bool) {
 		})
 
 		if resp3 {
+			It("should XTrimMaxLenApprox Limit", func() {
+				n, err := adapter.XTrimMaxLenApprox(ctx, "stream", 0, 1).Result()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(n).To(Equal(int64(0)))
+			})
+
 			It("should XTrimMinID", func() {
 				n, err := adapter.XTrimMinID(ctx, "stream", "4-0").Result()
 				Expect(err).NotTo(HaveOccurred())
@@ -4299,6 +4531,25 @@ func testAdapter(resp3 bool) {
 			}))
 		})
 
+		It("should XAdd with MaxLen Approx", func() {
+			id, err := adapter.XAdd(ctx, XAddArgs{
+				Stream: "stream",
+				MaxLen: 1,
+				Approx: true,
+				Values: map[string]interface{}{"quatro": "quatre"},
+			}).Result()
+			Expect(err).NotTo(HaveOccurred())
+
+			vals, err := adapter.XRange(ctx, "stream", "-", "+").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]XMessage{
+				{ID: "1-0", Values: map[string]interface{}{"uno": "un"}},
+				{ID: "2-0", Values: map[string]interface{}{"dos": "deux"}},
+				{ID: "3-0", Values: map[string]interface{}{"tres": "troix"}},
+				{ID: id, Values: map[string]interface{}{"quatro": "quatre"}},
+			}))
+		})
+
 		if resp3 {
 			It("should XAdd with MinID", func() {
 				id, err := adapter.XAdd(ctx, XAddArgs{
@@ -4313,6 +4564,44 @@ func testAdapter(resp3 bool) {
 				vals, err := adapter.XRange(ctx, "stream", "-", "+").Result()
 				Expect(err).NotTo(HaveOccurred())
 				Expect(vals).To(HaveLen(0))
+			})
+
+			It("should XAdd with MinID Approx", func() {
+				id, err := adapter.XAdd(ctx, XAddArgs{
+					Stream: "stream",
+					MinID:  "5-0",
+					ID:     "4-0",
+					Approx: true,
+					Values: map[string]interface{}{"quatro": "quatre"},
+				}).Result()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(id).To(Equal("4-0"))
+
+				vals, err := adapter.XRange(ctx, "stream", "-", "+").Result()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vals).To(HaveLen(0))
+			})
+
+			It("should XAdd with MinID Limit", func() {
+				id, err := adapter.XAdd(ctx, XAddArgs{
+					Stream: "stream",
+					MinID:  "5-0",
+					ID:     "4-0",
+					Approx: true,
+					Values: map[string]interface{}{"quatro": "quatre"},
+					Limit:  1,
+				}).Result()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(id).To(Equal("4-0"))
+
+				vals, err := adapter.XRange(ctx, "stream", "-", "+").Result()
+				Expect(err).NotTo(HaveOccurred())
+				Expect(vals).To(Equal([]XMessage{
+					{ID: "1-0", Values: map[string]interface{}{"uno": "un"}},
+					{ID: "2-0", Values: map[string]interface{}{"dos": "deux"}},
+					{ID: "3-0", Values: map[string]interface{}{"tres": "troix"}},
+					{ID: id, Values: map[string]interface{}{"quatro": "quatre"}},
+				}))
 			})
 		}
 
@@ -4452,6 +4741,8 @@ func testAdapter(resp3 bool) {
 			BeforeEach(func() {
 				err := adapter.XGroupCreate(ctx, "stream", "group", "0").Err()
 				Expect(err).NotTo(HaveOccurred())
+				err = adapter.XGroupSetID(ctx, "stream", "group", "0").Err()
+				Expect(err).NotTo(HaveOccurred())
 
 				res, err := adapter.XReadGroup(ctx, XReadGroupArgs{
 					Group:    "group",
@@ -4486,6 +4777,8 @@ func testAdapter(resp3 bool) {
 					Group:    "group",
 					Consumer: "consumer",
 					Streams:  []string{"stream", "0"},
+					NoAck:    true,
+					Block:    -1,
 				}).Result()
 				Expect(err).NotTo(HaveOccurred())
 				Expect(res).To(Equal([]XStream{
@@ -4593,6 +4886,33 @@ func testAdapter(resp3 bool) {
 					Expect(err).NotTo(HaveOccurred())
 					Expect(start).To(Equal("0-0"))
 					Expect(ids).To(Equal([]string{"3-0"}))
+				})
+
+				It("should XAutoClaim NoCount", func() {
+					xca := XAutoClaimArgs{
+						Stream:   "stream",
+						Group:    "group",
+						Consumer: "consumer",
+						Start:    "-",
+					}
+					msgs, start, err := adapter.XAutoClaim(ctx, xca).Result()
+					Expect(err).NotTo(HaveOccurred())
+					Expect(start).To(Equal("0-0"))
+					Expect(msgs).To(Equal([]XMessage{{
+						ID:     "1-0",
+						Values: map[string]interface{}{"uno": "un"},
+					}, {
+						ID:     "2-0",
+						Values: map[string]interface{}{"dos": "deux"},
+					}, {
+						ID:     "3-0",
+						Values: map[string]interface{}{"tres": "troix"},
+					}}))
+
+					ids, start, err := adapter.XAutoClaimJustID(ctx, xca).Result()
+					Expect(err).NotTo(HaveOccurred())
+					Expect(start).To(Equal("0-0"))
+					Expect(ids).To(Equal([]string{"1-0", "2-0", "3-0"}))
 				})
 			}
 
@@ -5114,6 +5434,12 @@ func testAdapter(resp3 bool) {
 			dist, err = adapter.GeoDist(ctx, "Sicily", "Palermo", "Catania", "m").Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(dist).To(BeNumerically("~", 166274.15, 0.01))
+
+			_, err = adapter.GeoDist(ctx, "Sicily", "Palermo", "Catania", "mi").Result()
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = adapter.GeoDist(ctx, "Sicily", "Palermo", "Catania", "ft").Result()
+			Expect(err).NotTo(HaveOccurred())
 		})
 
 		It("should get geo hash in string representation", func() {
@@ -5409,7 +5735,33 @@ func testAdapter(resp3 bool) {
 		//})
 	})
 
-	Describe("Eval", func() {
+	Describe("Pub/Sub", func() {
+		It("Publish", func() {
+			v, err := adapter.Publish(ctx, "ch", "1").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(v).To(Equal(int64(0)))
+		})
+
+		It("PubSubChannels", func() {
+			v, err := adapter.PubSubChannels(ctx, "*").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(v).To(Equal([]string{}))
+		})
+
+		It("PubSubNumPat", func() {
+			v, err := adapter.PubSubNumPat(ctx).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(v).To(Equal(int64(0)))
+		})
+
+		It("PubSubNumSub", func() {
+			v, err := adapter.PubSubNumSub(ctx, "ch").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(v).To(Equal(map[string]int64{"ch": 0}))
+		})
+	})
+
+	Describe("Script", func() {
 		It("returns keys and values", func() {
 			vals, err := adapter.Eval(
 				ctx,
@@ -5432,14 +5784,80 @@ func testAdapter(resp3 bool) {
 			Expect(vals.([]interface{})[1].(error).Error()).To(Equal("error"))
 			Expect(vals.([]interface{})[2]).To(Equal("abc"))
 		})
+
+		It("script load", func() {
+			val, err := adapter.ScriptLoad(
+				ctx,
+				"return {KEYS[1],ARGV[1]}",
+			).Result()
+			Expect(err).NotTo(HaveOccurred())
+			ret, err := adapter.ScriptExists(ctx, val).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(ret).To(Equal([]bool{true}))
+
+			vals, err := adapter.EvalSha(
+				ctx,
+				val,
+				[]string{"key"},
+				"hello",
+			).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]interface{}{"key", "hello"}))
+		})
+
+		It("script kill & flush", func() {
+			Expect(adapter.ScriptKill(ctx).Err()).To(MatchError("NOTBUSY No scripts in execution right now."))
+			Expect(adapter.ScriptFlush(ctx).Err()).NotTo(HaveOccurred())
+		})
 	})
 }
 
-func testAdapterCache(adapter Cmdable) {
+func testAdapterCache(resp3 bool) {
+
+	var adapter Cmdable
 
 	BeforeEach(func() {
+		if resp3 {
+			adapter = adapterresp3
+		} else {
+			adapter = adapterresp2
+		}
 		Expect(adapter.FlushDB(ctx).Err()).NotTo(HaveOccurred())
 		Expect(adapter.FlushAll(ctx).Err()).NotTo(HaveOccurred())
+	})
+
+	Describe("Config", func() {
+		It("Flush", func() {
+			Expect(adapter.FlushDBAsync(ctx).Err()).NotTo(HaveOccurred())
+			time.Sleep(2 * time.Second)
+			Expect(adapter.FlushAllAsync(ctx).Err()).NotTo(HaveOccurred())
+			time.Sleep(2 * time.Second)
+		})
+		It("BgSave", func() {
+			Expect(adapter.BgRewriteAOF(ctx).Err()).NotTo(HaveOccurred())
+			time.Sleep(2 * time.Second)
+			Expect(adapter.BgSave(ctx).Err()).NotTo(HaveOccurred())
+			time.Sleep(2 * time.Second)
+		})
+		It("Config Rewrite", func() {
+			Expect(adapter.ConfigRewrite(ctx).Err()).To(MatchError("ERR The server is running without a config file"))
+		})
+		It("DebugObject", func() {
+			Expect(adapter.DebugObject(ctx, "non").Err().Error()).To(HavePrefix("ERR DEBUG command not allowed."))
+		})
+		It("ReadOnly & ReadWrite", func() {
+			Expect(adapter.ReadOnly(ctx).Err()).To(MatchError("ERR This instance has cluster support disabled"))
+			Expect(adapter.ReadWrite(ctx).Err()).To(MatchError("ERR This instance has cluster support disabled"))
+		})
+	})
+
+	Describe("Client", func() {
+		It("ClientPause", func() {
+			Expect(adapter.ClientPause(ctx, time.Second).Err()).NotTo(HaveOccurred())
+		})
+		It("ClientUnpause", func() {
+			Expect(adapter.ClientUnpause(ctx).Err()).NotTo(HaveOccurred())
+		})
 	})
 
 	Describe("keys", func() {
@@ -5526,6 +5944,14 @@ func testAdapterCache(adapter Cmdable) {
 		})
 
 		It("should Sort", func() {
+			Expect(func() {
+				adapter.Cache(time.Hour).Sort(ctx, "list", Sort{
+					Order: "PANIC",
+				})
+			}).To(Panic())
+		})
+
+		It("should Sort", func() {
 			size, err := adapter.LPush(ctx, "list", "1").Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(size).To(Equal(int64(1)))
@@ -5542,9 +5968,32 @@ func testAdapterCache(adapter Cmdable) {
 				Offset: 0,
 				Count:  2,
 				Order:  "ASC",
+				Alpha:  true,
 			}).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(els).To(Equal([]string{"1", "2"}))
+		})
+
+		It("should Sort By", func() {
+			size, err := adapter.LPush(ctx, "list_by", "1").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(1)))
+
+			size, err = adapter.LPush(ctx, "list_by", "3").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(2)))
+
+			size, err = adapter.LPush(ctx, "list_by", "2").Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(size).To(Equal(int64(3)))
+
+			els, err := adapter.Cache(time.Hour).Sort(ctx, "list_by", Sort{
+				Offset: 0,
+				Count:  2,
+				By:     "nosort",
+			}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(els).To(Equal([]string{"2", "3"}))
 		})
 
 		It("should Sort and Get", func() {
@@ -6058,11 +6507,37 @@ func testAdapterCache(adapter Cmdable) {
 					{Score: 1, Member: "one"},
 					{Score: 2, Member: "two"},
 					{Score: 3, Member: "three"},
+				},
+			}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(added).To(Equal(int64(3)))
+
+			added, err = adapter.ZAddArgs(ctx, "zset", ZAddArgs{
+				NX: true,
+				Members: []Z{
 					{Score: 4, Member: "four"},
 				},
 			}).Result()
 			Expect(err).NotTo(HaveOccurred())
-			Expect(added).To(Equal(int64(4)))
+			Expect(added).To(Equal(int64(1)))
+
+			added, err = adapter.ZAddArgs(ctx, "zsetxx", ZAddArgs{
+				XX: true,
+				Members: []Z{
+					{Score: 1, Member: "one"},
+				},
+				Ch: true,
+			}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(added).To(Equal(int64(0)))
+
+			score, err := adapter.ZAddArgsIncr(ctx, "zsetxx", ZAddArgs{
+				Members: []Z{
+					{Score: 1, Member: "one"},
+				},
+			}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(score).To(Equal(float64(1)))
 
 			zRange, err := adapter.Cache(time.Hour).ZRangeArgs(ctx, ZRangeArgs{
 				Key:     "zset",
@@ -6130,6 +6605,15 @@ func testAdapterCache(adapter Cmdable) {
 			Expect(zRangeByScore.Val()).To(Equal([]string{"one", "two", "three"}))
 
 			zRangeByScore = adapter.Cache(time.Hour).ZRangeByScore(ctx, "zset", ZRangeBy{
+				Min:    "-inf",
+				Max:    "+inf",
+				Offset: 1,
+				Count:  2,
+			})
+			Expect(zRangeByScore.Err()).NotTo(HaveOccurred())
+			Expect(zRangeByScore.Val()).To(Equal([]string{"two", "three"}))
+
+			zRangeByScore = adapter.Cache(time.Hour).ZRangeByScore(ctx, "zset", ZRangeBy{
 				Min: "1",
 				Max: "2",
 			})
@@ -6176,6 +6660,15 @@ func testAdapterCache(adapter Cmdable) {
 			Expect(zRangeByLex.Val()).To(Equal([]string{"a", "b", "c"}))
 
 			zRangeByLex = adapter.Cache(time.Hour).ZRangeByLex(ctx, "zset", ZRangeBy{
+				Min:    "-",
+				Max:    "+",
+				Offset: 1,
+				Count:  2,
+			})
+			Expect(zRangeByLex.Err()).NotTo(HaveOccurred())
+			Expect(zRangeByLex.Val()).To(Equal([]string{"b", "c"}))
+
+			zRangeByLex = adapter.Cache(time.Hour).ZRangeByLex(ctx, "zset", ZRangeBy{
 				Min: "[a",
 				Max: "[b",
 			})
@@ -6214,6 +6707,21 @@ func testAdapterCache(adapter Cmdable) {
 				Score:  1,
 				Member: "one",
 			}, {
+				Score:  2,
+				Member: "two",
+			}, {
+				Score:  3,
+				Member: "three",
+			}}))
+
+			vals, err = adapter.Cache(time.Hour).ZRangeByScoreWithScores(ctx, "zset", ZRangeBy{
+				Min:    "-inf",
+				Max:    "+inf",
+				Offset: 1,
+				Count:  2,
+			}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]Z{{
 				Score:  2,
 				Member: "two",
 			}, {
@@ -6337,6 +6845,11 @@ func testAdapterCache(adapter Cmdable) {
 			Expect(vals).To(Equal([]string{"three", "two", "one"}))
 
 			vals, err = adapter.Cache(time.Hour).ZRevRangeByScore(
+				ctx, "zset", ZRangeBy{Max: "+inf", Min: "-inf", Offset: 1, Count: 2}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]string{"two", "one"}))
+
+			vals, err = adapter.Cache(time.Hour).ZRevRangeByScore(
 				ctx, "zset", ZRangeBy{Max: "2", Min: "(1"}).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(vals).To(Equal([]string{"two"}))
@@ -6359,6 +6872,11 @@ func testAdapterCache(adapter Cmdable) {
 				ctx, "zset", ZRangeBy{Max: "+", Min: "-"}).Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(vals).To(Equal([]string{"c", "b", "a"}))
+
+			vals, err = adapter.Cache(time.Hour).ZRevRangeByLex(
+				ctx, "zset", ZRangeBy{Max: "+", Min: "-", Offset: 1, Count: 2}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]string{"b", "a"}))
 
 			vals, err = adapter.Cache(time.Hour).ZRevRangeByLex(
 				ctx, "zset", ZRangeBy{Max: "[b", Min: "(a"}).Result()
@@ -6386,6 +6904,17 @@ func testAdapterCache(adapter Cmdable) {
 				Score:  3,
 				Member: "three",
 			}, {
+				Score:  2,
+				Member: "two",
+			}, {
+				Score:  1,
+				Member: "one",
+			}}))
+
+			vals, err = adapter.Cache(time.Hour).ZRevRangeByScoreWithScores(
+				ctx, "zset", ZRangeBy{Max: "+inf", Min: "-inf", Offset: 1, Count: 2}).Result()
+			Expect(err).NotTo(HaveOccurred())
+			Expect(vals).To(Equal([]Z{{
 				Score:  2,
 				Member: "two",
 			}, {
@@ -6451,6 +6980,33 @@ func testAdapterCache(adapter Cmdable) {
 			zScore := adapter.Cache(time.Hour).ZScore(ctx, "zset", "one")
 			Expect(zScore.Err()).NotTo(HaveOccurred())
 			Expect(zScore.Val()).To(Equal(float64(1.001)))
+		})
+
+		It("should ZMScore", func() {
+			zmScore := adapter.Cache(time.Hour).ZMScore(ctx, "zset", "one", "three")
+			Expect(zmScore.Err()).NotTo(HaveOccurred())
+			Expect(zmScore.Val()).To(HaveLen(2))
+			Expect(zmScore.Val()[0]).To(Equal(float64(0)))
+
+			err := adapter.ZAdd(ctx, "zset", Z{Score: 1, Member: "one"}).Err()
+			Expect(err).NotTo(HaveOccurred())
+			err = adapter.ZAdd(ctx, "zset", Z{Score: 2, Member: "two"}).Err()
+			Expect(err).NotTo(HaveOccurred())
+			err = adapter.ZAdd(ctx, "zset", Z{Score: 3, Member: "three"}).Err()
+			Expect(err).NotTo(HaveOccurred())
+
+			zmScore = adapter.Cache(time.Hour).ZMScore(ctx, "zset", "one", "three")
+			Expect(zmScore.Err()).NotTo(HaveOccurred())
+			Expect(zmScore.Val()).To(HaveLen(2))
+			Expect(zmScore.Val()[0]).To(Equal(float64(1)))
+
+			zmScore = adapter.Cache(time.Hour).ZMScore(ctx, "zset", "four")
+			Expect(zmScore.Err()).NotTo(HaveOccurred())
+			Expect(zmScore.Val()).To(HaveLen(1))
+
+			zmScore = adapter.Cache(time.Hour).ZMScore(ctx, "zset", "four", "one")
+			Expect(zmScore.Err()).NotTo(HaveOccurred())
+			Expect(zmScore.Val()).To(HaveLen(2))
 		})
 	})
 
@@ -6575,6 +7131,12 @@ func testAdapterCache(adapter Cmdable) {
 			dist, err = adapter.Cache(time.Hour).GeoDist(ctx, "Sicily", "Palermo", "Catania", "m").Result()
 			Expect(err).NotTo(HaveOccurred())
 			Expect(dist).To(BeNumerically("~", 166274.15, 0.01))
+
+			_, err = adapter.Cache(time.Hour).GeoDist(ctx, "Sicily", "Palermo", "Catania", "mi").Result()
+			Expect(err).NotTo(HaveOccurred())
+
+			_, err = adapter.Cache(time.Hour).GeoDist(ctx, "Sicily", "Palermo", "Catania", "ft").Result()
+			Expect(err).NotTo(HaveOccurred())
 		})
 
 		It("should get geo hash in string representation", func() {
