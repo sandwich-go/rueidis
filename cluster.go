@@ -404,6 +404,9 @@ func (c *clusterClient) _pick(slot uint16, toReplica bool) (p conn) {
 }
 
 func (c *clusterClient) pick(ctx context.Context, slot uint16, toReplica bool) (p conn, err error) {
+	var finish func(error)
+	ctx, finish = StartTrace(ctx, "cluster-client.pick")
+	defer finish(err)
 	if p = c._pick(slot, toReplica); p == nil {
 		if err := c.refresh(ctx); err != nil {
 			return nil, err
@@ -458,6 +461,9 @@ func (c *clusterClient) B() Builder {
 }
 
 func (c *clusterClient) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
+	var finish func(error)
+	ctx, finish = StartTrace(ctx, "cluster-client.Do")
+	defer finish(resp.Error())
 	if resp = c.do(ctx, cmd); resp.NonRedisError() == nil { // not recycle cmds if error, since cmds may be used later in pipe. consider recycle them by pipe
 		cmds.PutCompleted(cmd)
 	}

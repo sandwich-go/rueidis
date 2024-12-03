@@ -233,12 +233,22 @@ block:
 }
 
 func (m *mux) blocking(ctx context.Context, cmd Completed) (resp RedisResult) {
+	var finishAcquire func(error)
+	ctx, finishAcquire = StartTrace(ctx, "cluster-client.spool.Acquire", "block", "blocking")
 	wire := m.spool.Acquire()
+	finishAcquire(nil)
+	var finish func(error)
+	ctx, finish = StartTrace(ctx, "cluster-client.wire.Do", "block", "blocking")
 	resp = wire.Do(ctx, cmd)
+	finish(ctx.Err())
 	if resp.NonRedisError() != nil { // abort the wire if blocking command return early (ex. context.DeadlineExceeded)
 		wire.Close()
 	}
+
+	var finishStore func(error)
+	ctx, finishStore = StartTrace(ctx, "cluster-client.spool.Store", "block", "blocking")
 	m.spool.Store(wire)
+	finishStore(nil)
 	return resp
 }
 

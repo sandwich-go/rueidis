@@ -674,7 +674,9 @@ func (p *pipe) handlePush(values []RedisMessage) (reply bool, unsubscribe bool) 
 	return false, false
 }
 
-func (p *pipe) _r2pipe() (r2p *pipe) {
+func (p *pipe) _r2pipe(ctx context.Context) (r2p *pipe) {
+	_, finish := StartTrace(ctx, "_r2pipe")
+	defer finish(nil)
 	p.r2mu.Lock()
 	if p.r2pipe != nil {
 		r2p = p.r2pipe
@@ -696,7 +698,7 @@ func (p *pipe) Receive(ctx context.Context, subscribe Completed, fn func(message
 	}
 
 	if p.version < 6 && p.r2psFn != nil {
-		return p._r2pipe().Receive(ctx, subscribe, fn)
+		return p._r2pipe(ctx).Receive(ctx, subscribe, fn)
 	}
 
 	cmds.CompletedCS(subscribe).Verify()
@@ -752,7 +754,7 @@ func (p *pipe) CleanSubscriptions() {
 
 func (p *pipe) SetPubSubHooks(hooks PubSubHooks) <-chan error {
 	if p.version < 6 && p.r2psFn != nil {
-		return p._r2pipe().SetPubSubHooks(hooks)
+		return p._r2pipe(context.Background()).SetPubSubHooks(hooks)
 	}
 	if hooks.isZero() {
 		if old := p.pshks.Swap(emptypshks).(*pshks); old.close != nil {
@@ -796,6 +798,9 @@ func (p *pipe) Version() int {
 }
 
 func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
+	var finish func(error)
+	ctx, finish = StartTrace(ctx, "pipeline.Do")
+	defer finish(ctx.Err())
 	if err := ctx.Err(); err != nil {
 		return newErrResult(err)
 	}
@@ -813,7 +818,7 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 
 	if cmd.NoReply() {
 		if p.version < 6 && p.r2psFn != nil {
-			return p._r2pipe().Do(ctx, cmd)
+			return p._r2pipe(ctx).Do(ctx, cmd)
 		}
 	}
 
@@ -837,7 +842,7 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 			p.background()
 			goto queue
 		}
-		resp = p.syncDo(dl, ok, cmd)
+		resp = p.syncDo(ctx, dl, ok, cmd)
 	} else {
 		resp = newErrResult(p.Error())
 	}
@@ -898,7 +903,7 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 			return resp
 		} else if p.r2psFn != nil {
 			resultsp.Put(resp)
-			return p._r2pipe().DoMulti(ctx, multi...)
+			return p._r2pipe(ctx).DoMulti(ctx, multi...)
 		}
 	}
 
@@ -1136,7 +1141,7 @@ func (p *pipe) DoMultiStream(ctx context.Context, pool *pool, multi ...Completed
 	return RedisResultStream{e: p.Error()}
 }
 
-func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult) {
+func (p *pipe) syncDo(ctx context.Context, dl time.Time, dlOk bool, cmd Completed) (resp RedisResult) {
 	if dlOk {
 		if p.timeout > 0 {
 			defaultDeadline := time.Now().Add(p.timeout)
@@ -1152,9 +1157,13 @@ func (p *pipe) syncDo(dl time.Time, dlOk bool, cmd Completed) (resp RedisResult)
 	}
 
 	var msg RedisMessage
+	_, finishFlush := StartTrace(ctx, "pipeline.syncDo.flushCmd")
 	err := flushCmd(p.w, cmd.Commands())
+	finishFlush(err)
 	if err == nil {
+		_, finishRead := StartTrace(ctx, "pipeline.syncDo.readResp")
 		msg, err = syncRead(p.r)
+		finishRead(err)
 	}
 	if err != nil {
 		if errors.Is(err, os.ErrDeadlineExceeded) {
