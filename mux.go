@@ -267,7 +267,10 @@ func (m *mux) blockingMulti(ctx context.Context, cmd []Completed) (resp *redisre
 
 func (m *mux) pipeline(ctx context.Context, cmd Completed) (resp RedisResult) {
 	slot := slotfn(len(m.wire), cmd.Slot(), cmd.NoReply())
+	var finishPick func(error)
+	ctx, finishPick = StartTrace(ctx, "cluster-client.cluster.pick")
 	wire := m.pipe(slot)
+	finishPick(nil)
 	if resp = wire.Do(ctx, cmd); isBroken(resp.NonRedisError(), wire) {
 		m.wire[slot].CompareAndSwap(wire, m.init)
 	}
