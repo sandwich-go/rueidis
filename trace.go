@@ -2,7 +2,6 @@ package rueidis
 
 import (
 	"context"
-	"log"
 
 	"go.opentelemetry.io/otel/codes"
 
@@ -26,7 +25,6 @@ const (
 
 func StartTrace(ctx context.Context, spanName string, kvs ...string) (context.Context, func(error)) {
 	var span trace.Span
-	log.Println("StartTrace==>", spanName)
 	if EnableTrace {
 		var attrs []attribute.KeyValue
 		var key string
