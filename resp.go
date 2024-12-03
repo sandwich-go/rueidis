@@ -2,6 +2,7 @@ package rueidis
 
 import (
 	"bufio"
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -366,7 +367,9 @@ next:
 	}
 }
 
-func writeCmd(o *bufio.Writer, cmd []string) (err error) {
+func writeCmd(ctx context.Context, o *bufio.Writer, cmd []string) (err error) {
+	_, finish := StartTrace(ctx, "rueidis.writeCmd")
+	defer finish(err)
 	err = writeN(o, '*', len(cmd))
 	for _, m := range cmd {
 		err = writeB(o, '$', m)
@@ -376,8 +379,8 @@ func writeCmd(o *bufio.Writer, cmd []string) (err error) {
 	return err
 }
 
-func flushCmd(o *bufio.Writer, cmd []string) (err error) {
-	_ = writeCmd(o, cmd)
+func flushCmd(ctx context.Context, o *bufio.Writer, cmd []string) (err error) {
+	_ = writeCmd(ctx, o, cmd)
 	return o.Flush()
 }
 

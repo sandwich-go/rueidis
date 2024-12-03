@@ -427,7 +427,7 @@ func (p *pipe) _backgroundWrite() (err error) {
 			multi = ones
 		}
 		for _, cmd := range multi {
-			err = writeCmd(p.w, cmd.Commands())
+			err = writeCmd(context.Background(), p.w, cmd.Commands())
 		}
 	}
 	return
@@ -948,7 +948,7 @@ func (p *pipe) DoMulti(ctx context.Context, multi ...Completed) *redisresults {
 			p.background()
 			goto queue
 		}
-		p.syncDoMulti(dl, ok, resp.s, multi)
+		p.syncDoMulti(ctx, dl, ok, resp.s, multi)
 	} else {
 		err := newErrResult(p.Error())
 		for i := 0; i < len(resp.s); i++ {
@@ -1067,7 +1067,7 @@ func (p *pipe) DoStream(ctx context.Context, pool *pool, cmd Completed) RedisRes
 		} else {
 			p.conn.SetDeadline(time.Time{})
 		}
-		_ = writeCmd(p.w, cmd.Commands())
+		_ = writeCmd(ctx, p.w, cmd.Commands())
 		if err := p.w.Flush(); err != nil {
 			p.error.CompareAndSwap(nil, &errs{error: err})
 			p.conn.Close()
@@ -1125,7 +1125,7 @@ func (p *pipe) DoMultiStream(ctx context.Context, pool *pool, multi ...Completed
 		}
 	process:
 		for _, cmd := range multi {
-			_ = writeCmd(p.w, cmd.Commands())
+			_ = writeCmd(ctx, p.w, cmd.Commands())
 		}
 		if err := p.w.Flush(); err != nil {
 			p.error.CompareAndSwap(nil, &errs{error: err})
@@ -1158,11 +1158,11 @@ func (p *pipe) syncDo(ctx context.Context, dl time.Time, dlOk bool, cmd Complete
 
 	var msg RedisMessage
 	_, finishFlush := StartTrace(ctx, "pipeline.syncDo.flushCmd")
-	err := flushCmd(p.w, cmd.Commands())
+	err := flushCmd(ctx, p.w, cmd.Commands())
 	finishFlush(err)
 	if err == nil {
 		_, finishRead := StartTrace(ctx, "pipeline.syncDo.readResp")
-		msg, err = syncRead(p.r)
+		msg, err = syncRead(ctx, p.r)
 		finishRead(err)
 	}
 	if err != nil {
@@ -1176,7 +1176,7 @@ func (p *pipe) syncDo(ctx context.Context, dl time.Time, dlOk bool, cmd Complete
 	return newResult(msg, err)
 }
 
-func (p *pipe) syncDoMulti(dl time.Time, dlOk bool, resp []RedisResult, multi []Completed) {
+func (p *pipe) syncDoMulti(ctx context.Context, dl time.Time, dlOk bool, resp []RedisResult, multi []Completed) {
 	if dlOk {
 		if p.timeout > 0 {
 			defaultDeadline := time.Now().Add(p.timeout)
@@ -1200,13 +1200,13 @@ process:
 	var err error
 	var msg RedisMessage
 	for _, cmd := range multi {
-		_ = writeCmd(p.w, cmd.Commands())
+		_ = writeCmd(ctx, p.w, cmd.Commands())
 	}
 	if err = p.w.Flush(); err != nil {
 		goto abort
 	}
 	for i := 0; i < len(resp); i++ {
-		if msg, err = syncRead(p.r); err != nil {
+		if msg, err = syncRead(ctx, p.r); err != nil {
 			goto abort
 		}
 		resp[i] = newResult(msg, err)
@@ -1224,7 +1224,9 @@ abort:
 	}
 }
 
-func syncRead(r *bufio.Reader) (m RedisMessage, err error) {
+func syncRead(ctx context.Context, r *bufio.Reader) (m RedisMessage, err error) {
+	_, finish := StartTrace(ctx, "rueidis.syncRead")
+	defer finish(err)
 next:
 	if m, err = readNextMessage(r); err != nil {
 		return m, err
