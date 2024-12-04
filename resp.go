@@ -273,6 +273,8 @@ func writeN(o *bufio.Writer, id byte, n int) (err error) {
 }
 
 func readNextMessage(i *bufio.Reader) (m RedisMessage, err error) {
+	_, finish := StartTrace(context.Background(), "rueidis.readNextMessage")
+	defer finish(err)
 	var attrs *RedisMessage
 	var typ byte
 	for {
@@ -368,7 +370,7 @@ next:
 }
 
 func writeCmd(ctx context.Context, o *bufio.Writer, cmd []string) (err error) {
-	_, finish := StartTrace(ctx, "rueidis.writeCmd")
+	_, finish := StartTrace(ctx, "rueidis.writeCmd", "cmds", strconv.Itoa(len(cmd)))
 	defer finish(err)
 	err = writeN(o, '*', len(cmd))
 	for _, m := range cmd {

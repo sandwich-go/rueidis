@@ -1,6 +1,7 @@
 package rueidis
 
 import (
+	"context"
 	"sync"
 	"sync/atomic"
 
@@ -54,6 +55,8 @@ type node struct {
 }
 
 func (r *ring) PutOne(m Completed) chan RedisResult {
+	_, finish := StartTrace(context.Background(), "rueidis.ring.PutOne")
+	defer finish(nil)
 	n := &r.store[atomic.AddUint32(&r.write, 1)&r.mask]
 	n.c1.L.Lock()
 	for n.mark != 0 {
@@ -88,6 +91,8 @@ func (r *ring) PutMulti(m []Completed, resps []RedisResult) chan RedisResult {
 
 // NextWriteCmd should be only called by one dedicated thread
 func (r *ring) NextWriteCmd() (one Completed, multi []Completed, ch chan RedisResult) {
+	_, finish := StartTrace(context.Background(), "rueidis.ring.NextWriteCmd")
+	defer finish(nil)
 	r.read1++
 	p := r.read1 & r.mask
 	n := &r.store[p]
@@ -104,6 +109,8 @@ func (r *ring) NextWriteCmd() (one Completed, multi []Completed, ch chan RedisRe
 
 // WaitForWrite should be only called by one dedicated thread
 func (r *ring) WaitForWrite() (one Completed, multi []Completed, ch chan RedisResult) {
+	_, finish := StartTrace(context.Background(), "rueidis.ring.WaitForWrite")
+	defer finish(nil)
 	r.read1++
 	p := r.read1 & r.mask
 	n := &r.store[p]

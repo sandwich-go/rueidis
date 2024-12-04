@@ -302,7 +302,7 @@ func _newPipe(connFn func() (net.Conn, error), option *ClientOption, r2ps, nobg 
 			p.background()
 		}
 		if p.timeout > 0 && p.pinggap > 0 {
-			//go p.backgroundPing()
+			go p.backgroundPing()
 		}
 	}
 	return p, nil
@@ -428,9 +428,11 @@ func (p *pipe) _backgroundWrite() (err error) {
 		if ch != nil && multi == nil {
 			multi = ones
 		}
-		log.Printf("multi cmd in queue :%v\n", len(multi))
+
 		for _, cmd := range multi {
-			err = writeCmd(context.Background(), p.w, cmd.Commands())
+			cmds := cmd.Commands()
+			log.Printf("multi cmd in queue :%d %d\n", len(multi), len(cmds))
+			err = writeCmd(context.Background(), p.w, cmds)
 		}
 	}
 	return
