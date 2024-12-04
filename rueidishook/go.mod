@@ -1,6 +1,8 @@
 module github.com/redis/rueidis/rueidishook
 
-go 1.21
+go 1.22
+
+toolchain go1.23.3
 
 replace (
 	github.com/redis/rueidis => ../

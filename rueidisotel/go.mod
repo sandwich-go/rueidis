@@ -1,16 +1,18 @@
 module github.com/redis/rueidis/rueidisotel
 
-go 1.21
+go 1.22
+
+toolchain go1.23.3
 
 replace github.com/redis/rueidis => ../
 
 require (
 	github.com/redis/rueidis v1.0.49
-	go.opentelemetry.io/otel v1.28.0
-	go.opentelemetry.io/otel/metric v1.28.0
+	go.opentelemetry.io/otel v1.32.0
+	go.opentelemetry.io/otel/metric v1.32.0
 	go.opentelemetry.io/otel/sdk v1.28.0
 	go.opentelemetry.io/otel/sdk/metric v1.28.0
-	go.opentelemetry.io/otel/trace v1.28.0
+	go.opentelemetry.io/otel/trace v1.32.0
 )
 
 require (

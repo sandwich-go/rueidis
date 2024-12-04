@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"os"
 	"regexp"
@@ -301,7 +302,7 @@ func _newPipe(connFn func() (net.Conn, error), option *ClientOption, r2ps, nobg 
 			p.background()
 		}
 		if p.timeout > 0 && p.pinggap > 0 {
-			go p.backgroundPing()
+			//go p.backgroundPing()
 		}
 	}
 	return p, nil
@@ -419,6 +420,7 @@ func (p *pipe) _backgroundWrite() (err error) {
 					blocked = multi[i].IsBlock()
 				}
 				if !blocked {
+					log.Printf("flush delay sleep %s, flushDelay:%v time.Since(flushStart):%v\n", flushDelay-time.Since(flushStart), flushDelay, time.Since(flushStart))
 					time.Sleep(flushDelay - time.Since(flushStart)) // ref: https://github.com/redis/rueidis/issues/156
 				}
 			}
@@ -426,6 +428,7 @@ func (p *pipe) _backgroundWrite() (err error) {
 		if ch != nil && multi == nil {
 			multi = ones
 		}
+		log.Printf("multi cmd in queue :%v\n", len(multi))
 		for _, cmd := range multi {
 			err = writeCmd(context.Background(), p.w, cmd.Commands())
 		}
@@ -853,22 +856,29 @@ func (p *pipe) Do(ctx context.Context, cmd Completed) (resp RedisResult) {
 	return resp
 
 queue:
+	_, finishPutQueue := StartTrace(ctx, "pipeline.Do.queue.Put")
 	ch := p.queue.PutOne(cmd)
+	finishPutQueue(nil)
+	_, finishQueue := StartTrace(ctx, "pipeline.Do.queue.Wait")
 	if ctxCh := ctx.Done(); ctxCh == nil {
 		resp = <-ch
 	} else {
 		select {
 		case resp = <-ch:
 		case <-ctxCh:
+			finishQueue(errors.New("context canceled")) // canceled or timeout go abort wait rep
 			goto abort
 		}
 	}
+	finishQueue(nil)
 	atomic.AddInt32(&p.waits, -1)
 	atomic.AddInt32(&p.recvs, 1)
 	return resp
 abort:
 	go func(ch chan RedisResult) {
+		_, finishAbort := StartTrace(ctx, "pipeline.Do.abort")
 		<-ch
+		finishAbort(nil)
 		atomic.AddInt32(&p.waits, -1)
 		atomic.AddInt32(&p.recvs, 1)
 	}(ch)
